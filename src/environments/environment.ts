@@ -1,8 +1,8 @@
 export const environment = {
   production: true,
-  BASE_URL: 'https://backend.alssalem.com',
+  // BASE_URL: 'https://backend.alssalem.com',
   School_URL: 'https://school.alssalem.com',
-  // BASE_URL: 'https://elsalem.runasp.net',
+  BASE_URL: 'https://elsalem.runasp.net',
   // BASE_URL: 'https://alssalemqudrate-001-site1.htempurl.com',
   // clientId:
   //   '489744485848-6o46spoh9svpap099l3e4tfimg0dtni6.apps.googleusercontent.com',
