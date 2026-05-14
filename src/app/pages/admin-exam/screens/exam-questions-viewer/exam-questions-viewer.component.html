@@ -1,0 +1,501 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-7xl">
+    <!-- Header -->
+    <div class="p-6 mb-6 bg-white shadow-xl rounded-2xl">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <button
+            class="flex items-center gap-2 mb-3 font-semibold text-indigo-600 hover:text-indigo-800"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 19l-7-7 7-7"
+              ></path>
+            </svg>
+            العودة للقائمة
+          </button>
+          <h1 class="mb-2 text-3xl font-bold text-gray-800">أسئلة الاختبار</h1>
+          <p class="text-gray-600">عرض وإدارة أسئلة الاختبار المحاكي</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            class="px-4 py-2 font-semibold text-purple-700 bg-purple-100 rounded-lg"
+          >
+            إجمالي الأسئلة: {{ pagination().totalCount }}
+          </span>
+          @if (isEditMode()) {
+          <button
+            (click)="toggleEditMode()"
+            class="px-6 py-2 font-semibold text-white transition-colors bg-gray-600 rounded-lg shadow-md hover:bg-gray-700"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                ></path>
+              </svg>
+              وضع العرض
+            </span>
+          </button>
+          <button
+            (click)="saveChanges()"
+            class="px-6 py-2 font-semibold text-white transition-colors bg-green-600 rounded-lg shadow-md hover:bg-green-700"
+          >
+            💾 حفظ التعديلات
+          </button>
+          }
+
+          <!-- @else {
+          <button
+            (click)="toggleEditMode()"
+            class="px-6 py-2 font-semibold text-white transition-colors bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700"
+          >
+            <span class="flex items-center gap-2">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                ></path>
+              </svg>
+              وضع التعديل
+            </span>
+          </button>
+          } -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <!-- <div class="p-6 mb-6 bg-white shadow-lg rounded-2xl">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+        <select
+          class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+        >
+          <option value="">كل المستويات</option>
+          <option value="1">سهل</option>
+          <option value="2">متوسط</option>
+          <option value="3">صعب</option>
+        </select>
+        <select
+          class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+        >
+          <option value="">كل الأنواع</option>
+          <option value="جبر">جبر</option>
+          <option value="هندسه">هندسة</option>
+          <option value="تحليل وإحصاء">تحليل وإحصاء</option>
+        </select>
+        <select
+          [(ngModel)]="pageSize"
+          (ngModelChange)="onPageSizeChange()"
+          class="px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+        >
+          <option [value]="5">5 لكل صفحة</option>
+          <option [value]="10">10 لكل صفحة</option>
+          <option [value]="20">20 لكل صفحة</option>
+          <option [value]="50">50 لكل صفحة</option>
+        </select>
+        <button
+          class="px-6 py-3 font-semibold text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700"
+        >
+          تطبيق الفلتر
+        </button>
+      </div>
+    </div> -->
+
+    @if (isLoading()) {
+    <div class="p-12 bg-white shadow-lg rounded-2xl">
+      <div class="flex items-center justify-center">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 mx-auto mb-4 border-b-4 border-indigo-600 rounded-full animate-spin"
+          ></div>
+          <p class="font-semibold text-gray-600">جاري تحميل الأسئلة...</p>
+        </div>
+      </div>
+    </div>
+    } @else if (questions().length === 0) {
+    <div class="p-12 bg-white shadow-lg rounded-2xl">
+      <div class="text-center">
+        <svg
+          class="w-24 h-24 mx-auto mb-4 text-gray-300"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+          ></path>
+        </svg>
+        <p class="text-xl font-semibold text-gray-600">
+          لا توجد أسئلة في هذا الاختبار
+        </p>
+      </div>
+    </div>
+    } @else {
+    <!-- Questions Cards -->
+    <div class="space-y-6">
+      @for (question of questions(); track question.id; let i = $index) {
+      <div
+        class="overflow-hidden transition-shadow bg-white shadow-lg rounded-2xl hover:shadow-xl"
+      >
+        <!-- Question Header -->
+        <div class="p-4 bg-gradient-to-r from-indigo-600 to-purple-600">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <span
+                class="px-4 py-2 text-lg font-bold text-indigo-600 bg-white rounded-lg shadow"
+              >
+                #{{
+                  (pagination().currentPage - 1) * pagination().pageSize + i + 1
+                }}
+              </span>
+              <div class="text-white">
+                <p class="font-semibold">{{ question.questionType }}</p>
+                @if (question.skill) {
+                <p class="text-sm opacity-90">{{ question.skill }}</p>
+                }
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span
+                class="px-3 py-1 text-sm font-bold text-white rounded-full"
+                [ngClass]="{
+                  'bg-green-500': question.difficulty === 1,
+                  'bg-yellow-500': question.difficulty === 2,
+                  'bg-red-500': question.difficulty === 3
+                }"
+              >
+                {{ getDifficultyText(question.difficulty) }}
+              </span>
+              @if (!isEditMode()) {
+              <button
+                (click)="deleteQuestion(question)"
+                class="p-2 transition-colors bg-red-500 rounded-lg hover:bg-red-600"
+              >
+                <svg
+                  class="w-5 h-5 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                  ></path>
+                </svg>
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Question Content -->
+        <div class="p-6">
+          <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <!-- Images Section -->
+            <div class="space-y-4">
+              @if (question.image1Url) {
+              <div class="relative group">
+                <img
+                  [src]="question.image1Url"
+                  alt="صورة السؤال"
+                  class="w-full transition-colors border-2 border-gray-200 rounded-lg shadow-md cursor-pointer hover:border-indigo-400"
+                  (click)="openImageModal(question.image1Url)"
+                />
+                <div
+                  class="absolute px-3 py-1 text-sm font-semibold text-white bg-indigo-600 rounded-lg top-2 left-2"
+                >
+                  صورة السؤال
+                </div>
+              </div>
+              } @if (question.image2Url) {
+              <div class="relative group">
+                <img
+                  [src]="question.image2Url"
+                  alt="صورة إضافية"
+                  class="w-full transition-colors border-2 border-gray-200 rounded-lg shadow-md cursor-pointer hover:border-indigo-400"
+                  (click)="openImageModal(question.image2Url)"
+                />
+                <div
+                  class="absolute px-3 py-1 text-sm font-semibold text-white bg-purple-600 rounded-lg top-2 left-2"
+                >
+                  صورة إضافية
+                </div>
+              </div>
+              }
+            </div>
+
+            <!-- Question Details -->
+            <div class="space-y-4">
+              @if (isEditMode()) {
+              <!-- Edit Mode -->
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700"
+                  >نص السؤال</label
+                >
+                <textarea
+                  [(ngModel)]="question.text"
+                  rows="3"
+                  class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  placeholder="أدخل نص السؤال (اختياري)"
+                ></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block mb-2 text-sm font-semibold text-gray-700"
+                    >نوع السؤال</label
+                  >
+                  <select
+                    [(ngModel)]="question.questionType"
+                    class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  >
+                    <option value="جبر">جبر</option>
+                    <option value="هندسه">هندسة</option>
+                    <option value="تحليل وإحصاء">تحليل وإحصاء</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block mb-2 text-sm font-semibold text-gray-700"
+                    >المستوى</label
+                  >
+                  <select
+                    [(ngModel)]="question.difficulty"
+                    class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  >
+                    <option [value]="1">سهل</option>
+                    <option [value]="2">متوسط</option>
+                    <option [value]="3">صعب</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700"
+                  >المهارة</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="question.skill"
+                  class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  placeholder="مثال: زوايا المثلث"
+                />
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700"
+                  >الإجابة الصحيحة</label
+                >
+                <select
+                  [(ngModel)]="question.correctChoice"
+                  class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                >
+                  <option [value]="1">الخيار 1</option>
+                  <option [value]="2">الخيار 2</option>
+                  <option [value]="3">الخيار 3</option>
+                  <option [value]="4">الخيار 4</option>
+                  <option [value]="5">الخيار 5</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700"
+                  >رابط الشرح</label
+                >
+                <input
+                  type="text"
+                  [(ngModel)]="question.answerUrl"
+                  class="w-full px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+                  placeholder="https://youtube.com/..."
+                />
+              </div>
+              } @else {
+              <!-- View Mode -->
+              @if (question.text) {
+              <div
+                class="p-4 border-r-4 border-indigo-500 rounded-lg bg-gray-50"
+              >
+                <p class="font-medium text-gray-800">{{ question.text }}</p>
+              </div>
+              }
+
+              <div class="grid grid-cols-2 gap-4">
+                <div class="p-3 rounded-lg bg-indigo-50">
+                  <p class="mb-1 text-xs font-semibold text-indigo-600">
+                    نوع السؤال
+                  </p>
+                  <p class="text-sm font-bold text-indigo-800">
+                    {{ question.questionType }}
+                  </p>
+                </div>
+                <div class="p-3 rounded-lg bg-purple-50">
+                  <p class="mb-1 text-xs font-semibold text-purple-600">
+                    المستوى
+                  </p>
+                  <p class="text-sm font-bold text-purple-800">
+                    {{ getDifficultyText(question.difficulty) }}
+                  </p>
+                </div>
+              </div>
+
+              @if (question.skill) {
+              <div class="p-3 rounded-lg bg-blue-50">
+                <p class="mb-1 text-xs font-semibold text-blue-600">المهارة</p>
+                <p class="text-sm font-bold text-blue-800">
+                  {{ question.skill }}
+                </p>
+              </div>
+              }
+
+              <div
+                class="p-4 border-r-4 border-green-500 rounded-lg bg-green-50"
+              >
+                <p class="mb-2 text-xs font-semibold text-green-600">
+                  الإجابة الصحيحة
+                </p>
+                <p class="text-lg font-bold text-green-800">
+                  الخيار {{ question.correctChoice }}
+                </p>
+              </div>
+
+              @if (question.answerUrl) {
+              <a
+                [href]="question.answerUrl"
+                target="_blank"
+                class="flex items-center justify-center gap-2 px-4 py-3 font-semibold text-white transition-colors bg-red-600 rounded-lg hover:bg-red-700"
+              >
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <path
+                    d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"
+                  />
+                </svg>
+                مشاهدة شرح الإجابة
+              </a>
+              } }
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Pagination -->
+    <div class="p-6 mt-6 bg-white shadow-lg rounded-2xl">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div class="text-sm text-gray-600">
+          عرض
+          <span class="font-semibold text-gray-900">
+            {{ (pagination().currentPage - 1) * pagination().pageSize + 1 }}
+          </span>
+          إلى
+          <span class="font-semibold text-gray-900">
+            {{
+              Math.min(
+                pagination().currentPage * pagination().pageSize,
+                pagination().totalCount
+              )
+            }}
+          </span>
+          من
+          <span class="font-semibold text-gray-900">{{
+            pagination().totalCount
+          }}</span>
+          سؤال
+        </div>
+
+        <div class="flex items-center gap-2">
+          <button
+            (click)="goToPage(pagination().currentPage - 1)"
+            [disabled]="!pagination().hasPreviousPage"
+            class="px-4 py-2 font-semibold transition-colors border-2 border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 disabled:hover:bg-transparent"
+          >
+            السابق
+          </button>
+
+          <div class="flex items-center gap-1">
+            @for (page of visiblePages(); track page) { @if (page === -1) {
+            <span class="px-3 py-2 text-gray-500">...</span>
+            } @else {
+            <button
+              (click)="goToPage(page)"
+              [class]="
+                page === pagination().currentPage
+                  ? 'px-4 py-2 bg-indigo-600 text-white rounded-lg font-bold shadow-md'
+                  : 'px-4 py-2 border-2 border-gray-300 rounded-lg font-semibold hover:bg-gray-100 transition-colors'
+              "
+            >
+              {{ page }}
+            </button>
+            } }
+          </div>
+
+          <button
+            (click)="goToPage(pagination().currentPage + 1)"
+            [disabled]="!pagination().hasNextPage"
+            class="px-4 py-2 font-semibold transition-colors border-2 border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 disabled:hover:bg-transparent"
+          >
+            التالي
+          </button>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Image Modal -->
+@if (selectedImage()) {
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-75"
+  (click)="closeImageModal()"
+>
+  <div class="relative max-w-5xl max-h-full">
+    <button
+      (click)="closeImageModal()"
+      class="absolute left-0 text-lg font-bold text-white -top-12 hover:text-gray-300"
+    >
+      ✕ إغلاق
+    </button>
+    <img
+      [src]="selectedImage()"
+      alt="صورة مكبرة"
+      class="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+      (click)="$event.stopPropagation()"
+    />
+  </div>
+</div>
+}

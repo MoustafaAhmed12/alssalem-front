@@ -1,0 +1,909 @@
+@if (isAdminView()) {
+<app-super-navbar />
+}
+<div class="min-h-screen py-8 md:px-4 lg:px-8" [ngClass]="{'pt-24': isAdminView()}">
+  <div class="max-w-4xl mx-auto">
+    @if (isAdminView()) {
+    <div class="flex mb-4 ms-2">
+      <button
+        type="button"
+        (click)="back()"
+        class="px-6 py-2 text-lg transition-colors border rounded-lg hover:text-white hover:bg-secondaryAdmin border-secondaryAdmin text-secondaryAdmin"
+      >
+        عودة
+      </button>
+    </div>
+    }
+    <!-- Header -->
+    <div
+      class="bg-white rounded-lg border-[1.5px] border-secondary shadow-lg p-6 md:p-6 px-2 py-4 mb-6"
+    >
+      <h2 class="mb-2 font-bold text-gray-900 md:text-2xl">إعدادات الحساب</h2>
+      <p class="text-sm text-gray-600 md:text-base">
+        تحديث بياناتك الشخصية وإعدادات الحساب
+      </p>
+    </div>
+
+    <!-- Main Form -->
+    <div
+      class="bg-white rounded-lg md:shadow-lg md:border-[1.5px] border-secondary md:p-6 py-4"
+    >
+      @if (!isLoading()) {
+      <form [formGroup]="studentForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Personal Information Section -->
+        <div class="pb-6 border-b border-gray-200">
+          <h3 class="mb-4 text-lg font-semibold text-gray-900">
+            البيانات الشخصية
+          </h3>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- First Name -->
+            <div>
+              <label
+                for="firstName"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                الاسم الأول
+                <span class="text-xl font-bold text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="firstName"
+                formControlName="firstName"
+                class="w-full px-3 py-2 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="أدخل الاسم الأول"
+              />
+              @if (studentForm.get('firstName')?.invalid &&
+              studentForm.get('firstName')?.touched) {
+              <p class="mt-1 text-sm text-red-600">الاسم الأول مطلوب</p>
+              }
+            </div>
+
+            <!-- Last Name -->
+            <div>
+              <label
+                for="lastName"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                الاسم الأخير
+                <span class="text-xl font-bold text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="lastName"
+                formControlName="lastName"
+                class="w-full px-3 py-2 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="أدخل الاسم الأخير"
+              />
+              @if (studentForm.get('lastName')?.invalid &&
+              studentForm.get('lastName')?.touched) {
+              <p class="mt-1 text-sm text-red-600">الاسم الأخير مطلوب</p>
+              }
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="grid grid-cols-1 gap-4 mt-4 md:grid-cols-2">
+            <div>
+              <label
+                for="email"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                البريد الإلكتروني
+                <span class="text-xl font-bold text-red-500">*</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                formControlName="email"
+                class="w-full px-3 py-2 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="أدخل البريد الإلكتروني"
+              />
+              @if (studentForm.get('email')?.invalid &&
+              studentForm.get('email')?.touched) {
+              <p class="mt-1 text-sm text-red-600">
+                @if (studentForm.get('email')?.errors?.['required']) { البريد
+                الإلكتروني مطلوب } @else if
+                (studentForm.get('email')?.errors?.['email']) { يرجى إدخال بريد
+                إلكتروني صحيح }
+              </p>
+              }
+            </div>
+
+            <!-- Phone -->
+            <div>
+              <label
+                for="phone"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                رقم الهاتف <span class="text-xl font-bold text-red-500">*</span>
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                formControlName="phone"
+                class="w-full px-3 py-2 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                placeholder="أدخل رقم الهاتف"
+              />
+              @if (studentForm.get('phone')?.invalid &&
+              studentForm.get('phone')?.touched) {
+              <p class="mt-1 text-sm text-red-600">رقم الهاتف مطلوب</p>
+              }
+            </div>
+          </div>
+          <!-- National ID -->
+          <div class="my-4">
+            <label
+              for="nationalId"
+              class="block mb-2 text-sm font-medium text-gray-700"
+            >
+              رقم الهوية
+            </label>
+            <input
+              type="text"
+              id="nationalId"
+              formControlName="nationalId"
+              class="w-full px-3 py-2 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              placeholder="رقم الهوية"
+            />
+          </div>
+        </div>
+
+        <!-- Academic Information Section -->
+        <div class="pb-6 border-b border-gray-200">
+          <h3 class="mb-4 text-lg font-semibold text-gray-900">
+            البيانات الأكاديمية
+          </h3>
+
+          <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <!-- State/Grade -->
+            <div>
+              <label
+                for="state"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                المرحلة الدراسية
+              </label>
+              <select
+                id="state"
+                formControlName="state"
+                class="w-full px-3 py-2 transition-colors bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                @for (grade of grades(); track grade) {
+                <option [value]="grade">{{ grade }}</option>
+                }
+              </select>
+            </div>
+
+            <!-- Class Number -->
+            <div>
+              <label
+                for="classNumber"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                رقم الفصل
+              </label>
+              <select
+                id="classNumber"
+                formControlName="classNumber"
+                class="w-full px-3 py-2 transition-colors bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              >
+                @for (grade of classNumbers; track grade) {
+                <option [value]="grade.id">{{ grade.name }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <!-- School Information -->
+          <div class="mt-4">
+            <label
+              for="schoolId"
+              class="block mb-2 text-sm font-medium text-gray-700"
+            >
+              اسم المدرسة
+            </label>
+            <select
+              id="schoolId"
+              formControlName="schoolId"
+              class="w-full px-3 py-2 transition-colors bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            >
+              @for (grade of allSchools; track grade) {
+              <option [value]="grade.id">{{ grade.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <!-- Password Section (Only if not Google Sign and NOT Admin View) -->
+        @if (!isGoogleSignIn() && !isAdminView()) {
+        <div class="pb-6 border-b border-gray-200">
+          <details>
+            <summary
+              class="mb-4 text-lg font-semibold text-gray-900 cursor-pointer"
+            >
+              تغيير كلمة المرور
+            </summary>
+            <!-- Current Password -->
+            <div class="mb-4">
+              <label
+                for="curpassword"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                كلمة المرور الحالية
+              </label>
+              <div class="relative">
+                <input
+                  [type]="showcurpassword() ? 'text' : 'password'"
+                  id="curpassword"
+                  formControlName="curpassword"
+                  class="w-full px-3 py-2 pr-10 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="أدخل كلمة المرور الحالية"
+                />
+                <button
+                  type="button"
+                  (click)="togglecurpasswordVisibility()"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  @if (showcurpassword()) {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                    />
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  }
+                </button>
+              </div>
+            </div>
+            <!-- New Password -->
+            <div class="mb-4">
+              <label
+                for="password"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                كلمة المرور الجديدة
+              </label>
+              <div class="relative">
+                <input
+                  [type]="showpassword() ? 'text' : 'password'"
+                  id="password"
+                  formControlName="password"
+                  class="w-full px-3 py-2 pr-10 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="أدخل كلمة المرور الجديدة"
+                />
+                <button
+                  type="button"
+                  (click)="togglepasswordVisibility()"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  @if (showpassword()) {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                    />
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  }
+                </button>
+              </div>
+              @if (studentForm.get('password')?.invalid &&
+              studentForm.get('password')?.touched) {
+              <p class="mt-1 text-sm text-red-600">
+                كلمة المرور يجب أن تكون 6 أحرف على الأقل
+              </p>
+              }
+            </div>
+
+            <!-- Confirm New Password -->
+            <div>
+              <label
+                for="confirmPassword"
+                class="block mb-2 text-sm font-medium text-gray-700"
+              >
+                تأكيد كلمة المرور الجديدة
+              </label>
+              <div class="relative">
+                <input
+                  [type]="showConfirmPassword() ? 'text' : 'password'"
+                  id="confirmPassword"
+                  formControlName="confirmPassword"
+                  class="w-full px-3 py-2 pr-10 transition-colors border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="أعد إدخال كلمة المرور الجديدة"
+                />
+                <button
+                  type="button"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  class="absolute inset-y-0 right-0 flex items-center pr-3"
+                >
+                  @if (showConfirmPassword()) {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                    />
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-5 h-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                  }
+                </button>
+              </div>
+              @if (passwordsDoNotMatch()) {
+              <p class="mt-1 text-sm text-red-600">كلمات المرور غير متطابقة</p>
+              }
+            </div>
+          </details>
+        </div>
+        }
+
+        <!-- Google Sign Info -->
+        @if (isGoogleSignIn()) {
+        <div class="p-4 border border-blue-200 rounded-md bg-blue-50">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg
+                class="w-5 h-5 text-blue-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div class="mr-3">
+              <p class="text-sm text-blue-800">
+                تم تسجيل الدخول باستخدام Google. لا يمكن تغيير كلمة المرور من
+                هنا.
+              </p>
+            </div>
+          </div>
+        </div>
+        }
+
+        <!-- Action Buttons -->
+        <div class="flex justify-between pt-6">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 transition-colors bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          >
+            إلغاء
+          </button>
+
+          <div class="flex space-x-3 space-x-reverse">
+            <button
+              type="submit"
+              [disabled]="!studentForm.valid || isLoading()"
+              class="px-6 py-2 text-sm font-medium text-white transition-colors bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              @if (isLoading()) {
+              <span class="flex items-center">
+                <svg
+                  class="w-4 h-4 mr-3 -ml-1 text-white animate-spin"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                جاري الحفظ...
+              </span>
+              } @else { حفظ التغييرات }
+            </button>
+          </div>
+        </div>
+      </form>
+      }@else {
+      <div class="flex items-center justify-center space-x-2 bg-white min-h-80">
+        <div
+          class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+        ></div>
+      </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (showAlert()) {
+<!-- Alert -->
+<div
+  class="fixed z-[500] flex items-center max-w-md gap-3 px-6 py-3 text-red-700 -translate-x-1/2 bg-red-100 border border-red-400 shadow-lg top-5 left-1/2 w-fit rounded-2xl animate-fade-in"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    class="text-red-500 size-8"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 9v2m0 4h.01m-6.938 4h13.856C18.944 19 20 17.94 20 16.682V7.318C20 6.06 18.944 5 17.682 5H6.318C5.056 5 4 6.06 4 7.318v9.364C4 17.94 5.056 19 6.318 19z"
+    />
+  </svg>
+  <span class="text-base font-medium whitespace-nowrap md:text-xl"
+    >يرجى تحديث كافة البيانات</span
+  >
+</div>
+
+}
+
+<!-- <main class="relative w-full">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoading() }"
+  ></div>
+  <div class="flex items-center justify-center min-h-full mx-auto my-8 md:px-2">
+    <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+      <form
+        [formGroup]="profileForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6 rounded-lg"
+        autocomplete="off"
+      >
+        <div class="pt-3 pb-6 bg-white rounded-lg md:px-8">
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  formControlName="firstName"
+                  placeholder="أدخل ألاسم الأول"
+                  [ngClass]="
+                    profileForm.controls['firstName'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                /><label
+                  for="firstName"
+                  class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                  >الاسم الأول</label
+                >
+              </div>
+              @if (submitted && profileForm.controls['firstName'].errors) {
+              <div>
+                @if (profileForm.controls['firstName'].errors['required'] ) {
+                <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                }
+              </div>
+              }
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  name="lastName"
+                  formControlName="lastName"
+                  id="lastName"
+                  placeholder="أدخل ألاسم الأخير"
+                  [ngClass]="
+                    profileForm.controls['lastName'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                /><label
+                  for="lastName"
+                  [ngClass]="
+                    profileForm.controls['lastName'].errors && submitted
+                      ? 'text-rose-600 '
+                      : 'text-gray-500'
+                  "
+                  class="absolute right-0 px-1 mx-1 text-lg transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                  >الاسم الأخير</label
+                >
+              </div>
+              @if (submitted && profileForm.controls['lastName'].errors) {
+              <div>
+                @if (profileForm.controls['lastName'].errors['required'] ) {
+                <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          <div class="mt-3 bg-white rounded-lg">
+            <div class="relative bg-inherit">
+              <input
+                type="email"
+                name="email"
+                formControlName="email"
+                id="email"
+                placeholder="أدخل البريد الإلكتروني"
+                [ngClass]="
+                  profileForm.controls['email'].errors && submitted
+                    ? 'ring-rose-600'
+                    : 'border-gray-300 focus:ring-sky-600'
+                "
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              /><label
+                for="email"
+                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                >البريد الإلكترونى</label
+              >
+            </div>
+            @if (submitted && profileForm.controls['email'].errors) {
+            <div>
+              @if (profileForm.controls['email'].errors['required'] ) {
+              <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+              } @if (profileForm.controls['email'].errors['email']) {
+              <p class="text-sm text-red-500">أدخل بريدًا إلكترونيًّا صحيحًا</p>
+              }
+            </div>
+            }
+          </div>
+          <div class="mt-6 bg-white rounded-lg">
+            <div class="relative bg-inherit">
+              <input
+                type="tel"
+                name="phone"
+                formControlName="phone"
+                placeholder="أدخل رقم الجوال"
+                [ngClass]="
+                  profileForm.controls['phone'].errors && submitted
+                    ? 'ring-rose-600 '
+                    : 'border-gray-300 focus:ring-sky-600'
+                "
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              /><label
+                for="phone"
+                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                >رقم الجوال</label
+              >
+            </div>
+            @if (submitted && profileForm.controls['phone'].errors) {
+            <div>
+              @if (profileForm.controls['phone'].errors['required'] ) {
+              <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+              }
+            </div>
+            }
+          </div>
+          <div class="grid w-full grid-cols-1 mt-3 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <ng-select
+                  [items]="allSchools"
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="schoolId"
+                  placeholder="اختر المدرسة"
+                  [loading]="isLoading()"
+                  [ngClass]="
+                    profileForm.controls['schoolId'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                </ng-select>
+              </div>
+              @if (submitted && profileForm.controls['schoolId'].errors) {
+              <div>
+                @if (profileForm.controls['schoolId'].errors['required'] ) {
+                <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                }
+              </div>
+              }
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <ng-select
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="name"
+                  formControlName="state"
+                  placeholder="اختر الصف"
+                  [loading]="isLoading()"
+                  [ngClass]="
+                    profileForm.controls['state'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                  <ng-option [value]="'الصف الأول الثانوي'"
+                    >الصف الأول الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثاني الثانوي'"
+                    >الصف الثاني الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثالث الثانوي'"
+                    >الصف الثالث الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثالث المتوسط'"
+                    >الصف الثالث المتوسط</ng-option
+                  >
+                </ng-select>
+              </div>
+              @if (submitted && profileForm.controls['state'].errors) {
+              <div>
+                @if (profileForm.controls['state'].errors['required'] ) {
+                <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          <div class="mt-6 bg-white rounded-lg">
+            <ng-select
+              [items]="classNumbers"
+              [closeOnSelect]="true"
+              bindLabel="name"
+              bindValue="id"
+              formControlName="classNumber"
+              placeholder="اختر رقم الفصل"
+              [ngClass]="
+                profileForm.controls['classNumber'].errors && submitted
+                  ? 'ring-rose-600 '
+                  : 'border-gray-300 focus:ring-sky-600'
+              "
+              class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            >
+            </ng-select>
+            @if (submitted && profileForm.controls['classNumber'].errors) {
+            <div>
+              @if (profileForm.controls['classNumber'].errors['required'] ) {
+              <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+              }
+            </div>
+            }
+          </div>
+          @if (!profileDetails.isGoogleSign && (role !== 'أدمن' ) ) {
+          <div class="flex items-center w-full my-4 rounded-full">
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+            <span
+              class="px-8 py-3 text-xl font-bold leading-8 text-primary"
+            >
+              تغيير كلمة السر
+            </span>
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+          </div>
+          <div class="mt-6 bg-white rounded-lg">
+            <div class="relative bg-inherit">
+              <input
+                autocomplete="new-password"
+                name="curpassword"
+                formControlName="curpassword"
+                type="password"
+                id="curpassword"
+                placeholder="كلمة المرور الحالية"
+                [ngClass]="
+                  profileForm.controls['curpassword'].errors && submitted
+                    ? 'ring-rose-600'
+                    : 'border-gray-300 focus:ring-sky-600'
+                "
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              /><label
+                for="curpassword"
+                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+              >
+                كلمة المرور الحالية</label
+              >
+            </div>
+            @if (submitted && profileForm.controls['curpassword'].errors) {
+            <div>
+              @if (profileForm.controls['curpassword'].errors['required'] ) {
+              <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+              } @if (profileForm.controls['curpassword'].errors['minlength']) {
+              <p class="text-sm text-red-500">
+                لابد أن لا تقل كلمة المرور عن 6 أحرف
+              </p>
+              }
+            </div>
+            }
+          </div>
+          <div class="mt-6 bg-white rounded-lg">
+            <div class="relative bg-inherit">
+              <input
+                autocomplete="new-password"
+                name="password"
+                formControlName="password"
+                #password
+                type="password"
+                id="password"
+                placeholder="أدخل كلمة المرور"
+                [ngClass]="
+                  profileForm.controls['password'].errors && submitted
+                    ? 'ring-rose-600'
+                    : 'border-gray-300 focus:ring-sky-600'
+                "
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              /><label
+                for="password"
+                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                >كلمة المرور الجديدة</label
+              >
+            </div>
+            @if (submitted && profileForm.controls['password'].errors) {
+            <div>
+              @if (profileForm.controls['password'].errors['required'] ) {
+              <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+              } @if (profileForm.controls['password'].errors['minlength']) {
+              <p class="text-sm text-red-500">
+                لابد أن لا تقل كلمة المرور عن6 أحرف
+              </p>
+              }
+            </div>
+            }
+          </div>
+          }
+        </div>
+        <div class="flex items-center justify-center w-full mt-3">
+          <button
+            type="submit"
+            class="flex items-center justify-center p-3 px-16 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondary hover:bg-primary focus:outline-none focus:ring-1 focus:ring-offset-2"
+          >
+            @if (isLoading()) {
+            <div
+              class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+            ></div>
+            } @else { حفظ التغيرات }
+          </button>
+        </div>
+      </form>
+
+      @if (role === 'أدمن') {
+      <div class="flex items-center w-full px-6 my-4 rounded-full">
+        <div class="flex-1 border-b-2 border-gray-300"></div>
+        <span class="px-8 py-3 text-xl font-bold leading-8 text-primary">
+          إعادة تعين كلمة السر لطالب
+        </span>
+        <div class="flex-1 border-b-2 border-gray-300"></div>
+      </div>
+      <div class="px-6 mt-6 bg-white rounded-lg">
+        <div class="relative bg-inherit">
+          <input
+            [type]="passwordFieldType"
+            id="newpassword"
+            [(ngModel)]="newPassword"
+            placeholder="كلمة المرور الحالية"
+            class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          />
+
+          <button
+            type="button"
+            class="absolute p-1.5 bg-white rounded-full top-5 left-3"
+            (click)="togglePasswordVisibility()"
+          >
+            @if (passwordFieldType === 'password' ) {
+            <fa-icon [icon]="eyeIcon" class="text-primary"></fa-icon>
+            }@else {
+            <fa-icon [icon]="eyeSlashIcon" class="text-primary"></fa-icon>
+            }
+          </button>
+          <label
+            for="newpassword"
+            class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+          >
+            كلمة المرور
+          </label>
+        </div>
+      </div>
+      <div class="flex items-center justify-center w-full mt-3">
+        <button
+          (click)="savePassword()"
+          type="button"
+          class="flex items-center justify-center p-3 px-16 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondary hover:bg-primary focus:outline-none focus:ring-1 focus:ring-offset-2"
+        >
+          @if (isLoading()) {
+          <div
+            class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+          ></div>
+          } @else { حفظ }
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+  @if(isLoading()) {
+  <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</main> -->

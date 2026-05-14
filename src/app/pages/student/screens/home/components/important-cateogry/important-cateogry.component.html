@@ -1,0 +1,23 @@
+<div class="px-16 pb-8 m-auto md:py-12 md:mt-0 cateogry">
+  <h2 class="pt-16 text-5xl font-extrabold text-center">
+    {{ "home.sections" | translate }}
+  </h2>
+  <div class="my-8">
+    <!-- class="grid grid-cols-1 md:grid-cols-2 place-items-center lg:grid-cols-5" -->
+    <div class="grid grid-cols-1 md:grid-cols-3 place-items-center">
+      @for (item of imgs; track $index) {
+        <a [routerLink]="['/cateogry/', item.name]" class="hover:animate-pop">
+          <img
+            class="w-64"
+            [class]="item.id === 17 ? 'scale-[1.4]' : ''"
+            [ngSrc]="item.img"
+            [width]="item.width"
+            [height]="item.height"
+            [alt]="item.alt + ($index + 1)"
+            [priority]="$index < 2"
+          />
+        </a>
+      }
+    </div>
+  </div>
+</div>

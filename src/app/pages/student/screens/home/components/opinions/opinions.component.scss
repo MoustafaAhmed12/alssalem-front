@@ -1,0 +1,34 @@
+swiper-container {
+  --swiper-pagination-color: #36b290;
+  --swiper-pagination-bullet-inactive-color: #cbd5e1;
+  --swiper-pagination-bullet-inactive-opacity: 1;
+  --swiper-pagination-bullet-size: 12px;
+  --swiper-pagination-bullet-horizontal-gap: 8px;
+  padding-bottom: 50px;
+}
+
+swiper-slide {
+  transition:
+    transform 0.3s ease,
+    opacity 0.3s ease;
+  opacity: 0.6;
+  transform: scale(0.9);
+
+  &.swiper-slide-active {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+section {
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #36b290, transparent);
+    opacity: 0.5;
+  }
+}

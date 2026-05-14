@@ -1,0 +1,832 @@
+<!-- Add Questions Page - Modern Redesign -->
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header Section -->
+    <div class="bg-white p-4 mb-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <h2
+          class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primaryAdmin to-primaryAdmin/60 bg-clip-text text-transparent"
+        >
+          إضافة اسئلة
+        </h2>
+
+        <!-- Generate Questions Section (Auto-sync) -->
+        <div
+          class="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border-2 border-slate-100"
+        >
+          <div class="flex items-center gap-3">
+            <div class="flex flex-col">
+              <span
+                class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+                >إجمالي الأسئلة</span
+              >
+              <div class="flex items-center gap-2">
+                <input
+                  type="number"
+                  [(ngModel)]="generateCount"
+                  (ngModelChange)="onCountChange($event)"
+                  [ngModelOptions]="{ standalone: true }"
+                  min="1"
+                  max="50"
+                  class="w-24 px-4 py-2 text-xl font-black text-primaryAdmin bg-white border-2 border-slate-200 rounded-xl focus:ring-4 focus:ring-primaryAdmin/20 focus:border-primaryAdmin transition-all shadow-inner"
+                />
+                <span class="text-sm font-semibold text-slate-500">سؤال</span>
+              </div>
+            </div>
+          </div>
+          <div class="h-10 w-px bg-slate-200 mx-2"></div>
+          <div class="flex flex-col">
+            <span
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1"
+              >الحالة</span
+            >
+            <span
+              class="text-sm font-black text-primaryAdmin bg-primaryAdmin/10 px-3 py-1 rounded-lg"
+            >
+              {{ totalQuestion }} فعّال
+            </span>
+          </div>
+        </div>
+
+        <!-- Manual Text Toggle -->
+        <!-- <label for="manual"
+          class="flex items-center gap-3 cursor-pointer p-3 rounded-xl bg-gradient-to-br from-purple-50 to-pink-50 hover:from-purple-100 hover:to-pink-100 transition-all duration-300 border-2 border-transparent hover:border-purple-300">
+          <span class="text-base font-semibold text-gray-700">اضافة الأسئلة نصية</span>
+          <input type="checkbox" name="manual" id="manual" [(ngModel)]="isManual"
+            class="w-5 h-5 text-purple-600 bg-white border-gray-300 rounded focus:ring-purple-500 focus:ring-2 cursor-pointer transition-all" />
+        </label> -->
+      </div>
+    </div>
+
+    <form [formGroup]="questionForm" (ngSubmit)="onSubmit()" autocomplete="off">
+      <div class="space-y-6" formArrayName="questions">
+        <!-- Question Cards -->
+        <div
+          *ngFor="
+            let question of getQuestions.controls;
+            let questionIndex = index
+          "
+          [formGroupName]="questionIndex"
+          class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden"
+        >
+          <!-- Card Header -->
+          <div
+            class="p-4 flex items-center justify-between"
+            [class]="
+              questionIndex % 2 == 0
+                ? 'bg-gradient-to-r from-primaryAdmin to-primaryAdmin/80'
+                : 'bg-gradient-to-r from-blue-500 to-blue-500/80'
+            "
+          >
+            <h4 class="text-xl font-bold text-white flex items-center gap-2">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              سؤال رقم {{ questionIndex + 1 }}
+            </h4>
+            <div class="flex items-center gap-2">
+              <button
+                type="button"
+                (click)="addQuestionAt(questionIndex)"
+                class="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all duration-300 group"
+                title="إضافة سؤال قبل هذا"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-white group-hover:scale-125 transition-all duration-300"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 4.5v15m7.5-7.5h-15"
+                  />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                (click)="removeQuestion(questionIndex)"
+                class="p-2 rounded-lg bg-white/20 hover:bg-white/30 transition-all duration-300 group"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="w-6 h-6 text-white group-hover:rotate-90 group-hover:scale-110 transition-all duration-300"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 18 18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Card Content -->
+          <div class="p-6 space-y-6">
+            <!-- Metadata Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Question Type -->
+
+              <!-- Skill -->
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4 text-primaryAdmin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                    ></path>
+                  </svg>
+                  المهارة
+                </label>
+                <ng-select
+                  [items]="allSkills"
+                  [multiple]="false"
+                  [closeOnSelect]="true"
+                  [hideSelected]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  [searchable]="true"
+                  formControlName="skillId"
+                  (change)="onSkillChange($event, questionIndex)"
+                  placeholder="أختر اسم المهارة"
+                  class="custom-select border-2 rounded-md"
+                ></ng-select>
+              </div>
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4 text-primaryAdmin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+                    ></path>
+                  </svg>
+                  نوع السؤال
+                </label>
+                <ng-select
+                  [items]="allQuestionTypes"
+                  [multiple]="false"
+                  [closeOnSelect]="true"
+                  [hideSelected]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  [searchable]="true"
+                  formControlName="questionTypeId"
+                  (change)="changeQuestionType($event, questionIndex)"
+                  placeholder="أختر نوع السؤال"
+                  class="custom-select border-2 rounded-md"
+                ></ng-select>
+              </div>
+
+              <!-- Difficulty -->
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4 text-primaryAdmin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    ></path>
+                  </svg>
+                  مستوى الصعوبة
+                </label>
+                <ng-select
+                  [multiple]="false"
+                  [closeOnSelect]="true"
+                  [hideSelected]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  [clearable]="false"
+                  [searchable]="true"
+                  formControlName="difficulty"
+                  (change)="onDifficultyChange(questionIndex)"
+                  placeholder="أختر مستوي الصعوبة"
+                  class="custom-select border-2 rounded-md"
+                >
+                  <ng-option [value]="1">سهل</ng-option>
+                  <ng-option [value]="2">متوسط</ng-option>
+                  <ng-option [value]="3">صعب</ng-option>
+                </ng-select>
+              </div>
+
+              <!-- YouTube Link -->
+              <div class="space-y-2">
+                <label
+                  class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+                >
+                  <svg
+                    class="w-4 h-4 text-primaryAdmin"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    ></path>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  رابط الفيديو
+                </label>
+                <input
+                  type="text"
+                  id="answerUrl"
+                  name="answerUrl"
+                  formControlName="answerUrl"
+                  placeholder="ادخل لينك الفيديو"
+                  class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Image Uploads -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Question Image -->
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-700"
+                  >صورة السؤال</label
+                >
+                <div
+                  class="relative flex items-center justify-center w-full p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primaryAdmin hover:bg-blue-50"
+                  [ngClass]="
+                    question.get('image1')?.value
+                      ? 'border-primaryAdmin bg-blue-50'
+                      : 'border-gray-300'
+                  "
+                  (paste)="onPaste($event, questionIndex)"
+                  (drop)="onFileDrop($event, questionIndex)"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                >
+                  <input
+                    type="text"
+                    class="absolute inset-0 z-50 w-full h-full opacity-0 cursor-pointer"
+                    name="image1"
+                    id="questionImage"
+                  />
+                  @if (!question.get("image1")?.value) {
+                    <div class="text-center">
+                      <svg
+                        class="w-12 h-12 mx-auto text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                      <p class="mt-2 text-sm text-gray-600">
+                        اسحب وأفلت أو الصق الصورة
+                      </p>
+                      <p class="text-xs text-gray-500">PNG, JPG, GIF</p>
+                    </div>
+                  } @else {
+                    <img
+                      [src]="question.get('image1')?.value"
+                      class="object-contain w-full max-h-64 rounded-lg"
+                    />
+                  }
+                </div>
+              </div>
+
+              <!-- Passage Image -->
+              <div class="space-y-2">
+                <label class="text-sm font-semibold text-gray-700"
+                  >صورة القطعة (اختياري)</label
+                >
+                <div
+                  class="relative flex items-center justify-center w-full p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-300 hover:border-primaryAdmin hover:bg-blue-50"
+                  [ngClass]="
+                    question.get('image2')?.value
+                      ? 'border-primaryAdmin bg-blue-50'
+                      : 'border-gray-300'
+                  "
+                  (paste)="onPaste2($event, questionIndex)"
+                  (drop)="onFileDrop2($event, questionIndex)"
+                  (dragover)="onDragOver($event)"
+                  (dragleave)="onDragLeave($event)"
+                >
+                  <input
+                    type="text"
+                    class="absolute inset-0 z-50 w-full h-full opacity-0 cursor-pointer"
+                    name="image2"
+                    id="questionImage2"
+                  />
+                  @if (!question.get("image2")?.value) {
+                    <div class="text-center">
+                      <svg
+                        class="w-12 h-12 mx-auto text-gray-400"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        ></path>
+                      </svg>
+                      <p class="mt-2 text-sm text-gray-600">
+                        اسحب وأفلت أو الصق الصورة
+                      </p>
+                      <p class="text-xs text-gray-500">PNG, JPG, GIF</p>
+                    </div>
+                  } @else {
+                    <img
+                      [src]="question.get('image2')?.value"
+                      class="object-contain w-full max-h-64 rounded-lg"
+                    />
+                  }
+                </div>
+              </div>
+            </div>
+
+            <!-- Correct Answer Selection -->
+            <div class="space-y-3">
+              <h5
+                class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4 text-primaryAdmin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                أختر الإجابة الصحيحة
+              </h5>
+              <div
+                class="flex items-center justify-around p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border-2 border-gray-200 shadow-sm"
+              >
+                @for (n of ["1", "2", "3", "4"]; track n; let i = $index) {
+                  <label
+                    [for]="'isRight' + questionIndex + i"
+                    class="flex items-center gap-3 cursor-pointer group p-2 hover:bg-white rounded-lg transition-all"
+                  >
+                    <span
+                      class="text-2xl font-bold text-gray-700 group-hover:text-primaryAdmin transition-colors"
+                      >{{ n }}</span
+                    >
+                    <input
+                      type="radio"
+                      [name]="'isRight' + questionIndex"
+                      [id]="'isRight' + questionIndex + i"
+                      (change)="onAnswerChange(questionIndex, i + 1)"
+                      class="w-24 h-10 text-primaryAdmin border-2 border-gray-300 focus:ring-4 focus:ring-primaryAdmin/20 cursor-pointer transition-all appearance-none checked:bg-primaryAdmin checked:border-primaryAdmin rounded-full ring-offset-2"
+                      style="accent-color: var(--primary-admin-color, #1e40af)"
+                    />
+                  </label>
+                }
+              </div>
+            </div>
+
+            <!-- Question Text -->
+            <div class="space-y-2">
+              <label
+                [for]="'text' + questionIndex"
+                class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4 text-primaryAdmin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                  ></path>
+                </svg>
+                نص السؤال
+              </label>
+              <div class="relative">
+                <textarea
+                  name="text"
+                  formControlName="text"
+                  [id]="'text' + questionIndex"
+                  rows="3"
+                  (input)="onTextChange(questionIndex)"
+                  (blur)="hideSuggestions()"
+                  autocomplete="off"
+                  placeholder="أدخل نص السؤال"
+                  class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all resize-none"
+                ></textarea>
+
+                <!-- Suggestions List -->
+                @if (showSuggestions && activeQuestionIndex === questionIndex) {
+                  <div
+                    class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+                  >
+                    @for (suggestion of suggestions; track suggestion.id) {
+                      <div
+                        (click)="selectSuggestion(suggestion, questionIndex)"
+                        class="px-4 py-3 cursor-pointer flex justify-between hover:bg-blue-50 hover:text-primaryAdmin transition-colors border-b border-gray-100 last:border-0"
+                      >
+                        <p class="text-sm font-medium">{{ suggestion.text }}</p>
+                        <span class="text-xs text-gray-500 font-bold"
+                          >({{ suggestion.id }})</span
+                        >
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Slug -->
+            <div class="space-y-2">
+              <label
+                [for]="'slug' + questionIndex"
+                class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4 text-primaryAdmin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                  ></path>
+                </svg>
+                الرابط (Slug)
+              </label>
+              <input
+                type="text"
+                name="slug"
+                formControlName="slug"
+                [id]="'slug' + questionIndex"
+                placeholder="الرابط الصديق لمحركات البحث"
+                dir="ltr"
+                class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all font-mono"
+              />
+              <p class="text-xs text-gray-500 flex items-center gap-1">
+                <svg
+                  class="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                سيتم إنشاؤه تلقائياً من نص السؤال
+              </p>
+            </div>
+
+            <!-- Keywords -->
+            <div class="space-y-2">
+              <label
+                [for]="'keyWord' + questionIndex"
+                class="text-sm font-semibold text-gray-700 flex items-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4 text-primaryAdmin"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"
+                  ></path>
+                </svg>
+                الكلمات المفتاحية (تلقائي)
+              </label>
+              <input
+                type="text"
+                name="keyWord"
+                formControlName="keyWord"
+                [id]="'keyWord' + questionIndex"
+                placeholder="أدخل الكلمات المفتاحية للسؤال"
+                class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+              />
+              <p class="text-xs text-gray-500 flex items-center gap-1">
+                <svg
+                  class="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  ></path>
+                </svg>
+                يتم إنشاؤها تلقائياً من النوع والمهارة والصعوبة
+              </p>
+            </div>
+
+            <!-- Manual Answer Inputs -->
+            @if (isManual) {
+              <div class="space-y-4">
+                <h5 class="text-sm font-semibold text-gray-700">
+                  الإجابات النصية
+                </h5>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    id="answer1"
+                    name="answer1"
+                    formControlName="answer1"
+                    placeholder="ادخل الاجابة ( أ )"
+                    class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+                  />
+                  <input
+                    type="text"
+                    id="answer2"
+                    name="answer2"
+                    formControlName="answer2"
+                    placeholder="ادخل الاجابة ( ب )"
+                    class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+                  />
+                  <input
+                    type="text"
+                    id="answer3"
+                    name="answer3"
+                    formControlName="answer3"
+                    placeholder="ادخل الاجابة ( جـ )"
+                    class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+                  />
+                  <input
+                    type="text"
+                    id="answer4"
+                    name="answer4"
+                    formControlName="answer4"
+                    placeholder="ادخل الاجابة ( د )"
+                    class="w-full px-4 py-3 text-base text-gray-900 bg-gray-50 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin focus:border-primaryAdmin transition-all"
+                  />
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="mt-8 space-y-4">
+        <!-- Add Question Button -->
+        <div class="flex justify-end">
+          <button
+            (click)="addQuestion()"
+            type="button"
+            class="flex items-center gap-2 px-6 py-3 text-base font-semibold text-white bg-gradient-to-r from-primaryAdmin to-primaryAdmin/80 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+            إضافة سؤال جديد
+          </button>
+        </div>
+
+        <!-- Total Count -->
+        <div class="bg-white rounded-xl shadow-md p-4 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <h4 class="text-lg font-semibold text-gray-700">المجموع الكلي:</h4>
+            <span class="text-2xl font-bold text-primaryAdmin">{{
+              totalQuestion
+            }}</span>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+          <button
+            type="submit"
+            class="group relative px-12 py-4 text-xl font-bold text-white bg-gradient-to-r from-secondaryAdmin to-primaryAdmin rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden"
+          >
+            @if (isLoading()) {
+              <div class="flex items-center gap-3">
+                <svg
+                  class="animate-spin h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                جاري الحفظ...
+              </div>
+            } @else {
+              <span class="flex items-center gap-2">
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+                حفظ الأسئلة
+              </span>
+            }
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Loading Overlay -->
+@if (isLoading()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm"
+  >
+    <div class="bg-white rounded-2xl p-8 shadow-2xl">
+      <div class="flex flex-col items-center gap-4">
+        <svg
+          class="animate-spin h-16 w-16 text-primaryAdmin"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+        <p class="text-lg font-semibold text-gray-700">جاري حفظ الأسئلة...</p>
+        <button
+          (click)="cancelSave()"
+          type="button"
+          class="mt-4 px-6 py-2 text-sm font-bold text-red-600 border-2 border-red-100 rounded-xl hover:bg-red-50 hover:border-red-200 transition-all duration-300 flex items-center gap-2"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-4 h-4"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+          إلغاء العملية
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Success Modal -->
+<div
+  [ngClass]="isOpen ? 'scale-100 opacity-100' : 'scale-0 opacity-0'"
+  class="fixed z-[100] inset-0 flex items-center justify-center transition-all duration-300 bg-black/30 backdrop-blur-sm"
+>
+  <div
+    class="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full mx-4 transform transition-all"
+  >
+    <div class="text-center space-y-6">
+      <div
+        class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto"
+      >
+        <svg
+          class="w-8 h-8 text-green-600"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M5 13l4 4L19 7"
+          ></path>
+        </svg>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-800">تم الحفظ بنجاح!</h3>
+      <div
+        (click)="copyText(ids)"
+        class="flex flex-wrap items-center justify-center gap-2 p-4 bg-gray-50 rounded-xl cursor-pointer hover:bg-gray-100 transition-colors"
+      >
+        <p class="text-sm text-gray-600 w-full mb-2">أكواد الأسئلة:</p>
+        @for (i of ids; track i) {
+          <span
+            class="px-3 py-1 bg-primaryAdmin text-white rounded-lg font-mono text-sm"
+            >{{ i }}</span
+          >
+        }
+      </div>
+      <button
+        (click)="handleClose()"
+        class="w-full px-8 py-3 text-white bg-gradient-to-r from-secondaryAdmin to-primaryAdmin rounded-xl hover:shadow-lg transition-all duration-300"
+      >
+        إغلاق
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+.activeLink {
+  color: #fff;
+  background-color: var(--color-primary);
+}
+.toTop {
+  position: fixed;
+  bottom: 50px;
+  left: 20px;
+  z-index: 10000000;
+  text-align: center;
+  transition: all 0.3s;
+  cursor: pointer;
+}

@@ -1,0 +1,1730 @@
+<div class="h-screen">
+  @if (!isLoading()) {
+    <div class="h-[75px] xl:pr-[25rem] fixed inset-y-0 w-full z-40">
+      <button
+        (click)="toggleSidebar()"
+        [ngClass]="
+          sidebarOpen()
+            ? 'absolute top-20 xl:right-[25rem] right-80 text-red-600'
+            : 'absolute top-7 right-6'
+        "
+        class="font-bold transition-all duration-500 hover:scale-125"
+      >
+        @if (sidebarOpen()) {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="p-1 bg-white border rounded-md size-10 xl:hidden"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        } @else {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-7"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+            />
+          </svg>
+        }
+      </button>
+      <app-nav-bar-course />
+    </div>
+    <div class="relative">
+      <div
+        class="absolute"
+        [ngClass]="{
+          '!bg-opacity-100 bg-white z-[150] w-full h-screen': isLoading(),
+        }"
+      ></div>
+      <div
+        [ngClass]="sidebarOpen() ? ' translate-x-0' : ' translate-x-full'"
+        class="fixed inset-y-0 z-[100] xl:translate-x-0 flex-col transition-all duration-500 bg-white h-screen xl:flex xl:w-[25rem] w-80"
+      >
+        <div class="flex flex-col overflow-y-auto border-l shadow-sm h-svh">
+          <div class="flex flex-col px-2 border-b py-7">
+            <h1
+              class="text-base font-bold text-center cursor-pointer lg:text-xl text-logoColor1"
+            >
+              الاختبارات المحاكية
+            </h1>
+          </div>
+          <div class="flex flex-col w-full p-4 gap-y-4">
+            @for (exam of examsInSidebar(); track exam.id) {
+              <button
+                (click)="selectExam(exam.id)"
+                class="w-full p-3 text-right transition-all border rounded-lg"
+                [ngClass]="{
+                  'bg-[#e5a53f] border-[#e5a53f] text-white':
+                    selectedExamId() === exam.id,
+                  'bg-red-500 border-red-500 !text-white':
+                    exam.isSuccess === false && selectedExamId() !== exam.id,
+                  'bg-green-500 border-green-500 text-white':
+                    exam.isSuccess === true && selectedExamId() !== exam.id,
+                  'bg-white border-gray-200 text-gray-800 hover:border-[#36b290]':
+                    exam.isSuccess == null && selectedExamId() !== exam.id,
+                }"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center flex-1 gap-2">
+                    <!-- Status Icon -->
+                    @if (exam.isSuccess === true) {
+                      <div
+                        class="flex items-center justify-center flex-shrink-0 w-6 h-6 bg-green-500 rounded-full"
+                      >
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    } @else if (exam.isSuccess === false) {
+                      <div
+                        class="flex items-center justify-center flex-shrink-0 w-6 h-6 bg-red-500 rounded-full"
+                      >
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                    } @else {
+                      <div
+                        class="flex items-center justify-center flex-shrink-0 w-6 h-6 rounded-full"
+                        [class.bg-white]="selectedExamId() === exam.id"
+                        [class.bg-gray-200]="selectedExamId() !== exam.id"
+                      >
+                        <svg
+                          _ngcontent-ng-c4166765778=""
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          version="1.1"
+                          id="Layer_1"
+                          viewBox="0 0 392.575 392.575"
+                          xml:space="preserve"
+                          class="size-6"
+                        >
+                          <path
+                            _ngcontent-ng-c4166765778=""
+                            d="M237.576,330.72h-38.529c-6.012,0-10.925-4.848-10.925-10.925V281.33  c0-2.844,1.164-5.624,3.168-7.758l75.636-75.636V32.829c0-6.012-4.848-10.925-10.925-10.925H84.558v51.782  c0,6.012-4.848,10.925-10.925,10.925H21.851v275.265c0,6.012,4.848,10.925,10.925,10.925h223.418  c6.012,0,10.925-4.848,10.925-10.925V305.96l-21.721,21.592C243.329,329.556,240.549,330.72,237.576,330.72z"
+                            style="fill: #ffffff"
+                          ></path>
+                          <path
+                            _ngcontent-ng-c4166765778=""
+                            d="M73.568,84.611H44.671l-2.715,252.315c-0.065,6.012,4.784,10.99,10.731,11.055l179.782,2.004  c6.012,0.065,10.99-4.784,11.055-10.731l0.065-10.279c-1.745,1.228-3.943,1.875-6.077,1.875h-38.529  c-6.012,0-10.925-4.848-10.925-10.925v-38.529c0-2.844,1.164-5.624,3.168-7.758l53.527-53.527l1.875-164.267  c0.065-6.012-4.784-10.99-10.731-11.055L84.364,43.237V73.75C84.558,79.698,79.58,84.611,73.568,84.611z"
+                            style="fill: #56ace0"
+                          ></path>
+                          <g _ngcontent-ng-c4166765778="">
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M211.846,83.641h-90.634c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h90.634c6.012,0,10.925,4.848,10.925,10.925C222.772,78.793,217.923,83.641,211.846,83.641z"
+                              style="fill: #194f82"
+                            ></path>
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M211.846,145.379H76.929c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h134.982   c6.012,0,10.925,4.848,10.925,10.925C222.772,140.53,217.923,145.379,211.846,145.379z"
+                              style="fill: #194f82"
+                            ></path>
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M211.846,207.116H76.929c-6.012,0-10.925-4.848-10.925-10.925c0-6.077,4.848-10.925,10.925-10.925   h134.982c6.012,0,10.925,4.848,10.925,10.925C222.836,202.267,217.923,207.116,211.846,207.116z"
+                              style="fill: #194f82"
+                            ></path>
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M152.76,268.983h-75.83c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h75.83c6.012,0,10.925,4.848,10.925,10.925C163.685,264.134,158.772,268.983,152.76,268.983z"
+                              style="fill: #194f82"
+                            ></path>
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M152.76,330.72h-75.83c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h75.83   c6.012,0,10.925,4.848,10.925,10.925S158.772,330.72,152.76,330.72z"
+                              style="fill: #194f82"
+                            ></path>
+                            <path
+                              _ngcontent-ng-c4166765778=""
+                              d="M384.453,149.968l-15.451-15.451c-11.895-10.731-26.958-10.667-38.529,0L288.84,176.15V32.829   c0-18.036-14.675-32.711-32.711-32.711H82.683c-8.727,0-17.002,3.426-23.208,9.568L9.568,59.593C3.362,65.799,0,73.944,0,82.671   v277.075c0,18.036,14.675,32.711,32.711,32.711h223.418c18.036,0,32.711-14.675,32.711-32.711V284.11l95.612-95.612   C395.572,176.991,394.99,160.183,384.453,149.968z M62.642,37.354V62.76H37.236L62.642,37.354z M267.055,359.811   c0,6.012-4.848,10.925-10.925,10.925H32.711c-6.012,0-10.925-4.848-10.925-10.925v-275.2h51.782   c6.012,0,10.925-4.848,10.925-10.925V21.904h171.636c6.012,0,10.925,4.848,10.925,10.925v165.107l-75.572,75.636   c-2.004,2.004-3.168,4.784-3.168,7.758v38.529c0,6.012,4.848,10.925,10.925,10.925h38.529c2.844,0,5.624-1.164,7.758-3.168   l21.657-21.657L267.055,359.811L267.055,359.811z M233.115,308.934h-23.079v-23.079l106.408-106.473l23.079,23.079L233.115,308.934   z M369.002,173.047l-13.964,13.964l-23.079-23.079l13.964-13.964c2.78-2.263,5.301-2.004,7.758,0l15.386,15.386   C371.006,166.776,371.394,171.108,369.002,173.047z"
+                              style="fill: #194f82"
+                            ></path>
+                          </g>
+                          <g _ngcontent-ng-c4166765778="">
+                            <polygon
+                              _ngcontent-ng-c4166765778=""
+                              points="62.642,37.354 37.236,62.76 62.642,62.76  "
+                              style="fill: #ffc10d"
+                            ></polygon>
+                            <polygon
+                              _ngcontent-ng-c4166765778=""
+                              points="210.036,285.791 210.036,308.934 233.115,308.934 339.588,202.526 316.444,179.383  "
+                              style="fill: #ffc10d"
+                            ></polygon>
+                          </g>
+                          <path
+                            _ngcontent-ng-c4166765778=""
+                            d="M353.616,149.968c-2.392-2.004-4.978-2.263-7.758,0l-13.964,13.964l23.079,23.079l13.964-13.964  c2.392-1.939,2.004-6.271,0-7.758L353.616,149.968z"
+                            style="fill: #ffffff"
+                          ></path>
+                        </svg>
+                      </div>
+                    }
+
+                    <span class="text-sm font-semibold">{{ exam.name }}</span>
+                  </div>
+
+                  @if (selectedExamId() === exam.id) {
+                    <svg
+                      class="flex-shrink-0 w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                  }
+                </div>
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <main class="h-full pt-[75px] xl:pr-[25rem] transition-all">
+      <div class="p-4 space-y-6 md:p-6">
+        @if (errorMessage()) {
+          <div
+            class="p-4 text-red-800 bg-red-100 border border-red-400 rounded-lg"
+            role="alert"
+          >
+            {{ errorMessage() }}
+          </div>
+        } @else {
+          @if (!isLoadingExam()) {
+            <!-- Overview Tab -->
+            @if (activeTab() === "overview") {
+              @if (currentExamDetails()) {
+                <div class="space-y-6">
+                  <!-- Exam Header Card -->
+                  <div
+                    class="bg-gradient-to-r from-[#36b290] text-center to-[#2d9277] rounded-lg p-6 text-white shadow-lg"
+                  >
+                    <h2 class="mb-4 text-xl font-bold md:text-3xl">
+                      {{ currentExamDetails()!.name }}
+                    </h2>
+                    <p class="text-sm md:text-base opacity-90">
+                      استعد لبدء الاختبار المحاكي
+                    </p>
+                  </div>
+                  <!-- Exam Info Cards -->
+
+                  <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <!-- Duration Card -->
+                    <div
+                      class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                    >
+                      <div class="flex items-center gap-3 mb-3">
+                        <div
+                          class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg"
+                        >
+                          <svg
+                            class="w-5 h-5 text-blue-600"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <div class="mb-1 text-xs text-gray-600">
+                            مدة الاختبار
+                          </div>
+                          <div class="text-xl font-bold text-gray-800">
+                            {{
+                              currentExamDetails()!.durationInMinutes || "مفتوح"
+                            }}
+                          </div>
+                          <div class="text-xs text-gray-500">دقيقة</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Success Percent Card -->
+                    <div
+                      class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                    >
+                      <div class="flex items-center gap-3 mb-3">
+                        <div
+                          class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg"
+                        >
+                          <svg
+                            class="w-5 h-5 text-green-600"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <div class="mb-1 text-xs text-gray-600">
+                            نسبة النجاح
+                          </div>
+                          <div class="text-xl font-bold text-gray-800">
+                            {{ currentExamDetails()!.successPercent }}%
+                          </div>
+                          <div class="text-xs text-gray-500">مطلوبة</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Revision Card -->
+                    <div
+                      class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                    >
+                      <div class="flex items-center gap-3 mb-3">
+                        <div
+                          class="flex items-center justify-center w-10 h-10 rounded-lg"
+                          [class.bg-purple-100]="
+                            currentExamDetails()!.isRevisionAvailable
+                          "
+                          [class.bg-gray-100]="
+                            !currentExamDetails()!.isRevisionAvailable
+                          "
+                        >
+                          <svg
+                            class="w-5 h-5"
+                            [class.text-purple-600]="
+                              currentExamDetails()!.isRevisionAvailable
+                            "
+                            [class.text-gray-400]="
+                              !currentExamDetails()!.isRevisionAvailable
+                            "
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+                            />
+                          </svg>
+                        </div>
+                        <div>
+                          <div class="mb-1 text-xs text-gray-600">المراجعة</div>
+                          <div
+                            class="text-sm font-bold"
+                            [class.text-purple-600]="
+                              currentExamDetails()!.isRevisionAvailable
+                            "
+                            [class.text-gray-400]="
+                              !currentExamDetails()!.isRevisionAvailable
+                            "
+                          >
+                            {{
+                              currentExamDetails()!.isRevisionAvailable
+                                ? "متاحة"
+                                : "غير متاحة"
+                            }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Start Button -->
+                  <div class="flex justify-center">
+                    <button
+                      (click)="changeTab('exam')"
+                      class="px-8 py-3 bg-gradient-to-r from-[#36b290] to-[#2d9277] text-white rounded-lg font-semibold hover:shadow-lg transition-all text-base"
+                    >
+                      ابدأ الاختبار الآن
+                    </button>
+                  </div>
+
+                  @if (currentExamDetails().trails.length > 0) {
+                    <details open class="w-full bg-white rounded-lg shadow">
+                      <summary
+                        class="flex items-center justify-between px-4 py-2 text-lg text-white rounded-t-lg cursor-pointer select-none gap-x-4 w-fit bg-primaryAdmin"
+                      >
+                        تفاصيل المحاولات
+                        <svg
+                          class="w-5 h-5 transition-transform duration-300"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 9l-7 7-7-7"
+                          />
+                        </svg>
+                      </summary>
+
+                      <div class="mt-4 overflow-x-auto rounded-b-lg">
+                        <table
+                          class="w-full text-center bg-white rounded-lg table-auto"
+                        >
+                          <thead
+                            class="text-sm font-medium bg-secondaryAdmin text-logoColor1"
+                          >
+                            <tr>
+                              <th class="p-3">الوقت المستغرق</th>
+                              <th class="p-3">عدد الأسئلة</th>
+                              <th class="p-3">الإجابات الصحيحة</th>
+                              <th class="p-3">الأخطاء</th>
+                              <th class="p-3">النتيجة</th>
+                              <th class="p-3">نسبة النجاح</th>
+                              <th class="p-3">درجتك</th>
+                              @if (currentExamDetails().isRevisionAvailable) {
+                                <th class="p-3"></th>
+                              }
+                            </tr>
+                          </thead>
+                          <tbody>
+                            @for (
+                              row of currentExamDetails().trails;
+                              track i;
+                              let i = $index;
+                              let first = $first
+                            ) {
+                              <tr
+                                class="text-sm font-medium border-b-8 border-gray-200"
+                                [class.border-t-8]="first"
+                              >
+                                <td class="p-4">
+                                  {{ row.timeTakenInMin | formatTime }}
+                                </td>
+                                <td class="p-4">
+                                  {{ currentExamDetails().questionsCount }}
+                                </td>
+                                <td class="p-4">
+                                  {{ row.correctAnswersCount }}
+                                </td>
+                                <td class="p-4">{{ row.wrongAnswersCount }}</td>
+                                <td
+                                  class="p-4 whitespace-nowrap"
+                                  [ngClass]="
+                                    row.percentage >= row.successPercent
+                                      ? 'text-green-700'
+                                      : 'text-red-700'
+                                  "
+                                >
+                                  @if (row.percentage >= row.successPercent) {
+                                    ناجح
+                                  } @else {
+                                    لم ينجح
+                                  }
+                                </td>
+                                <td class="p-4">{{ row.successPercent }}%</td>
+                                <td
+                                  class="p-4"
+                                  [ngClass]="
+                                    row.percentage >= row.successPercent
+                                      ? 'text-green-700'
+                                      : 'text-red-700'
+                                  "
+                                >
+                                  {{ roundedNumber(row.percentage) }}%
+                                </td>
+                                @if (currentExamDetails().isRevisionAvailable) {
+                                  <td
+                                    (click)="toRevision(row.id)"
+                                    class="p-4 transition-colors cursor-pointer hover:text-secondaryAdmin text-primaryAdmin"
+                                  >
+                                    مراجعة الإجابات
+                                  </td>
+                                }
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    </details>
+                  }
+
+                  <!-- Instructions Card -->
+                  <div
+                    class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm"
+                  >
+                    <h3
+                      class="flex items-center gap-2 mb-4 text-lg font-bold text-gray-800"
+                    >
+                      <svg
+                        class="w-5 h-5 text-[#36b290]"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      تعليمات الاختبار
+                    </h3>
+                    <ul class="space-y-3 text-sm text-gray-700">
+                      @if (currentExamDetails()!.durationInMinutes) {
+                        <li class="flex items-start gap-2">
+                          <svg
+                            class="w-5 h-5 text-[#36b290] flex-shrink-0 mt-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                          <span
+                            >مدة الاختبار
+                            <strong
+                              >{{
+                                currentExamDetails()!.durationInMinutes
+                              }}
+                              دقيقة</strong
+                            >
+                            من بداية الاختبار</span
+                          >
+                        </li>
+                      }
+                      <li class="flex items-start gap-2">
+                        <svg
+                          class="w-5 h-5 text-[#36b290] flex-shrink-0 mt-0.5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <span
+                          >نسبة النجاح المطلوبة
+                          <strong
+                            >{{ currentExamDetails()!.successPercent }}%</strong
+                          ></span
+                        >
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg
+                          class="w-5 h-5 text-[#36b290] flex-shrink-0 mt-0.5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <span
+                          >يمكنك التنقل بين الأسئلة بحرية خلال الاختبار</span
+                        >
+                      </li>
+                      <li class="flex items-start gap-2">
+                        <svg
+                          class="w-5 h-5 text-[#36b290] flex-shrink-0 mt-0.5"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                        <span>تأكد من إجابتك قبل الانتقال للسؤال التالي</span>
+                      </li>
+                      @if (currentExamDetails()!.isRevisionAvailable) {
+                        <li class="flex items-start gap-2">
+                          <svg
+                            class="w-5 h-5 text-[#36b290] flex-shrink-0 mt-0.5"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                              clip-rule="evenodd"
+                            />
+                          </svg>
+                          <span
+                            >يمكنك مراجعة إجاباتك بعد الانتهاء من الاختبار</span
+                          >
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              } @else {
+                <!-- Loading State -->
+                <div
+                  class="absolute flex flex-col items-start transform -translate-x-1/2 -translate-y-1/2 top-1/4 left-1/2"
+                >
+                  <div
+                    class="inline-block w-8 h-8 border-4 border-t-transparent border-[#36b290] rounded-full animate-spin"
+                  ></div>
+                  <p class="mt-4 text-sm text-gray-600">
+                    جاري تحميل بيانات الاختبار...
+                  </p>
+                </div>
+              }
+            }
+
+            <!-- Exam Tab (Placeholder) -->
+            @if (activeTab() === "exam") {
+              @if (!isCorrecting()) {
+                <button
+                  (click)="openPopup()"
+                  class="flex justify-end px-4 py-2 m-auto my-3 text-black transition-colors bg-white border-2 rounded-lg md:hidden md:px-12 hover:bg-red-700 hover:text-white"
+                >
+                  إنهاء الاختبار
+                </button>
+
+                <div
+                  class="flex items-center justify-between w-full px-2 py-2 mx-auto mt-2 border rounded-lg lg:px-8 bg-secondaryAdmin lg:w-11/12"
+                >
+                  <p class="text-base">
+                    السؤال
+                    <span class="font-bold text-logoColor1">{{
+                      currentPage
+                    }}</span>
+                    من
+                    {{ question.totalCount }}
+                  </p>
+                  <div
+                    class="flex items-center justify-center text-lg gap-x-4 text-logoColor1"
+                  >
+                    <cd-timer
+                      #basicTimer
+                      format="hms"
+                      [countdown]="isCountdown"
+                      [startTime]="startTime"
+                      (onComplete)="onComplete()"
+                    ></cd-timer>
+                    <button
+                      (click)="toggleTimer()"
+                      class="px-4 py-1 text-sm rounded-md md:text-base text-amber-50 bg-logoColor1"
+                    >
+                      {{ isPaused ? "استمر" : "وقف" }}
+                    </button>
+                  </div>
+                  <button
+                    (click)="openPopup()"
+                    class="hidden px-4 py-2 text-black transition-colors bg-white border-2 rounded-lg md:block md:px-12 hover:bg-red-700 hover:text-white"
+                  >
+                    إنهاء الاختبار
+                  </button>
+                </div>
+                @if (!isLoading()) {
+                  <h3
+                    class="mt-4 text-xl leading-loose lg:text-3xl ps-12 text-logoColor1"
+                  >
+                    {{ currentExamDetails().name }}
+                  </h3>
+                  @for (
+                    question of allQuestions;
+                    track question.id;
+                    let i = $index
+                  ) {
+                    @if (i + 1 === currentPage) {
+                      <div class="px-2 py-4 bg-white rounded-lg lg:px-8">
+                        <div
+                          class="flex flex-col items-center justify-center w-full mt-2"
+                        >
+                          @if (
+                            question.answer1 ||
+                            question.answer2 ||
+                            question.answer3 ||
+                            question.answer4
+                          ) {
+                            <div
+                              class="grid w-full grid-cols-2 col-span-2 gap-8 my-4 text-lg font-semibold place-items-center md:w-10/12 md:text-xl"
+                            >
+                              <h3>
+                                أ )
+                                <span class="ps-6">{{ question.answer1 }}</span>
+                              </h3>
+                              <h3>
+                                ب )
+                                <span class="ps-6">{{ question.answer2 }}</span>
+                              </h3>
+                              <h3>
+                                ج )
+                                <span class="ps-6">{{ question.answer3 }}</span>
+                              </h3>
+                              <h3>
+                                د )
+                                <span class="ps-6">{{ question.answer4 }}</span>
+                              </h3>
+                            </div>
+                          }
+                          @if (question.image2Url !== null) {
+                            <div
+                              class="w-full px-1 border-2 rounded-md lg:px-8 md:w-9/12"
+                            >
+                              <img
+                                [src]="question.image2Url"
+                                class="object-contain object-center w-full h-full"
+                                [alt]="'Question Image' + question.id"
+                                loading="lazy"
+                              />
+                            </div>
+                          }
+                          @if (question.image1Url !== null) {
+                            <div
+                              class="w-full h-auto px-1 mt-2 border-2 rounded-md lg:px-8 md:w-9/12"
+                            >
+                              <img
+                                [src]="question.image1Url"
+                                class="object-contain object-center w-full h-full py-2"
+                                [alt]="'Question Image' + question.id"
+                                loading="lazy"
+                              />
+                            </div>
+                          }
+                          <div
+                            class="flex items-center justify-between w-full pl-4 font-bold lg:px-8 mt-14 md:w-2/3 gap-x-6"
+                          >
+                            @if (categoryId() === 2) {
+                              @for (
+                                n of ["A", "B", "C", "D"];
+                                track j;
+                                let j = $index
+                              ) {
+                                <input
+                                  type="radio"
+                                  [id]="'isRight' + j"
+                                  name="answer"
+                                  [value]="j + 1"
+                                  (change)="updateAnswer(question.id, j + 1)"
+                                  [checked]="isChecked(question.id, j + 1)"
+                                  class="hidden"
+                                />
+                                <label
+                                  [for]="'isRight' + j"
+                                  class="flex items-center text-xl cursor-pointer"
+                                >
+                                  <span
+                                    class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+                                  ></span>
+                                  {{ n }}
+                                </label>
+                              }
+                            } @else {
+                              @for (
+                                n of ["أ", "ب", "ج", "د"];
+                                track j;
+                                let j = $index
+                              ) {
+                                <input
+                                  [id]="'isRight' + j"
+                                  type="radio"
+                                  name="answer"
+                                  (change)="updateAnswer(question.id, j + 1)"
+                                  class="hidden"
+                                  [value]="j + 1"
+                                  [checked]="isChecked(question.id, j + 1)"
+                                />
+                                <label
+                                  [for]="'isRight' + j"
+                                  class="flex items-center text-xl cursor-pointer"
+                                >
+                                  <span
+                                    class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+                                  ></span>
+                                  {{ n }}</label
+                                >
+                              }
+                            }
+                          </div>
+                        </div>
+                      </div>
+                    }
+                  }
+                } @else {
+                  <div
+                    class="flex flex-col items-center justify-center w-full px-6 mt-2 animate-pulse"
+                  >
+                    <div
+                      class="w-full h-64 px-1 mt-2 bg-gray-200 border-2 rounded-md lg:px-8 md:w-9/12"
+                    ></div>
+                    <div
+                      class="flex items-center justify-between w-full mt-8 lg:px-8 md:w-9/12"
+                    >
+                      <span
+                        class="bg-gray-200 border border-black rounded-full size-10"
+                      ></span>
+                      <span
+                        class="bg-gray-200 border border-black rounded-full size-10"
+                      ></span>
+                      <span
+                        class="bg-gray-200 border border-black rounded-full size-10"
+                      ></span>
+                      <span
+                        class="bg-gray-200 border border-black rounded-full size-10"
+                      ></span>
+                    </div>
+                  </div>
+                }
+                <div
+                  class="flex items-center justify-between w-full px-2 m-auto mt-8 lg:px-8 md:w-2/3"
+                >
+                  <button
+                    (click)="prevQuestion()"
+                    [disabled]="currentPage === 1"
+                    type="button"
+                    class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 rounded-l-md disabled:cursor-not-allowed disabled:bg-slate-500 hover:bg-gray-800 hover:text-white"
+                  >
+                    <div class="flex flex-row align-middle">
+                      <svg
+                        class="w-5 ml-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <p class="ml-2">السابق</p>
+                    </div>
+                  </button>
+                  @if (currentPage === question.totalCount) {
+                    <button
+                      (click)="openPopup()"
+                      class="flex items-center px-6 py-2 transition-all bg-white border border-gray-700 rounded-md hover:animate-pop gap-x-2 text-gray-950 hover:bg-secondaryAdmin hover:text-white"
+                    >
+                      <span>إنهاء الاختبار</span>
+                      <svg
+                        class="w-5 mr-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </button>
+                  } @else {
+                    <button
+                      (click)="nextQuestion()"
+                      type="button"
+                      class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 disabled:cursor-not-allowed disabled:bg-slate-500 rounded-l-md hover:bg-gray-800 hover:text-white"
+                    >
+                      <div class="flex flex-row align-middle">
+                        <span class="mr-2">التالي</span>
+                        <svg
+                          class="w-5 mr-2"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                            clip-rule="evenodd"
+                          ></path>
+                        </svg>
+                      </div>
+                    </button>
+                  }
+                </div>
+                <div
+                  class="flex flex-wrap items-center justify-center gap-4 px-8 pb-10 my-4"
+                >
+                  @for (pageNum of getPageRange(); track pageNum) {
+                    <button
+                      class="px-3 py-2 border rounded-md"
+                      (click)="gotoPage(pageNum)"
+                      [class.active]="pageNum === currentPage"
+                    >
+                      {{ pageNum }}
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div
+                  class="fixed z-50 top-[43%] lg:left-[32%] left-[40%] bg-opacity-60"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+                    ></div>
+                  </div>
+                </div>
+              }
+            }
+            @if (activeTab() === "revision") {
+              @if (!isLoadingRevision()) {
+                <app-exam-mock-revision [id]="trailId()" />
+              } @else {
+                <div
+                  class="fixed z-50 top-[43%] lg:left-[32%] left-[40%] bg-opacity-60"
+                >
+                  <div class="flex items-center">
+                    <div
+                      class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+                    ></div>
+                  </div>
+                </div>
+              }
+            }
+
+            <!-- Result Tab (Placeholder) -->
+            @if (activeTab() === "result") {
+              <div class="w-full lg:flex lg:justify-center lg:items-center">
+                <div class="w-full pb-8 text-center gap-y-8">
+                  <div class="min-h-screen bg-gray-50">
+                    <div class="mx-auto max-w-7xl">
+                      @if (examResult()) {
+                        <div class="space-y-6">
+                          <!-- Result Header Card -->
+                          <div
+                            class="overflow-hidden shadow-xl rounded-xl"
+                            [class.bg-gradient-to-br]="true"
+                            [class.from-green-500]="examResult()!.isSuccess"
+                            [class.to-green-600]="examResult()!.isSuccess"
+                            [class.from-red-500]="!examResult()!.isSuccess"
+                            [class.to-red-600]="!examResult()!.isSuccess"
+                          >
+                            <div class="p-8 text-center text-white md:p-12">
+                              <!-- Icon -->
+                              <!-- <div
+                      class="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-white border-4 border-white rounded-full bg-opacity-20 backdrop-blur-sm border-opacity-30"
+                    >
+                      @if (examResult()!.isSuccess) {
+                      <svg
+                        class="w-12 h-12"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      } @else {
+                      <svg
+                        class="w-12 h-12"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                      }
+                    </div> -->
+
+                              <!-- Status Text -->
+                              <h1 class="mb-6 text-4xl font-bold">
+                                {{
+                                  examResult()!.isSuccess
+                                    ? "مبروك! نجحت في الاختبار"
+                                    : "للأسف، لم تنجح في الاختبار"
+                                }}
+                              </h1>
+                              <p class="mb-8 text-lg opacity-90">
+                                {{
+                                  examResult()!.isSuccess
+                                    ? "أداء رائع! استمر في التفوق"
+                                    : "لا تستسلم، حاول مرة أخرى"
+                                }}
+                              </p>
+
+                              <!-- Score Circle -->
+                              <div class="relative inline-block">
+                                <svg class="w-48 h-48 transform -rotate-90">
+                                  <circle
+                                    cx="96"
+                                    cy="96"
+                                    r="88"
+                                    stroke="white"
+                                    stroke-opacity="0.2"
+                                    stroke-width="12"
+                                    fill="none"
+                                  />
+                                  <circle
+                                    cx="96"
+                                    cy="96"
+                                    r="88"
+                                    stroke="white"
+                                    stroke-width="12"
+                                    fill="none"
+                                    stroke-dasharray="552.92"
+                                    [attr.stroke-dashoffset]="
+                                      552.92 -
+                                      (552.92 * examResult()!.percent) / 100
+                                    "
+                                    class="transition-all duration-1000"
+                                  />
+                                </svg>
+                                <div
+                                  class="absolute inset-0 flex flex-col items-center justify-center"
+                                >
+                                  <div class="text-5xl font-bold">
+                                    {{ examResult()!.percent.toFixed(0) }}%
+                                  </div>
+                                  <div class="text-sm opacity-90">
+                                    نسبة النجاح
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Action Buttons -->
+                          <div
+                            class="flex flex-col justify-center gap-4 sm:flex-row"
+                          >
+                            <button
+                              (click)="changeTab('overview')"
+                              class="px-6 py-3 text-base md:text-xl bg-white border-2 border-[#36b290] text-[#36b290] rounded-lg font-semibold hover:bg-[#36b290] hover:text-white transition-all"
+                            >
+                              إعادة المحاولة
+                              <svg
+                                class="inline w-5 h-5 mr-2"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                            <!-- (click)="toRevision(examResult().id)" -->
+                            <button
+                              (click)="toRevision(examResult().id)"
+                              class="px-6 py-3 text-base md:text-xl bg-secondaryAdmin border-2 border-secondaryAdmin text-white rounded-lg font-semibold hover:bg-[#36b290] hover:text-white transition-all"
+                            >
+                              مراجعة الإجابات
+                            </button>
+                          </div>
+
+                          <!-- Quick Stats -->
+                          <div class="grid grid-cols-2 gap-4 md:grid-cols-4">
+                            <!-- Total Questions -->
+                            <div
+                              class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                            >
+                              <div
+                                class="flex items-center justify-between mb-2"
+                              >
+                                <div
+                                  class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-lg"
+                                >
+                                  <svg
+                                    class="w-5 h-5 text-blue-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"
+                                    />
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                              <div class="text-2xl font-bold text-gray-800">
+                                {{ examResult()!.totalCount }}
+                              </div>
+                              <div class="text-xs text-gray-600">
+                                إجمالي الأسئلة
+                              </div>
+                            </div>
+
+                            <!-- Correct Answers -->
+                            <div
+                              class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                            >
+                              <div
+                                class="flex items-center justify-between mb-2"
+                              >
+                                <div
+                                  class="flex items-center justify-center w-10 h-10 bg-green-100 rounded-lg"
+                                >
+                                  <svg
+                                    class="w-5 h-5 text-green-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                              <div class="text-2xl font-bold text-green-600">
+                                {{ examResult()!.correctAnswersCount }}
+                              </div>
+                              <div class="text-xs text-gray-600">
+                                إجابات صحيحة
+                              </div>
+                            </div>
+
+                            <!-- Wrong Answers -->
+                            <div
+                              class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                            >
+                              <div
+                                class="flex items-center justify-between mb-2"
+                              >
+                                <div
+                                  class="flex items-center justify-center w-10 h-10 bg-red-100 rounded-lg"
+                                >
+                                  <svg
+                                    class="w-5 h-5 text-red-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                              <div class="text-2xl font-bold text-red-600">
+                                {{ examResult()!.wrongAnswersCount }}
+                              </div>
+                              <div class="text-xs text-gray-600">
+                                إجابات خاطئة
+                              </div>
+                            </div>
+
+                            <!-- Empty Questions -->
+                            <div
+                              class="p-5 bg-white border border-gray-200 rounded-lg shadow-sm"
+                            >
+                              <div
+                                class="flex items-center justify-between mb-2"
+                              >
+                                <div
+                                  class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-lg"
+                                >
+                                  <svg
+                                    class="w-5 h-5 text-gray-600"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </div>
+                              <div class="text-2xl font-bold text-gray-600">
+                                {{ examResult()!.emptyQuestionsCount }}
+                              </div>
+                              <div class="text-xs text-gray-600">
+                                لم تُجب عليها
+                              </div>
+                            </div>
+                          </div>
+
+                          <div
+                            class="w-full max-w-2xl mx-auto mt-10 overflow-hidden bg-white shadow-lg rounded-2xl"
+                          >
+                            <div
+                              class="py-4 text-lg font-bold text-center text-white bg-gradient-to-r from-orange-500 to-yellow-400"
+                            >
+                              نتيجة الامتحان
+                            </div>
+
+                            <table class="w-full text-center border-collapse">
+                              <thead class="text-sm text-gray-700 bg-gray-100">
+                                <tr>
+                                  <th class="p-3 border-b">اسم الدورة</th>
+                                  <th class="p-3 border-b">الدرجة / النسبة</th>
+                                </tr>
+                              </thead>
+                              <tbody class="text-sm font-medium text-gray-800">
+                                <tr class="transition hover:bg-gray-50">
+                                  <td class="p-3 font-semibold border-b">
+                                    الدرجة الكلية
+                                  </td>
+                                  <td
+                                    class="p-3 font-bold text-orange-600 border-b"
+                                  >
+                                    {{ examResult().percent.toFixed(0) }}%
+                                  </td>
+                                </tr>
+                                @for (
+                                  item of percentTutorials();
+                                  track $index
+                                ) {
+                                  <tr class="transition hover:bg-gray-50">
+                                    <td class="p-3 border-b">
+                                      {{ item.name }}
+                                    </td>
+                                    <td
+                                      class="p-3 font-semibold text-green-600 border-b"
+                                    >
+                                      {{ item.percent.toFixed(0) }}%
+                                    </td>
+                                  </tr>
+                                }
+                              </tbody>
+                            </table>
+
+                            <div
+                              class="px-6 py-4 text-sm text-right text-gray-600 bg-gray-50"
+                            >
+                              <span class="font-semibold text-gray-800"
+                                >ملحوظة:</span
+                              >
+                              تم احتساب النسب بناءً على أداء الطالب في كل دورة.
+                            </div>
+                          </div>
+
+                          <!-- Performance Chart -->
+                          <div
+                            class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm"
+                          >
+                            <h3 class="mb-4 text-lg font-bold text-gray-800">
+                              توزيع الإجابات
+                            </h3>
+                            <div class="space-y-4">
+                              <!-- Correct Bar -->
+                              <div>
+                                <div
+                                  class="flex items-center justify-between mb-2 text-sm"
+                                >
+                                  <span class="font-semibold text-gray-700"
+                                    >إجابات صحيحة</span
+                                  >
+                                  <span class="font-bold text-green-600"
+                                    >{{
+                                      getPercentage(
+                                        examResult()!.correctAnswersCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    }}%</span
+                                  >
+                                </div>
+                                <div
+                                  class="w-full h-4 overflow-hidden bg-gray-100 rounded-full"
+                                >
+                                  <div
+                                    class="h-4 transition-all duration-1000 rounded-full bg-gradient-to-r from-green-500 to-green-600"
+                                    [style.width.%]="
+                                      getPercentage(
+                                        examResult()!.correctAnswersCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    "
+                                  ></div>
+                                </div>
+                              </div>
+
+                              <!-- Wrong Bar -->
+                              <div>
+                                <div
+                                  class="flex items-center justify-between mb-2 text-sm"
+                                >
+                                  <span class="font-semibold text-gray-700"
+                                    >إجابات خاطئة</span
+                                  >
+                                  <span class="font-bold text-red-600"
+                                    >{{
+                                      getPercentage(
+                                        examResult()!.wrongAnswersCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    }}%</span
+                                  >
+                                </div>
+                                <div
+                                  class="w-full h-4 overflow-hidden bg-gray-100 rounded-full"
+                                >
+                                  <div
+                                    class="h-4 transition-all duration-1000 rounded-full bg-gradient-to-r from-red-500 to-red-600"
+                                    [style.width.%]="
+                                      getPercentage(
+                                        examResult()!.wrongAnswersCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    "
+                                  ></div>
+                                </div>
+                              </div>
+
+                              <!-- Empty Bar -->
+                              <div>
+                                <div
+                                  class="flex items-center justify-between mb-2 text-sm"
+                                >
+                                  <span class="font-semibold text-gray-700"
+                                    >لم تُجب عليها</span
+                                  >
+                                  <span class="font-bold text-gray-600"
+                                    >{{
+                                      getPercentage(
+                                        examResult()!.emptyQuestionsCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    }}%</span
+                                  >
+                                </div>
+                                <div
+                                  class="w-full h-4 overflow-hidden bg-gray-100 rounded-full"
+                                >
+                                  <div
+                                    class="h-4 transition-all duration-1000 rounded-full bg-gradient-to-r from-gray-400 to-gray-500"
+                                    [style.width.%]="
+                                      getPercentage(
+                                        examResult()!.emptyQuestionsCount,
+                                        examResult()!.totalCount
+                                      ).toFixed(0)
+                                    "
+                                  ></div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <!-- Detailed Statistics by Tutorial -->
+                          @for (
+                            tutorial of examResult()!.tutorials;
+                            track tutorial.id
+                          ) {
+                            <div
+                              class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm"
+                            >
+                              <!-- Tutorial Header -->
+                              <div
+                                class="bg-gradient-to-r from-[#36b290] to-[#2d9277] p-5"
+                              >
+                                <h3
+                                  class="flex items-center gap-2 text-lg font-bold text-white"
+                                >
+                                  <svg
+                                    class="w-5 h-5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"
+                                    />
+                                  </svg>
+                                  {{ tutorial.name }}
+                                </h3>
+                              </div>
+
+                              <!-- Question Types Statistics -->
+                              <div class="p-5">
+                                <div class="space-y-6">
+                                  @for (
+                                    questionType of tutorial.questionTypeStatistics;
+                                    track questionType.id
+                                  ) {
+                                    <div>
+                                      <!-- Question Type Header -->
+                                      <div
+                                        class="flex items-center justify-between pb-2 mb-3 border-b border-gray-200"
+                                      >
+                                        <h4
+                                          class="text-base font-bold text-gray-800"
+                                        >
+                                          {{ questionType.name }}
+                                        </h4>
+                                        <div class="flex items-center gap-2">
+                                          <div
+                                            class="px-3 py-1 text-xs font-bold rounded-full"
+                                            [class.bg-green-100]="
+                                              questionType.percent >= 70
+                                            "
+                                            [class.text-green-700]="
+                                              questionType.percent >= 70
+                                            "
+                                            [class.bg-yellow-100]="
+                                              questionType.percent >= 50 &&
+                                              questionType.percent < 70
+                                            "
+                                            [class.text-yellow-700]="
+                                              questionType.percent >= 50 &&
+                                              questionType.percent < 70
+                                            "
+                                            [class.bg-red-100]="
+                                              questionType.percent < 50
+                                            "
+                                            [class.text-red-700]="
+                                              questionType.percent < 50
+                                            "
+                                          >
+                                            {{
+                                              questionType.percent.toFixed(0)
+                                            }}%
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <!-- Progress Bar -->
+                                      <div
+                                        class="w-full h-3 mb-4 overflow-hidden bg-gray-100 rounded-full"
+                                      >
+                                        <div
+                                          class="h-3 transition-all duration-1000 rounded-full"
+                                          [class.bg-gradient-to-r]="true"
+                                          [class.from-green-500]="
+                                            questionType.percent >= 70
+                                          "
+                                          [class.to-green-600]="
+                                            questionType.percent >= 70
+                                          "
+                                          [class.from-yellow-500]="
+                                            questionType.percent >= 50 &&
+                                            questionType.percent < 70
+                                          "
+                                          [class.to-yellow-600]="
+                                            questionType.percent >= 50 &&
+                                            questionType.percent < 70
+                                          "
+                                          [class.from-red-500]="
+                                            questionType.percent < 50
+                                          "
+                                          [class.to-red-600]="
+                                            questionType.percent < 50
+                                          "
+                                          [style.width.%]="questionType.percent"
+                                        ></div>
+                                      </div>
+
+                                      <!-- Skills Statistics -->
+                                      @if (
+                                        questionType.skillsStatistics.length > 0
+                                      ) {
+                                        <div class="mr-4 space-y-3">
+                                          <div
+                                            class="mb-2 text-xs font-semibold text-gray-600"
+                                          >
+                                            تفاصيل المهارات:
+                                          </div>
+                                          @for (
+                                            skill of questionType.skillsStatistics;
+                                            track skill.id
+                                          ) {
+                                            <div
+                                              class="p-3 rounded-lg bg-gray-50"
+                                            >
+                                              <div
+                                                class="flex items-center justify-between mb-2"
+                                              >
+                                                <span
+                                                  class="text-sm font-medium text-gray-700"
+                                                  >{{ skill.name }}</span
+                                                >
+                                                <span
+                                                  class="text-sm font-bold"
+                                                  [class.text-green-600]="
+                                                    skill.percent >= 70
+                                                  "
+                                                  [class.text-yellow-600]="
+                                                    skill.percent >= 50 &&
+                                                    skill.percent < 70
+                                                  "
+                                                  [class.text-red-600]="
+                                                    skill.percent < 50
+                                                  "
+                                                >
+                                                  {{
+                                                    skill.percent.toFixed(0)
+                                                  }}%
+                                                </span>
+                                              </div>
+                                              <div
+                                                class="w-full h-2 overflow-hidden bg-gray-200 rounded-full"
+                                              >
+                                                <div
+                                                  class="h-2 transition-all duration-1000 rounded-full"
+                                                  [class.bg-green-500]="
+                                                    skill.percent >= 70
+                                                  "
+                                                  [class.bg-yellow-500]="
+                                                    skill.percent >= 50 &&
+                                                    skill.percent < 70
+                                                  "
+                                                  [class.bg-red-500]="
+                                                    skill.percent < 50
+                                                  "
+                                                  [style.width.%]="
+                                                    skill.percent
+                                                  "
+                                                ></div>
+                                              </div>
+                                            </div>
+                                          }
+                                        </div>
+                                      }
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            </div>
+                          }
+
+                          <!-- Recommendations Card -->
+                          <div
+                            class="p-6 border border-blue-200 rounded-lg bg-gradient-to-br from-blue-50 to-indigo-50"
+                          >
+                            <h3
+                              class="flex items-center gap-2 mb-4 text-lg font-bold text-gray-800"
+                            >
+                              <svg
+                                class="w-5 h-5 text-blue-600"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                  clip-rule="evenodd"
+                                />
+                              </svg>
+                              توصيات لتحسين الأداء
+                            </h3>
+                            <ul class="space-y-2 text-sm text-gray-700">
+                              @if (examResult()!.emptyQuestionsCount > 0) {
+                                <li class="flex items-start gap-2">
+                                  <svg
+                                    class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                                    fill="currentColor"
+                                    viewBox="0 0 20 20"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                  <span
+                                    >حاول الإجابة على جميع الأسئلة، لديك
+                                    <strong>{{
+                                      examResult()!.emptyQuestionsCount
+                                    }}</strong>
+                                    سؤال لم تجب عليه</span
+                                  >
+                                </li>
+                              }
+                              @for (
+                                tutorial of examResult()!.tutorials;
+                                track tutorial.id
+                              ) {
+                                @for (
+                                  questionType of tutorial.questionTypeStatistics;
+                                  track questionType.id
+                                ) {
+                                  @if (questionType.percent < 50) {
+                                    <li class="flex items-start gap-2">
+                                      <svg
+                                        class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                      >
+                                        <path
+                                          fill-rule="evenodd"
+                                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                          clip-rule="evenodd"
+                                        />
+                                      </svg>
+                                      <span
+                                        >ركز على مراجعة
+                                        <strong>{{ questionType.name }}</strong>
+                                        - نسبة الأداء
+                                        {{
+                                          questionType.percent.toFixed(0)
+                                        }}%</span
+                                      >
+                                    </li>
+                                  }
+                                }
+                              }
+                              <li class="flex items-start gap-2">
+                                <svg
+                                  class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5"
+                                  fill="currentColor"
+                                  viewBox="0 0 20 20"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                                <span
+                                  >راجع الأسئلة الخاطئة وافهم الحلول
+                                  الصحيحة</span
+                                >
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      } @else {
+                        <!-- Loading State -->
+                        <div class="py-12 text-center">
+                          <div
+                            class="inline-block w-8 h-8 border-4 border-t-transparent border-[#36b290] rounded-full animate-spin"
+                          ></div>
+                          <p class="mt-4 text-sm text-gray-600">
+                            جاري تحميل النتائج...
+                          </p>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                  <!-- <app-is-completed-exam [examId]="examId" /> -->
+                  <!--
+          <div
+            class="flex flex-col items-center justify-center gap-6 mt-8 mb-12 md:flex-row"
+          >
+            <button
+              class="px-12 py-3 text-xl transition-colors border-2 rounded-full border-primaryAdmin hover:bg-primaryAdmin hover:text-white"
+            >
+              إعادة الاختبار
+            </button>
+           @if ( mainDetailsExam.isAdditonalExamEnabled) {
+         <button
+           (click)="isOpenAdditionalExam.set(true)"
+           class="px-12 py-3 text-xl transition-colors border-2 rounded-full border-secondaryAdmin hover:bg-secondaryAdmin hover:text-white"
+         >
+           اختبار إضافي
+         </button>
+         } 
+        </div>
+        -->
+                </div>
+              </div>
+            }
+          } @else {
+            <div
+              class="flex items-center justify-center w-full gap-6 p-8 text-center bg-white rounded-lg shadow-sm"
+            >
+              <div
+                class="inline-block w-8 h-8 border-4 border-t-transparent border-[#36b290] rounded-full animate-spin"
+              ></div>
+              <p class="mt-4 text-sm text-gray-600">جاري تحميل ...</p>
+            </div>
+          }
+        }
+      </div>
+    </main>
+  } @else {
+    <div
+      class="fixed z-[200] top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-opacity-60"
+    >
+      <div class="relative flex items-center justify-center">
+        <div
+          class="absolute border-t-4 border-b-4 rounded-full border-secondaryAdmin w-36 h-36 animate-spin"
+        ></div>
+        <img
+          src="assets/imgs/logo2.webp"
+          alt="logo"
+          class="rounded-full h-28 w-28"
+        />
+      </div>
+    </div>
+  }
+</div>
+
+@if (isOpen()) {
+  <div
+    class="fixed inset-0 z-[150] flex items-center justify-center bg-black bg-opacity-50"
+    (click)="closePopup()"
+  >
+    <div
+      class="relative flex flex-col items-center justify-center w-full max-w-lg md:max-w-2xl px-8 py-10 border-2 shadow-lg border-[#002C3D] bg-[#F7F8F3] rounded-2xl"
+      (click)="$event.stopPropagation()"
+    >
+      <span
+        (click)="closePopup()"
+        class="absolute text-lg font-semibold transition-colors cursor-pointer top-4 right-5 hover:text-red-500"
+        >X</span
+      >
+      <h3
+        class="mt-3 text-lg font-semibold leading-6 text-center text-[#002C3D]"
+      >
+        @if (emptyAnswers().length > 0) {
+          <span>⚠️ يوجد بعض الأسئلة لم يتم الإجابة عنها بعد.</span>
+          <br />
+        }
+        هل ترغب في إنهاء الاختبار الآن؟ <br /><br />
+        @if (emptyAnswers().length > 0) {
+          إذا اخترت <span class="font-bold text-red-600">"نعم"</span>، سيتم
+          إنهاء الاختبار فورًا ولن تتمكن من تعديل إجاباتك.<br />
+          أما إذا اخترت <span class="font-bold text-green-600">"لا"</span>،
+          فسيتم نقلك مباشرة إلى الأسئلة غير المُجابة لتتمكن من حلها قبل الإنهاء.
+        }
+      </h3>
+
+      <div
+        class="flex items-center justify-center w-full mt-10 text-lg font-semibold lg:w-2/3 gap-x-6 text-[#F7F8F3]"
+      >
+        <button (click)="confirm()" class="px-6 py-1 rounded-md bg-[#002C3D]">
+          نعم
+        </button>
+        <button
+          (click)="closePopup()"
+          type="button"
+          class="px-6 py-1 rounded-md bg-[#F8444F]"
+        >
+          لا
+        </button>
+      </div>
+    </div>
+  </div>
+}

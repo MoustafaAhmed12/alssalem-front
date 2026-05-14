@@ -1,0 +1,354 @@
+<!-- Navbar -->
+<app-navbar />
+
+<!-- Main Content -->
+<div class="min-h-screen pt-28 pb-8 bg-gradient-to-br from-gray-50 to-gray-100">
+  <div class="px-4 mx-auto max-w-7xl">
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="flex items-center justify-center h-96">
+      <div class="relative">
+        <div
+          class="w-20 h-20 border-4 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+          <span class="text-2xl">📚</span>
+        </div>
+      </div>
+    </div>
+    } @else if (mainQuestion) {
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+      <!-- Main Question Column -->
+      <div class="lg:col-span-2">
+        <div class="overflow-hidden bg-white shadow-xl rounded-2xl">
+          <!-- Question Header -->
+          <div
+            class="p-2 border-b bg-gradient-to-r from-blue-50 to-indigo-50 sm:p-4"
+          >
+            <div class="flex items-start flex-col gap-4">
+              <h1
+                class="text-base font-bold leading-relaxed text-secondaryAdmin sm:text-lg"
+              >
+                {{ mainQuestion.text }}
+              </h1>
+              <div class="self-end flex gap-2">
+                <span
+                  class="flex-shrink-0 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full"
+                >
+                  {{
+                    mainQuestion.difficulty === 1
+                      ? "سهل"
+                      : mainQuestion.difficulty === 2
+                      ? "متوسط"
+                      : "صعب"
+                  }}
+                </span>
+                @if (mainQuestion.questionTypeName) {
+                <span
+                  class="flex-shrink-0 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full"
+                >
+                  {{ mainQuestion.questionTypeName }}
+                </span>
+                } @if (mainQuestion.skillName) {
+                <span
+                  class="flex-shrink-0 px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full"
+                >
+                  {{ mainQuestion.skillName }}
+                </span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Result Feedback (moved above choices) -->
+          @if (selectedChoice !== null) {
+          <div class="px-4 sm:px-6 sm:py-4">
+            <div
+              class="p-4 rounded-xl animate-fade-in sm:p-5"
+              [ngClass]="
+                isCorrect
+                  ? 'bg-green-50 border-2 border-green-300'
+                  : 'bg-red-50 border-2 border-red-300'
+              "
+            >
+              <div class="flex items-center gap-2 mb-3">
+                <span class="text-2xl">{{ isCorrect ? "🎉" : "❌" }}</span>
+                <p
+                  class="text-base font-bold"
+                  [ngClass]="isCorrect ? 'text-green-800' : 'text-red-800'"
+                >
+                  {{
+                    isCorrect
+                      ? "إجابة صحيحة! أحسنت"
+                      : "إجابة خاطئة، حاول مرة أخرى"
+                  }}
+                </p>
+              </div>
+              @if (mainQuestion.answerUrl) {
+              <div class="pt-3 mt-3 border-t border-gray-200">
+                <button
+                  (click)="openVideoPopup()"
+                  class="inline-flex items-center gap-2 px-4 py-2 text-sm animate-pop font-semibold text-white transition-all bg-primaryAdmin rounded-lg hover:bg-secondaryAdmin hover:shadow-lg sm:text-base"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2"
+                    stroke="currentColor"
+                    class="w-5 h-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z"
+                    />
+                  </svg>
+                  <span>شاهد شرح السؤال</span>
+                </button>
+              </div>
+              }
+            </div>
+          </div>
+          }
+
+          <!-- Question Image -->
+          @if (mainQuestion.image2Url) {
+          <div class="p-2 sm:px-4">
+            <div class="overflow-hidden border-2 border-gray-100 rounded-xl">
+              <img
+                [src]="mainQuestion.image2Url"
+                [alt]="mainQuestion.text"
+                class="w-full h-auto object-contain max-h-[500px] bg-white"
+              />
+            </div>
+          </div>
+          } @if (mainQuestion.image1Url) {
+          <div class="p-2 sm:p-4">
+            <div
+              class="overflow-hidden border-2 p-3 border-gray-100 rounded-xl"
+            >
+              <img
+                [src]="mainQuestion.image1Url"
+                [alt]="mainQuestion.text"
+                class="w-full h-auto object-contain max-h-[500px] bg-white"
+              />
+            </div>
+          </div>
+          }
+
+          <!-- Choices -->
+          <div class="p-2 sm:p-4 sm:pb-10">
+            <h2 class="mb-6 text-lg font-bold text-gray-800 sm:text-xl">
+              اختر الإجابة الصحيحة:
+            </h2>
+            <div class="grid grid-cols-4 gap-3 place-items-center sm:gap-4">
+              @for (choice of [1, 2, 3, 4]; track choice) {
+              <button
+                (click)="onSelectChoice(choice)"
+                [disabled]="selectedChoice !== null"
+                [ngClass]="{
+                  'bg-white hover:bg-gray-50 border-gray-200 hover:border-primaryAdmin':
+                    selectedChoice === null,
+                  'bg-green-50 border-primaryAdmin text-green-900 shadow-lg':
+                    selectedChoice !== null &&
+                    choice === mainQuestion.correctChoice,
+                  'bg-red-50 border-red-500 text-red-900':
+                    selectedChoice === choice &&
+                    choice !== mainQuestion.correctChoice,
+                  'opacity-60':
+                    selectedChoice !== null &&
+                    choice !== mainQuestion.correctChoice &&
+                    selectedChoice !== choice
+                }"
+                class="flex items-center justify-center p-2 text-center size-14 sm:size-16 transition-all border-2 rounded-full group sm:p-4"
+              >
+                <span
+                  class="flex items-center justify-center flex-shrink-0 size-12 text-xl font-bold transition-colors rounded-full bg-gray-100 text-gray-700 group-hover:bg-blue-100 group-hover:text-blue-700 sm:size-14 sm:text-2xl"
+                  [ngClass]="{
+                    '!bg-primaryAdmin !text-white':
+                      selectedChoice !== null &&
+                      choice === mainQuestion.correctChoice,
+                    '!bg-red-500 !text-white':
+                      selectedChoice === choice &&
+                      choice !== mainQuestion.correctChoice
+                  }"
+                >
+                  @if (mainQuestion.isEnglish) {
+                  {{
+                    choice === 1
+                      ? "A"
+                      : choice === 2
+                      ? "B"
+                      : choice === 3
+                      ? "C"
+                      : "D"
+                  }}
+                  } @else {
+                  {{
+                    choice === 1
+                      ? "أ"
+                      : choice === 2
+                      ? "ب"
+                      : choice === 3
+                      ? "ج"
+                      : "د"
+                  }}
+                  }
+                </span>
+              </button>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Similar Questions Sidebar -->
+      <div class="lg:col-span-1 sticky top-16 h-fit">
+        <div class="overflow-hidden bg-white shadow-xl rounded-2xl">
+          <div
+            class="p-2 sm:p-4 border-b bg-gradient-to-r from-purple-50 to-pink-50"
+          >
+            <h2 class="text-lg font-bold text-primaryAdmin sm:text-xl">
+              أسئلة مشابهة
+            </h2>
+          </div>
+          <div class="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto">
+            @for (q of similarQuestions; track q.id) {
+            <a
+              [routerLink]="['/question', q.id, q.slug || 'question-detail']"
+              class="block p-3 transition-all border-2 border-gray-100 rounded-xl hover:border-blue-400 hover:shadow-lg group"
+            >
+              <div class="flex flex-col gap-2">
+                <div class="w-full h-32 overflow-hidden bg-gray-100 sm:h-44">
+                  @if (q.image1Url) {
+                  <img
+                    [src]="q.image1Url"
+                    class="object-fill w-full h-full"
+                    alt="سؤال مشابه"
+                  />
+                  } @else {
+                  <div
+                    class="flex items-center justify-center w-full h-full text-4xl text-gray-400"
+                  >
+                    ?
+                  </div>
+                  }
+                </div>
+                <div class="w-full p-2 sm:p-4 border-t-2 border-gray-300">
+                  <h3
+                    class="mb-2 text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-blue-600"
+                  >
+                    {{ q.text || "سؤال في " + (q.keyWord || "المادة") }}
+                  </h3>
+                  <div class="flex text-[11px] flex-wrap flex-row gap-2">
+                    <span
+                      class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-lg"
+                    >
+                      {{
+                        q.difficulty === 1
+                          ? "سهل"
+                          : q.difficulty === 2
+                          ? "متوسط"
+                          : "صعب"
+                      }}
+                    </span>
+                    @if (mainQuestion.questionTypeName) {
+                    <span
+                      class="flex-shrink-0 px-3 py-1 font-semibold text-blue-700 bg-blue-100 rounded-full"
+                    >
+                      {{ mainQuestion.questionTypeName }}
+                    </span>
+                    } @if (mainQuestion.skillName) {
+                    <span
+                      class="flex-shrink-0 px-3 py-1 font-semibold text-blue-700 bg-blue-100 rounded-full"
+                    >
+                      {{ mainQuestion.skillName }}
+                    </span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </a>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    } @else {
+    <!-- Not Found State -->
+    <div
+      class="flex flex-col items-center justify-center min-h-[60vh] text-center"
+    >
+      <div class="p-8 bg-white shadow-xl rounded-2xl">
+        <div class="mb-4 text-6xl">😕</div>
+        <h2 class="mb-2 text-2xl font-bold text-gray-800 sm:text-3xl">
+          عذراً، السؤال غير موجود
+        </h2>
+        <p class="mb-6 text-gray-600">
+          قد يكون الرابط غير صحيح أو تم حذف السؤال
+        </p>
+        <a
+          routerLink="/"
+          class="inline-block px-8 py-3 text-lg font-semibold text-white transition-all bg-blue-600 rounded-xl hover:bg-blue-700 hover:shadow-lg"
+        >
+          العودة للرئيسية
+        </a>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Video Popup Modal -->
+@if (showVideoPopup()) {
+<div
+  class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black bg-opacity-75 animate-fade-in"
+  (click)="closeVideoPopup()"
+>
+  <div
+    class="relative w-full max-w-5xl bg-white shadow-2xl rounded-2xl animate-scale-in"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-2 border-b sm:p-4">
+      <h3 class="text-lg font-bold text-gray-900 sm:text-xl">شرح السؤال</h3>
+      <button
+        (click)="closeVideoPopup()"
+        class="p-2 text-gray-400 transition-colors rounded-lg hover:bg-gray-100 hover:text-gray-600"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Video Container -->
+    <div class="relative w-full bg-black aspect-video">
+      <iframe
+        [src]="getVideoEmbedUrl(mainQuestion.answerUrl)"
+        class="absolute inset-0 w-full h-full"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,67 @@
+@if (isLoading === false) {
+  <div class="px-8 m-auto mt-8 md:px-16">
+    <h2 class="mt-4 text-4xl font-extrabold text-center md:text-5xl">
+      {{ "home.studentsOpinions" | translate }}
+    </h2>
+    <div class="my-12">
+      <swiper-container
+        class="mySwiper"
+        dir="rtl"
+        space-between="30"
+        centered-slides="true"
+        autoplay-delay="5000"
+        autoplay-disable-on-interaction="false"
+        autoplay-pause-on-mouse-enter="true"
+        slides-per-view="1"
+        grab-cursor="true"
+        loop="true"
+        free-mode="false"
+        pagination="true"
+        pagination-clickable="true"
+        breakpoints='{"768": {"slidesPerView": 1.2}, "1024": {"slidesPerView": 1.5}}'
+      >
+        @for (item of feedbacks; track item.id) {
+          <swiper-slide class="py-12">
+            <section
+              class="relative w-full px-6 overflow-hidden border rounded-3xl lg:w-11/12 py-14 bg-white/50 backdrop-blur-sm shadow-sm isolate sm:py-16 lg:px-8 mx-auto hover:shadow-md transition-shadow duration-300"
+            >
+              <div
+                class="absolute inset-0 -z-10 bg-[radial-gradient(45rem_50rem_at_top,theme(colors.primary.100),white)] opacity-20"
+              ></div>
+              <div class="max-w-2xl mx-auto lg:max-w-4xl">
+                <div class="flex items-center justify-center mb-8 gap-1">
+                  @for (star of [1, 2, 3, 4, 5]; track star) {
+                    <svg
+                      class="w-6 h-6 text-yellow-400 fill-current"
+                      viewBox="0 0 22 20"
+                    >
+                      <path
+                        d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"
+                      />
+                    </svg>
+                  }
+                </div>
+
+                <div class="text-center">
+                  <img
+                    class="mx-auto mb-8 rounded-full shadow-lg border-4 border-white"
+                    width="80"
+                    src="assets/imgs/logo2.webp"
+                    alt="alssalem Logo"
+                  />
+                  <figure>
+                    <blockquote
+                      class="text-xl font-medium leading-relaxed text-gray-800 sm:text-2xl italic"
+                    >
+                      <p>"{{ item.feedback }}"</p>
+                    </blockquote>
+                  </figure>
+                </div>
+              </div>
+            </section>
+          </swiper-slide>
+        }
+      </swiper-container>
+    </div>
+  </div>
+}

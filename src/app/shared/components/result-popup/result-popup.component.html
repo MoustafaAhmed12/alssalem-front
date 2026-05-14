@@ -1,0 +1,188 @@
+<!-- Overlay -->
+@if (isOpen()) {
+<div
+  class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+  (click)="closePopup()"
+>
+  <!-- Popup Container -->
+  <div
+    class="bg-white rounded-2xl shadow-2xl max-w-md w-full transform transition-all"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div
+      class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-t-2xl p-6 text-white relative"
+    >
+      <button
+        (click)="closePopup()"
+        class="absolute top-4 left-4 text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-all"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
+      <div class="text-center">
+        <div
+          class="inline-flex items-center justify-center w-20 h-20 bg-white bg-opacity-20 rounded-full mb-4"
+        >
+          <svg
+            class="w-12 h-12"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold">نتيجة الاختبار</h2>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6">
+      <!-- Overall Score -->
+      <div class="text-center mb-6">
+        <div
+          class="inline-flex items-center justify-center w-32 h-32 rounded-full bg-gradient-to-br from-green-400 to-blue-500 mb-3 relative"
+        >
+          <div
+            class="absolute inset-2 bg-white rounded-full flex items-center justify-center"
+          >
+            <span class="text-4xl font-bold text-gray-800"
+              >{{ result().percentage }}%</span
+            >
+          </div>
+        </div>
+
+        @if (result().percentage >= 90) {
+        <p class="text-xl font-semibold text-green-600">ممتاز! 🎉</p>
+        } @else if (result().percentage >= 75) {
+        <p class="text-xl font-semibold text-blue-600">جيد جداً! 👏</p>
+        } @else if (result().percentage >= 60) {
+        <p class="text-xl font-semibold text-yellow-600">جيد! 👍</p>
+        } @else {
+        <p class="text-xl font-semibold text-orange-600">يمكنك التحسين! 💪</p>
+        }
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <svg
+            class="w-8 h-8 mx-auto mb-2 text-blue-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p class="text-2xl font-bold text-gray-800">
+            {{ formatTime(result().timeTakenInSec) }}
+          </p>
+          <p class="text-sm text-gray-600">الوقت المستغرق</p>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg p-4 text-center">
+          <svg
+            class="w-8 h-8 mx-auto mb-2 text-purple-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+          <p class="text-2xl font-bold text-gray-800">
+            {{ result().tutorials.length }}
+          </p>
+          <p class="text-sm text-gray-600">الدروس</p>
+        </div>
+      </div>
+
+      <!-- Tutorials List -->
+      <div class="space-y-3">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">تفاصيل الدروس:</h3>
+
+        @for (tutorial of result().tutorials; track tutorial.id) {
+        <div
+          class="bg-gray-50 rounded-lg p-4 hover:bg-gray-100 transition-colors"
+        >
+          <div class="flex justify-between items-center mb-2">
+            <span class="font-medium text-gray-800">{{ tutorial.name }}</span>
+            <span
+              class="text-lg font-bold"
+              [class]="
+                tutorial.percent >= 90
+                  ? 'text-green-600'
+                  : tutorial.percent >= 75
+                  ? 'text-blue-600'
+                  : tutorial.percent >= 60
+                  ? 'text-yellow-600'
+                  : 'text-orange-600'
+              "
+            >
+              {{ tutorial.percent }}%
+            </span>
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              [class]="
+                tutorial.percent >= 90
+                  ? 'bg-gradient-to-r from-green-400 to-green-600'
+                  : tutorial.percent >= 75
+                  ? 'bg-gradient-to-r from-blue-400 to-blue-600'
+                  : tutorial.percent >= 60
+                  ? 'bg-gradient-to-r from-yellow-400 to-yellow-600'
+                  : 'bg-gradient-to-r from-orange-400 to-orange-600'
+              "
+              [style.width.%]="tutorial.percent"
+            ></div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <!-- Date -->
+      <div class="mt-6 text-center text-sm text-gray-500">
+        <p>{{ formatDate(result().creationDate) }}</p>
+      </div>
+
+      <!-- Action Button -->
+      <button
+        (click)="closePopup()"
+        class="w-full mt-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold py-3 rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl"
+      >
+        حسناً
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,259 @@
+<div class="relative pb-16 pt-[64px] m-auto">
+  <div class="relative w-full -z-50">
+    <div class="w-full h-[30rem]">
+      @if (name === "tahsili") {
+        <img
+          src="assets/imgs/tahsili.webp"
+          class="hidden w-full h-full md:block"
+          loading="lazy"
+          alt="تحصيلي"
+        />
+        <div class="relative w-full h-full md:hidden">
+          <img
+            src="assets/imgs/bgtitle.png"
+            class="w-full h-full"
+            loading="lazy"
+            alt="bg"
+          />
+          <h2
+            class="absolute font-bold -translate-x-1/2 -translate-y-1/2 text-7xl top-1/2 left-1/2 text-primaryAdmin"
+          >
+            {{ "subCategory.tahsili" | translate }}
+          </h2>
+        </div>
+      }
+      @if (name === "qodrat") {
+        <img
+          src="assets/imgs/qodrat.webp"
+          class="hidden w-full h-full md:block"
+          loading="lazy"
+          alt="قدرات"
+        />
+        <div class="relative w-full h-full md:hidden">
+          <img
+            src="./../../../../../../assets/imgs/bgtitle.png"
+            class="w-full h-full"
+            loading="lazy"
+            alt="bg"
+          />
+          <h2
+            class="absolute font-bold -translate-x-1/2 -translate-y-1/2 text-7xl top-1/2 left-1/2 text-primaryAdmin"
+          >
+            {{ "subCategory.qodrat" | translate }}
+          </h2>
+        </div>
+      }
+      @if (name === "digital") {
+        <!-- <img
+        src="./../../../../../../assets/imgs/bgtitle.png"
+        class="hidden w-full h-full md:block"
+        loading="lazy"
+        alt="قدرات"
+      /> -->
+        <div class="relative block w-full h-full">
+          <img
+            src="./../../../../../../assets/imgs/bgtitle.png"
+            class="w-full h-full"
+            loading="lazy"
+            alt="bg"
+          />
+          <h2
+            class="absolute font-bold leading-loose -translate-x-1/2 -translate-y-1/2 text-7xl top-1/2 left-1/2 text-primaryAdmin"
+          >
+            {{ "subCategory.digital" | translate }}
+          </h2>
+        </div>
+      }
+      @if (name === "mohba") {
+        <img
+          src="assets/imgs/موهبة.webp"
+          class="hidden w-full h-full md:block"
+          loading="lazy"
+          alt="موهبة"
+        />
+        <div class="relative w-full h-full md:hidden">
+          <img
+            src="./../../../../../../assets/imgs/bgtitle.png"
+            class="w-full h-full"
+            loading="lazy"
+            alt="bg"
+          />
+          <h2
+            class="absolute font-bold -translate-x-1/2 -translate-y-1/2 text-7xl top-1/2 left-1/2 text-primaryAdmin"
+          >
+            {{ "subCategory.mohba" | translate }}
+          </h2>
+        </div>
+      }
+      @if (name === "qodrat-anglyzy") {
+        <img
+          src="assets/imgs/انجليزى.webp"
+          class="hidden w-full h-full md:block"
+          loading="lazy"
+          alt="القدارت بالانجليزية"
+        />
+        <div class="relative w-full h-full md:hidden">
+          <img
+            src="./../../../../../../assets/imgs/bgtitle.png"
+            class="w-full h-full"
+            loading="lazy"
+            alt="bg"
+          />
+          <h2
+            class="absolute font-bold leading-loose text-center -translate-x-1/2 -translate-y-1/2 text-7xl top-1/2 left-1/2 text-primaryAdmin"
+          >
+            {{ "subCategory.qodratEnglish" | translate }}
+          </h2>
+        </div>
+      }
+    </div>
+  </div>
+  <div
+    [ngClass]="
+      tahselis.length === 4 || mawhooba.length === 4
+        ? ' flex flex-col items-center justify-center '
+        : 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8'
+    "
+    class="px-12 md:flex-row gap-x-16 place-items-center"
+  >
+    @if (name === "tahsili") {
+      @for (tahseli of tahselis; track tahseli.name) {
+        <div class="grid place-items-center">
+          <div
+            [routerLink]="['/cateogry-tutorials/', tahseli.id]"
+            class="flex flex-col items-center justify-center"
+          >
+            <div
+              class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+            >
+              <img
+                [src]="tahseli.img"
+                alt="feature2"
+                loading="lazy"
+                class="w-[21rem]"
+              />
+            </div>
+          </div>
+        </div>
+      }
+      <div class="grid place-items-center">
+        <div
+          [routerLink]="['/exams/category/', 2]"
+          class="flex flex-col items-center justify-center"
+        >
+          <div
+            class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+          >
+            <img
+              src="assets/imgs/tahsili/3.png"
+              alt="feature2"
+              loading="lazy"
+              class="w-[32rem]"
+            />
+          </div>
+        </div>
+      </div>
+    }
+    @if (name === "qodrat") {
+      @for (qudrate of qudrates; track qudrate.name) {
+        <div class="grid place-items-center">
+          <div
+            [routerLink]="['/cateogry-tutorials/', qudrate.id]"
+            class="flex flex-col items-center justify-center"
+          >
+            <div
+              class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+            >
+              <img
+                [src]="qudrate.img"
+                alt="feature2"
+                loading="lazy"
+                class="w-[22rem]"
+              />
+            </div>
+          </div>
+        </div>
+      }
+      <div class="grid place-items-center">
+        <div
+          [routerLink]="['/exams/category/', 1]"
+          class="flex flex-col items-center justify-center"
+        >
+          <div
+            class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+          >
+            <img
+              src="assets/imgs/qodrat/2.png"
+              alt="feature2"
+              loading="lazy"
+              class="w-[30rem]"
+            />
+          </div>
+        </div>
+      </div>
+    }
+    @if (name === "digital") {
+      @for (qudrate of digital; track qudrate.name) {
+        <div class="grid place-items-center">
+          <div
+            [routerLink]="['/cateogry-tutorials/', qudrate.id]"
+            class="flex flex-col items-center justify-center mt-16"
+          >
+            <div
+              class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+            >
+              <img
+                [src]="qudrate.img"
+                alt="feature2"
+                loading="lazy"
+                class="w-[27rem]"
+              />
+            </div>
+          </div>
+        </div>
+      }
+    }
+    @if (name === "mohba") {
+      @for (mah of mawhooba; track mah.name) {
+        <div class="grname place-items-center">
+          <div
+            [routerLink]="['/cateogry-tutorials/', mah.id]"
+            class="flex flex-col items-center justify-center mt-16"
+          >
+            <div
+              class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+            >
+              <img
+                [src]="mah.img"
+                alt="feature2"
+                loading="lazy"
+                class="w-[27rem]"
+              />
+            </div>
+          </div>
+        </div>
+      }
+    }
+    @if (name === "qodrat-anglyzy") {
+      @for (qudrateEn of qudrateEng; track qudrateEn.name) {
+        <div class="grid place-items-center">
+          <div
+            [routerLink]="['/cateogry-tutorials/', qudrateEn.id]"
+            class="flex flex-col items-center justify-center mt-16"
+          >
+            <div
+              class="flex items-center justify-center w-full cursor-pointer hover:animate-pop"
+            >
+              <img
+                [src]="qudrateEn.img"
+                alt="feature2"
+                loading="lazy"
+                class="w-[27rem]"
+              />
+            </div>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,102 @@
+<div [ngClass]="subCategoryName ? 'py-16' : 'pt-16'" class="m-auto">
+  <div class="relative">
+    <div
+      class="absolute"
+      [ngClass]="{
+        '!bg-opacity-100 bg-white z-10 w-full h-screen': isLoading(),
+      }"
+    ></div>
+    <div [ngClass]="subCategoryName ? 'h-[22rem]' : 'h-3/5'">
+      <img
+        src="./../../../../../assets/imgs/bgtitle.png"
+        class="w-full h-full"
+        alt="bgtitle"
+      />
+    </div>
+
+    <!-- Dynamic Header Content (Desktop) -->
+    <div
+      [ngClass]="subCategoryName ? 'top-1/2' : 'top-1/4'"
+      class="absolute items-center hidden w-full -translate-x-1/2 -translate-y-1/2 left-1/2 lg:flex justify-evenly"
+    >
+      @if (subCategoryName) {
+        <h2 class="text-6xl font-bold text-primary">
+          {{ "categoryTutorials.courses" | translate }} {{ subCategoryName }}
+        </h2>
+        @if (currentCategoryImage) {
+          <div class="w-1/4">
+            <img
+              [src]="currentCategoryImage"
+              class="w-full"
+              [alt]="subCategoryName"
+            />
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Dynamic Header Content (Mobile) -->
+    <div
+      [ngClass]="subCategoryName ? 'top-1/2' : 'top-1/4'"
+      class="absolute flex items-center justify-center w-full -translate-x-1/2 -translate-y-1/2 lg:hidden left-1/2"
+    >
+      @if (subCategoryName) {
+        <h2 class="text-5xl font-bold leading-loose text-center text-primary">
+          {{ "categoryTutorials.courses" | translate }} {{ subCategoryName }}
+        </h2>
+      }
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  @if (isLoading()) {
+    <div
+      class="fixed z-50 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-opacity-60"
+    >
+      <div class="relative flex items-center justify-center">
+        <div
+          class="absolute border-t-4 border-b-4 rounded-full border-secondaryAdmin w-36 h-36 animate-spin"
+        ></div>
+        <img
+          src="assets/imgs/logo2.webp"
+          alt="logo"
+          class="rounded-full h-28 w-28"
+        />
+      </div>
+    </div>
+  } @else {
+    <div
+      class="grid grid-cols-1 gap-8 px-4 mt-8 md:px-16 md:grid-cols-2 lg:grid-cols-3"
+    >
+      @for (tutorial of tutorials; track tutorial.id) {
+        <app-course-card [tutorial]="tutorial" />
+      }
+    </div>
+  }
+</div>
+
+<!-- Coming Soon Section -->
+@if (isLoading() === false && !subCategoryName) {
+  <section class="relative flex flex-col flex-wrap bottom-[30rem]">
+    <div class="flex flex-row flex-wrap justify-center">
+      <div class="flex justify-center w-64 h-24 m-2 text-center">
+        <div class="z-10 flex-shrink-0 w-24 h-24">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3858/3858671.png"
+            width="256"
+            height="256"
+            alt="Coming soon free icon"
+            title="Coming soon free icon"
+          />
+        </div>
+        <div
+          class="flex flex-col self-center py-2 ps-16 pe-4 -ms-12 text-start text-white bg-blue-500 rounded-s-full w-fit"
+        >
+          <h3 class="text-xl">
+            {{ "categoryTutorials.comingSoon" | translate }}
+          </h3>
+        </div>
+      </div>
+    </div>
+  </section>
+}

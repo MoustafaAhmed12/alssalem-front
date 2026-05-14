@@ -1,0 +1,84 @@
+<app-super-navbar />
+<main dir="rtl" class="relative w-full pt-16 mx-auto max-w-7xl">
+<div class="flex flex-col items-center justify-center gap-4 my-8 md:justify-end md:flex-row">
+    <button
+
+    (click)="isVideoOpen.set(true)"
+    class="px-4 py-2 text-lg text-white transition-colors border rounded-lg md:px-8 md:py-2 bg-primaryAdmin hover:bg-green-700"
+  >
+     شرح كيفية إضافة طالب
+  </button>
+    <app-attach-parent-to-student
+    [parentId]="currentUser.id"
+    (fetchParentstds)="fetchAllParentStudents($event)"
+  />
+  
+</div>
+  <div class="grid grid-cols-1 gap-10 my-6 md:grid-cols-2">
+    @if (!isLoading) { @for (studentDetails of studentsParent; track
+    studentDetails.id) {
+    <app-card-student [student]="studentDetails" />
+    }@empty {
+    <div class="max-w-xl px-6 mx-auto my-4 text-lg bg-blue-200 rounded-md">
+      <div class="flex items-center py-4">
+        <svg
+          viewBox="0 0 24 24"
+          class="w-5 h-5 ml-3 text-blue-600 sm:w-5 sm:h-5"
+        >
+          <path
+            fill="currentColor"
+            d="M12,0A12,12,0,1,0,24,12,12.013,12.013,0,0,0,12,0Zm.25,5a1.5,1.5,0,1,1-1.5,1.5A1.5,1.5,0,0,1,12.25,5ZM14.5,18.5h-4a1,1,0,0,1,0-2h.75a.25.25,0,0,0,.25-.25v-4.5a.25.25,0,0,0-.25-.25H10.5a1,1,0,0,1,0-2h1a2,2,0,0,1,2,2v4.75a.25.25,0,0,0,.25.25h.75a1,1,0,1,1,0,2Z"
+          ></path>
+        </svg>
+        <span class="text-lg text-blue-800">ليس لديك أي طلاب حاليا..</span>
+      </div>
+      <p class="mb-4 text-base text-gray-700">
+        لابد للطالب أن يسجل من خلال أيميليه الذي سيدخل به المنصة كل مرة وإذا كان
+        لديك طالب مسجل بالفعل فيمكنه نسخ الرقم التعريفي من ملفه الشخصي ويرسله لك
+        وتضغه هنا لتتمكن من متابعة تقدمه في الدورات المشترك بها
+      </p>
+    </div>
+    } }@else {
+    <div class="fixed z-50 top-[40%] left-[45%] bg-opacity-60">
+      <div class="flex items-center">
+        <div
+          class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+      </div>
+    </div>
+    }
+  </div>
+</main>
+
+
+@if (isVideoOpen()) {
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div
+    class="relative flex flex-col items-center justify-center w-11/12 px-4 py-8 text-center bg-white rounded-lg shadow-lg md:w-8/12 gap-y-10"
+  >
+    <div class="w-full md:px-0 md:w-3/4 xl:w-11/12">
+      <h2 class="mb-4 font-bold md:text-xl">كيفية إضافة طالب</h2>
+      <div class="relative flex items-center justify-center w-full">
+        <iframe
+          class="w-11/12 h-96"
+            [src]="getDecodedUrl() | safeUrl"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+        <div
+          class="absolute inset-0 flex items-center justify-center text-xl font-bold text-white bg-black bg-opacity-50 opacity-0 cursor-pointer right-6 lg:right-8 xl:right-13 overlay hover:opacity-100"
+        ></div>
+      </div>
+    </div>
+    <button
+      type="button"
+      (click)="isVideoOpen.set(false)"
+      class="absolute text-xl text-red-500 transition-transform top-3 hover:scale-110 right-5"
+    >
+      X
+    </button>
+  </div>
+</div>
+}

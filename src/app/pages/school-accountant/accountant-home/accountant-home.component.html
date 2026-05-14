@@ -1,0 +1,226 @@
+<div class="relative">
+  <div class="pt-4 mb-12">
+    <div class="flex flex-col items-center justify-between md:flex-row gap-y-4">
+      <div class="flex items-center gap-x-4">
+        <app-title-screen [title]="'عدد الطلاب:'" />
+        <h4 class="mt-3 text-3xl font-semibold text-primaryAdmin">
+          {{ studentsCount }}
+        </h4>
+      </div>
+      <div class="flex items-center gap-x-2">
+        <h4 class="mt-3 text-2xl font-semibold text-primaryAdmin">
+          إجمالي المبلغ
+        </h4>
+        <h4 class="mt-3 text-2xl font-semibold text-primaryAdmin">
+          {{ totalAmount }}
+          <span class="font-semibold text-secondaryAdmin">ر.س</span>
+        </h4>
+      </div>
+    </div>
+    <form class="container mx-auto my-6">
+      <input
+        dir="rtl"
+        id="globalSearch"
+        (input)="onChange($event)"
+        class="w-full px-8 text-xl border rounded shadow-sm h-14 focus:border-2 focus:border-sky-600 focus:outline-none focus:shadow-outline"
+        type="search"
+        placeholder="إبحث ..."
+      />
+    </form>
+    <div
+      class="flex flex-col items-center justify-center md:flex-row md:justify-between"
+    >
+      @if (fromDate) {
+      <div
+        class="flex items-center text-lg font-semibold text-logoColor1 gap-x-4"
+      >
+        <span>من: {{ fromDate }}</span>
+        <span>الي: {{ toDate }}</span>
+      </div>
+      }
+      <button
+        (click)="exportTable()"
+        class="flex items-center p-2 text-sm text-white transition-colors bg-green-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-green-700"
+      >
+        <span>Export</span>
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center w-full md:justify-between md:flex-row"
+    >
+      <div class="w-4/6">
+        <ng-select
+          [items]="allSchools"
+          [closeOnSelect]="true"
+          [multiple]="true"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="اختر المدرسة"
+          (change)="changeSchool($event)"
+          class="w-full p-2 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div
+        class="relative flex items-center justify-center w-full my-8 sm:justify-end md:gap-x-4 gap-x-2"
+      >
+        <button
+          (click)="showModal()"
+          class="px-4 py-2 text-sm text-white transition-colors border rounded-lg md:text-lg md:px-8 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          تحديد تاريخ
+        </button>
+        <button
+          (click)="clearDate()"
+          class="px-4 py-2 text-sm text-white transition-colors bg-red-500 border rounded-lg md:text-lg md:px-8 md:py-2 hover:bg-red-600"
+        >
+          مسح التحديد
+        </button>
+      </div>
+    </div>
+    <ngx-table
+      [data]="data"
+      [configuration]="configuration"
+      #table
+      [columns]="columns"
+      [noResultsTemplate]="noResultsTemplate"
+    >
+    </ngx-table>
+    <ng-template #paymentDate let-row>
+      <div class="cursor-pointer">
+        {{ row.lastPayment | date : "dd-MM-yyyy" }}
+      </div>
+    </ng-template>
+    <ng-template #amount let-row>
+      <div>
+        {{ row?.totalPayment | currency : " " }}
+        <span class="font-semibold text-secondaryAdmin">ر.س</span>
+      </div>
+    </ng-template>
+    <ng-template #noResultsTemplate>
+      <td [attr.colspan]="columns.length" class="no-results">
+        لا تُوجد بيانات بعد.
+      </td>
+    </ng-template>
+    <!-- model -->
+    <div
+      dir="rtl"
+      [ngClass]="{ 'scale-100': modal }"
+      class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+    >
+      <div
+        class="flex items-center justify-center mx-auto md:w-[35rem] w-80 sm:px-6"
+      >
+        <div class="px-4 bg-white rounded-lg shadow-sm basis-full">
+          <div
+            class="flex justify-between px-2 pt-8 text-center md:text-right lg:px-8"
+          >
+            <h2 class="text-xl font-bold lg:text-3xl text-primaryAdmin">
+              أختر تاريخ
+            </h2>
+            <button (click)="hideModal()" class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M6 18 18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="space-y-4 rounded-lg" autocomplete="off">
+            <div class="py-4 bg-white rounded-lg md:px-4 lg:px-8">
+              <div class="mt-3 bg-white rounded-lg">
+                <div class="relative bg-inherit">
+                  <input
+                    type="date"
+                    name="fromDate"
+                    id="fromDate"
+                    [(ngModel)]="fromDate"
+                    placeholder="أدخل  التاريخ"
+                    class="w-full px-4 py-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  /><label
+                    for="fromDate"
+                    class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                  >
+                    من تاريخ</label
+                  >
+                </div>
+              </div>
+              <div class="mt-6 bg-white rounded-lg">
+                <div class="relative bg-inherit">
+                  <input
+                    type="date"
+                    name="toDate"
+                    id="toDate"
+                    [(ngModel)]="toDate"
+                    placeholder="أدخل التاريخ"
+                    class="w-full px-4 py-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-2 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  /><label
+                    for="toDate"
+                    class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                  >
+                    الي تاريخ</label
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="grid w-full place-items-center">
+              <button
+                type="button"
+                (click)="setPaymentDate()"
+                class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin w-fit focus:outline-none focus:ring-2 focus:ring-offset-2"
+              >
+                @if (configuration.isLoading) {
+                <div
+                  class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+                ></div>
+                } @else { عرض النتائج }
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div class="mt-6" dir="rtl">
+      <button
+        class="flex items-center p-2 text-sm text-white transition-colors bg-green-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-green-700"
+      >
+        <span>Export</span>
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </div> -->
+  </div>
+</div>

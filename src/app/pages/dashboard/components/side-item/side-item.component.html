@@ -1,0 +1,16 @@
+<a
+  [routerLink]="link"
+  routerLinkActive="activeLink"
+  ariaCurrentWhenActive="page"
+  [routerLinkActiveOptions]="{ exact: true }"
+  class="flex flex-col p-4 text-gray-500 transition-colors rounded-lg group hover:bg-primaryAdmin"
+>
+  <div class="flex h-5 gap-3 gap-x-4">
+    <div class="relative">
+      <fa-icon [icon]="icon"></fa-icon>
+    </div>
+    <h2 class="text-lg font-medium leading-snug transition-colors text-inherit">
+      {{ lable }}
+    </h2>
+  </div>
+</a>

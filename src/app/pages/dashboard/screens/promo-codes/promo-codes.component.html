@@ -1,0 +1,507 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isDelete }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'جميع أكواد الخصم'" />
+    <form class="container mx-auto my-6">
+      <input
+        dir="rtl"
+        id="globalSearch"
+        (input)="onChange($event)"
+        class="w-full px-8 text-xl border rounded shadow-sm h-14 focus:border-2 focus:border-sky-600 focus:outline-none focus:shadow-outline"
+        type="search"
+        placeholder="إبحث ..."
+      />
+    </form>
+    <div class="flex items-center justify-end w-full my-8" dir="rtl">
+      <div class="flex justify-end basis-4/12">
+        <button
+          (click)="showModal()"
+          class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          إضافة
+        </button>
+      </div>
+    </div>
+    <div class="mt-6" dir="rtl">
+      <button
+        (click)="exportTable()"
+        class="flex items-center p-2 text-sm text-white transition-colors bg-green-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-green-700"
+      >
+        <span>Export</span>
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <ngx-table
+      [data]="data"
+      [configuration]="configuration"
+      #table
+      [columns]="columns"
+      [noResultsTemplate]="noResultsTemplate"
+    >
+    </ngx-table>
+    <ng-template #startDateTable let-row>
+      <div>
+        {{ row.startDate | date: "dd/MM/yyyy" }}
+      </div>
+    </ng-template>
+    <ng-template #endDateTable let-row>
+      <div>
+        {{ row.endDate | date: "dd/MM/yyyy" }}
+      </div>
+    </ng-template>
+    <ng-template #discount let-row>
+      <div>{{ row.discount }} {{ row.isPrecent ? "%" : "ر.س" }}</div>
+    </ng-template>
+    <ng-template #totalUsed let-row>
+      <div>
+        <span class="text-red-500">{{
+          row.usageCount - row.remainUsageCount
+        }}</span>
+        |
+        <span class="text-green-500">{{ row.usageCount }}</span>
+      </div>
+    </ng-template>
+    <ng-template #actionToggle let-row>
+      <label class="relative inline-flex items-center cursor-pointer">
+        <input
+          id="switch-3"
+          name="toggle"
+          [checked]="row.isActive"
+          [disabled]="isLoading"
+          type="checkbox"
+          class="sr-only peer"
+          (change)="changeIsActive(row.id, row.isActive, $event)"
+        />
+        <label for="switch-3" class="hidden"></label>
+        <div
+          class="peer h-4 w-11 rounded border bg-slate-200 after:absolute after:-top-1 after:left-0 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-gray-200 after:transition-all after:content-[''] -300 peer-disabled:opacity-50"
+          [class]="
+            row.isActive
+              ? 'peer-checked:bg-primaryAdmin peer-checked:after:translate-x-full peer-focus:ring-green '
+              : 'bg-slate-200'
+          "
+        ></div>
+      </label>
+    </ng-template>
+    <ng-template #noResultsTemplate>
+      <td [attr.colspan]="columns.length" class="no-results">
+        لا تُوجد بيانات بعد.
+      </td>
+    </ng-template>
+  </div>
+  <!-- edit -->
+  <ng-template #actionTpl let-row>
+    <div class="flex items-center justify-center gap-x-12">
+      <svg
+        (click)="edit(row.id)"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-green-600 cursor-pointer hover:text-green-700"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+        />
+      </svg>
+      <svg
+        (click)="remove(row.id)"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-red-600 cursor-pointer hover:text-red-700"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+        />
+      </svg>
+    </div>
+  </ng-template>
+  <!-- model -->
+  <div
+    [ngClass]="{ 'scale-100': modal }"
+    class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+  >
+    <div
+      class="flex items-center justify-center mx-auto lg:w-[55rem] max-h-[90vh] h-[90vh] overflow-y-auto md:w-[42rem] w-[25rem] sm:w-[38rem] sm:px-6"
+    >
+      <div class="h-full bg-white rounded-lg shadow-sm md:border basis-full">
+        <div
+          class="flex justify-between px-6 pt-8 text-center md:text-right lg:px-8"
+        >
+          <h2 class="text-xl font-bold lg:text-3xl text-primaryAdmin">
+            {{ promoId === 0 ? "إضافة" : "تعديل" }}
+          </h2>
+          <button (click)="hideModal()" class="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <form
+          [formGroup]="this.formData"
+          (ngSubmit)="onSubmit()"
+          class="space-y-4 bg-white rounded-lg"
+          autocomplete="off"
+        >
+          <div class="px-6 pb-4 rounded-lg md:px-4 lg:px-8">
+            <div class="flex items-center justify-start mt-8 gap-x-4">
+              <input
+                type="checkbox"
+                #check
+                (change)="setM(check)"
+                id="m"
+                class="px-4 py-4 my-2 size-6"
+              />
+              <label for="m" class="text-lg text-gray-500">يدوي</label>
+            </div>
+
+            <div
+              class="grid w-full grid-cols-1 mt-4 gap-x-4"
+              [class]="promoId === 0 ? 'md:grid-cols-2' : ''"
+            >
+              <div class="col-span-1 rounded-lg">
+                <div class="flex flex-col gap-y-0.5">
+                  <label for="promoCodeName" class="text-sm text-gray-500"
+                    >اسم الكود</label
+                  >
+                  <input
+                    type="text"
+                    name="promoCodeName"
+                    formControlName="promoCodeName"
+                    id="promoCodeName"
+                    placeholder="اسم الكود"
+                    [ngClass]="
+                      formData.controls['promoCodeName'].errors && submitted
+                        ? 'ring-rose-600'
+                        : 'border-gray-300 focus:ring-sky-600'
+                    "
+                    class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  />
+                  @if (submitted && formData.controls["promoCodeName"].errors) {
+                    <div>
+                      @if (
+                        formData.controls["promoCodeName"].errors["required"]
+                      ) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              @if (promoId === 0) {
+                @if (isM) {
+                  <div class="relative col-span-1 rounded-lg">
+                    <div class="relative flex flex-col bg-inherit gap-y-0.5">
+                      <label for="promoCodeName" class="text-sm text-gray-500"
+                        >كود الكود</label
+                      >
+                      <input
+                        type="text"
+                        name="customPromoCode"
+                        formControlName="customPromoCode"
+                        id="customPromoCode"
+                        placeholder="كود الخصم"
+                        class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                } @else {
+                  <div class="relative col-span-1 rounded-lg">
+                    <div class="relative bg-inherit flex flex-col gap-y-0.5">
+                      <label
+                        for="numberOfPromoCodes"
+                        class="text-sm text-gray-500"
+                        >عدد أكواد الخصم</label
+                      >
+                      <input
+                        type="number"
+                        name="numberOfPromoCodes"
+                        formControlName="numberOfPromoCodes"
+                        id="numberOfPromoCodes"
+                        placeholder="عدد أكواد الخصم"
+                        class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                      />
+                    </div>
+                  </div>
+                }
+              }
+            </div>
+            <div class="grid w-full grid-cols-1 mt-2 md:grid-cols-3 gap-x-4">
+              <div class="relative flex flex-col col-span-1 rounded-lg gap-y-1">
+                <label for="isPrecent">
+                  هل هي نسبة ؟
+                  <input
+                    type="checkbox"
+                    name="isPrecent"
+                    id="isPrecent"
+                    formControlName="isPrecent"
+                  />
+                </label>
+                <div class="relative bg-inherit">
+                  <input
+                    type="number"
+                    name="discount"
+                    formControlName="discount"
+                    id="discount"
+                    [placeholder]="
+                      formData.get('isPrecent')?.value
+                        ? 'نسبة الخصم'
+                        : 'سعر الشراء'
+                    "
+                    [ngClass]="
+                      formData.controls['discount'].errors && submitted
+                        ? 'ring-rose-600'
+                        : 'border-gray-300 focus:ring-sky-600'
+                    "
+                    class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  />
+                  @if (submitted && formData.controls["discount"].errors) {
+                    <div>
+                      @if (formData.controls["discount"].errors["required"]) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div class="relative col-span-1 rounded-lg">
+                <div class="relative bg-inherit flex flex-col gap-y-0.5">
+                  <label for="usageCount" class="text-sm text-gray-500"
+                    >عدد المرات</label
+                  >
+                  <input
+                    type="number"
+                    name="usageCount"
+                    formControlName="usageCount"
+                    id="usageCount"
+                    placeholder="عدد المرات"
+                    [ngClass]="
+                      formData.controls['usageCount'].errors && submitted
+                        ? 'ring-rose-600'
+                        : 'border-gray-300 focus:ring-sky-600'
+                    "
+                    class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  />
+                  @if (submitted && formData.controls["usageCount"].errors) {
+                    <div>
+                      @if (formData.controls["usageCount"].errors["required"]) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+
+              @if (this.promoId !== 0) {
+                <div class="relative col-span-1 rounded-lg">
+                  <div class="relative bg-inherit flex flex-col gap-y-0.5">
+                    <label for="remainUsageCount" class="text-sm text-gray-500"
+                      >العدد المتبقي</label
+                    >
+                    <input
+                      type="number"
+                      name="remainUsageCount"
+                      formControlName="remainUsageCount"
+                      id="remainUsageCount"
+                      placeholder="العدد المتبقي"
+                      class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                    />
+                  </div>
+                </div>
+              }
+            </div>
+            <div class="grid w-full grid-cols-1 mt-8 md:grid-cols-3 gap-x-4">
+              <div class="relative col-span-1 rounded-lg">
+                <input
+                  type="date"
+                  name="startDate"
+                  formControlName="startDate"
+                  id="startDate"
+                  placeholder="أدخل  التاريخ"
+                  class="w-full px-4 py-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                /><label
+                  for="startDate"
+                  class="absolute right-0 px-1 text-sm text-gray-500 transition-all cursor-text -top-6 peer-focus:text-sky-600"
+                >
+                  من تاريخ</label
+                >
+                @if (submitted && formData.controls["startDate"].errors) {
+                  <div>
+                    @if (formData.controls["startDate"].errors["required"]) {
+                      <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="relative col-span-1 mt-6 rounded-lg md:mt-0">
+                <input
+                  type="date"
+                  name="endDate"
+                  formControlName="endDate"
+                  id="endDate"
+                  placeholder="أدخل التاريخ"
+                  class="w-full px-4 py-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                /><label
+                  for="endDate"
+                  class="absolute right-0 px-1 text-sm text-gray-500 transition-all cursor-text -top-6 peer-focus:text-sky-600"
+                >
+                  إلى تاريخ</label
+                >
+              </div>
+              <div class="relative col-span-1 mt-6 rounded-lg md:mt-0">
+                <input
+                  type="number"
+                  name="benifitPeriodInWeek"
+                  formControlName="benifitPeriodInWeek"
+                  id="benifitPeriodInWeek"
+                  placeholder="مدة الاستفادة من الدورة"
+                  class="w-full px-4 py-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                /><label
+                  for="benifitPeriodInWeek"
+                  class="absolute right-0 px-1 text-sm text-gray-500 transition-all cursor-text -top-6 peer-focus:text-sky-600"
+                >
+                  مدة الاستفادة من الدورة</label
+                >
+              </div>
+            </div>
+            <div class="flex flex-col items-center mt-3 lg:flex-row gap-x-4">
+              <div class="flex flex-col w-full gap-y-1">
+                <label for="isPackage">
+                  هل هي باقة ؟
+                  <input
+                    type="checkbox"
+                    name="isPrecent"
+                    id="isPackage"
+                    [checked]="isPackage"
+                    (change)="isPackageFun($event)"
+                  />
+                </label>
+                @if (isPackage) {
+                  <ng-select
+                    [items]="packageByNames"
+                    [closeOnSelect]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="packageId"
+                    placeholder="اختر الباقة"
+                    [loading]="isLoading"
+                    class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  >
+                  </ng-select>
+                } @else {
+                  <ng-select
+                    [closeOnSelect]="false"
+                    [hideSelected]="true"
+                    [multiple]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="tutorialsIds"
+                    placeholder="اختر الدورات"
+                    [loading]="isLoading"
+                    (change)="handleFilter($event)"
+                    class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                  >
+                    @if (isAll) {
+                      <ng-option [value]="{ id: 0, name: 'all' }">
+                        كل الدورات
+                      </ng-option>
+                    }
+                    @for (item of softCopyTutorials; track item.id) {
+                      <ng-option [value]="item">
+                        {{ item.name }}
+                      </ng-option>
+                    }
+                  </ng-select>
+                }
+              </div>
+            </div>
+            <ng-select
+              [items]="freeTutorials"
+              [closeOnSelect]="false"
+              [hideSelected]="true"
+              [multiple]="true"
+              bindLabel="name"
+              bindValue="id"
+              formControlName="freeTutorialsIds"
+              placeholder="اختر الدورات المجانية"
+              [loading]="isLoading"
+              class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            >
+            </ng-select>
+          </div>
+          <div class="grid w-full place-items-center">
+            <button
+              type="submit"
+              class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin w-fit focus:outline-none focus:ring-1 focus:ring-offset-2"
+            >
+              @if (isLoading) {
+                <div
+                  class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+                ></div>
+              } @else {
+                حفظ
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @if (isDelete) {
+    <div class="fixed z-50 top-1/2 left-[40rem] bg-opacity-60">
+      <div class="flex items-center">
+        <div
+          class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+      </div>
+    </div>
+  }
+</div>

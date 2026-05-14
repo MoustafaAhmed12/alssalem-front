@@ -1,0 +1,89 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoadingSave }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'امتحانات الخطة'" />
+
+    <div class="grid w-full grid-cols-1 gap-6 mt-6 md:grid-cols-2">
+      <div class="flex flex-col gap-y-1">
+        <label for="categoryId" class="text-lg text-gray-800">
+          اختر التصنيف
+        </label>
+        <ng-select
+          [items]="allCategory"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          [(ngModel)]="categoryId"
+          (change)="onCategoryChange()"
+          placeholder="اختر التصنيف"
+          [loading]="isLoading"
+          class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="flex flex-col gap-y-1">
+        <label for="categoryId" class="text-lg text-gray-800">
+          ترتيب الدورات
+        </label>
+        <ng-select
+          [items]="tutorials"
+          [closeOnSelect]="false"
+          [hideSelected]="true"
+          [multiple]="true"
+          bindLabel="name"
+          bindValue="id"
+          [(ngModel)]="tutorialIds"
+          placeholder="ترتيب الدورات"
+          [loading]="isLoadingTutorials"
+          class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="flex flex-col gap-y-1">
+        <label for="categoryId" class="text-lg text-gray-800">
+          اختر الاختبارات
+        </label>
+        <ng-select
+          [items]="allCategoryExams"
+          [closeOnSelect]="false"
+          [hideSelected]="true"
+          [multiple]="true"
+          bindLabel="name"
+          bindValue="id"
+          [(ngModel)]="examIds"
+          placeholder="اختر الاختبارات"
+          [loading]="isLoadingExams"
+          class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+    </div>
+    <div class="flex items-center justify-end w-full my-8" dir="rtl">
+      <div class="flex justify-end basis-4/12">
+        <button
+          (click)="onSubmit()"
+          class="flex items-center px-4 py-2 text-lg text-white transition-colors border rounded-lg gap-x-2 md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          حفظ
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

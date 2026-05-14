@@ -1,0 +1,75 @@
+<div class="flex items-center h-full p-2 bg-white border-b shadow-sm">
+  <div class="flex items-center justify-between w-full ps-8 md:px-8 gap-x-6">
+    <div class="flex items-center pb-2 gap-x-4 ps-4">
+      <a routerLink="/" class="items-center cursor-pointer">
+        <img src="assets/imgs/logo2.webp" width="55" alt="Logo" />
+      </a>
+      <div class="transition-all duration-500">
+        <ul class="flex text-sm text-black md:mt-4 gap-x-6 md:font-medium">
+          <li
+            routerLink="/"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="hidden py-2 font-semibold transition-all rounded-lg cursor-pointer md:block border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+          >
+            <span>الرئيسية</span>
+          </li>
+          <li
+            routerLink="/profile"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="block py-2 font-semibold transition-all rounded-lg cursor-pointer border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+          >
+            <span>الملف الشخصي</span>
+          </li>
+          <li
+            routerLink="/profile/plan"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="hidden py-2 font-semibold transition-all rounded-lg cursor-pointer md:block border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+          >
+            <span>خطتي</span>
+          </li>
+          <li
+            routerLink="/cateogry/qodrat"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="hidden py-2 font-semibold transition-all rounded-lg cursor-pointer lg:block border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+          >
+            <span>قدرات</span>
+          </li>
+          <li
+            routerLink="/cateogry/tahsili"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="hidden py-2 font-semibold transition-all rounded-lg cursor-pointer lg:block border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+          >
+            <span>تحصيلي</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+    @if (!this.router.url.includes("exam-mock")) {
+      <button
+        (click)="toTurorial()"
+        class="flex items-center mr-auto transition-colors gap-x-2 hover:text-red-600"
+      >
+        <span class="text-base"> إلى الدورة </span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"
+          />
+        </svg>
+      </button>
+    }
+  </div>
+</div>

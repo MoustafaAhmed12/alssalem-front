@@ -1,0 +1,73 @@
+<h2 class="mb-6 text-lg font-bold text-center text-primaryAdmin">
+  لتحقيق أقصى استفادة من الدورة، يُرجى اتباع التعليمات التالية:
+</h2>
+<div class="mt-6 text-center">
+  <iframe
+    width="100%"
+    height="250"
+    [src]="getVideo() | safeUrl"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+  <!-- @if (id() === 3 || id() === 4) {
+  <iframe
+    width="100%"
+    height="250"
+    src="
+       https://www.youtube.com/embed/8R3X0bm8B8k?si=WFbkAfCdlok2MhZA"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+  }@else {
+  <iframe
+    width="100%"
+    height="250"
+    src="https://www.youtube.com/embed/-th4XulBIH0?si=TaqQcux60XK-BEdM"
+    title="YouTube video player"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    referrerpolicy="strict-origin-when-cross-origin"
+    allowfullscreen
+  ></iframe>
+
+  } -->
+  <!-- <ng-content></ng-content> -->
+</div>
+<!-- Step 1 -->
+<div class="mb-6 space-y-4">
+  <div class="p-4 bg-gray-100 rounded-md shadow-sm">
+    <h3 class="font-semibold text-secondaryAdmin">1. ابدأ بحل الاختبار:</h3>
+    <p class="mt-2 text-gray-600">
+      إذا حققت نسبة نجاح أعلى من الحد المطلوب، لا داعي لمشاهدة مقطع الفيديو،
+      ويمكنك الانتقال إلى الاختبار التالي.
+    </p>
+  </div>
+</div>
+<!-- Step 2 -->
+<div class="space-y-4">
+  <div class="p-4 bg-gray-100 rounded-md shadow-sm">
+    <h3 class="font-semibold text-secondaryAdmin">
+      2. إذا لم تتجاوز درجة النجاح، عليك القيام بـ ٣ خطوات:
+    </h3>
+    <ul
+      class="mt-2 space-y-2 text-[15px] text-gray-600 list-decimal list-inside"
+    >
+      <li>
+        أولاً: شاهد المقطع التعليمي الذي يلي الاختبار لفهم المهارة بشكل أفضل.
+      </li>
+      <li>
+        ثانياً: اضغط على زر "مراجعة الإجابات" لتتعرف على الإجابة الصحيحة لكل
+        سؤال. ويوجد أيضًا زر "شرح السؤال" الذي يتيح لك عرض شرح تفصيلي لكل سؤال
+        على حدة.
+      </li>
+      <li>ثالثاً: قم بإعادة الاختبار مرة أخرى حتى تصل لدرجة النجاح.</li>
+    </ul>
+  </div>
+</div>
+<!-- Video Link -->

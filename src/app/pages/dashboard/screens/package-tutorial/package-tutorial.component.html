@@ -1,0 +1,115 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoading }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'بكدج الدورات'" />
+    <form class="container mx-auto my-6">
+      <input
+        dir="rtl"
+        id="globalSearch"
+        (input)="onChange($event)"
+        class="w-full px-8 text-xl border rounded shadow-sm h-14 focus:border-2 focus:border-sky-600 focus:outline-none focus:shadow-outline"
+        type="search"
+        placeholder="إبحث ..."
+      />
+    </form>
+    <div class="flex items-center justify-end w-full my-8" dir="rtl">
+      <div class="flex justify-end basis-4/12">
+        <button
+          (click)="goToAddPackage()"
+          class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          إضافة
+        </button>
+      </div>
+    </div>
+    <ngx-table
+      [data]="data"
+      [configuration]="configuration"
+      #table
+      [columns]="columns"
+      [noResultsTemplate]="noResultsTemplate"
+      [summaryTemplate]="summaryTemplateRef"
+    >
+    </ngx-table>
+    <ng-template #summaryTemplateRef let-total="total">
+      <th colspan="6">
+        <span class="mb-2 text-logoColor1"
+          >عدد البكدج الموجودة: {{ total }}
+        </span>
+      </th>
+    </ng-template>
+    <ng-template #noResultsTemplate>
+      <td [attr.colspan]="columns.length" class="no-results">
+        لا تُوجد البكدج بعد.
+      </td>
+    </ng-template>
+  </div>
+  <ng-template #editPrice let-row>
+    <div>
+      {{ row.price | currency : " " }}
+      <span class="text-secondaryAdmin">ر.س</span>
+    </div>
+  </ng-template>
+  <ng-template #actionToggle let-row>
+    <label class="relative inline-flex items-center cursor-pointer">
+      <input
+        id="switch-3"
+        name="toggle"
+        [checked]="row.isActive"
+        id="toggle"
+        type="checkbox"
+        class="sr-only peer"
+        (change)="changeIsActive(row.id)"
+      />
+      <label for="switch-3" class="hidden"></label>
+      <div
+        class="peer h-4 w-11 rounded border bg-slate-200 after:absolute after:-top-1 after:left-0 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-gray-200 after:transition-all after:content-[''] peer-checked:bg-primaryAdmin peer-checked:after:translate-x-full peer-focus:ring-green-300"
+      ></div>
+    </label>
+  </ng-template>
+  <ng-template #actionTpl let-row>
+    <div class="flex items-center justify-center gap-x-12">
+      <svg
+        (click)="edit(row.id)"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-green-600 cursor-pointer hover:text-green-700"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+        />
+      </svg>
+    </div>
+  </ng-template>
+  @if(isLoading) {
+  <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</div>

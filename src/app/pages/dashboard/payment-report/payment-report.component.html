@@ -1,0 +1,516 @@
+<div class="min-h-screen py-6" dir="rtl">
+  <div class="mx-auto max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="mb-2 text-3xl font-bold text-gray-900">تقرير عمليات الدفع</h1>
+      <p class="text-gray-600">إدارة ومراقبة جميع عمليات الدفع</p>
+    </div>
+    @if (!isLoading()) {
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-3">
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">إجمالي المبالغ</p>
+            <p class="text-xl font-bold text-green-600">
+              {{ statistics().totalAmount | currency : " " }} ريال
+            </p>
+          </div>
+          <div class="p-3 bg-green-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">إجمالي العمليات</p>
+            <p class="text-xl font-bold text-gray-900">
+              {{ statistics().totalOperations }}
+            </p>
+          </div>
+          <div class="p-3 bg-blue-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">العمليات الناجحة</p>
+            <p class="text-xl font-bold text-green-600">
+              {{ statistics().successfulOperations }}
+            </p>
+          </div>
+          <div class="p-3 bg-green-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-green-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">العمليات الفاشلة</p>
+            <p class="text-xl font-bold text-red-600">
+              {{ statistics().failedOperations }}
+            </p>
+          </div>
+          <div class="p-3 bg-red-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-red-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">العمليات الجديدة</p>
+            <p class="text-xl font-bold text-blue-600">
+              {{ statistics().newfulOperations }}
+            </p>
+          </div>
+          <div class="p-3 bg-red-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 bg-white rounded-lg shadow-md">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-gray-600">
+              العمليات قيد التنفيذ
+            </p>
+            <p class="text-xl font-bold text-yellow-600">
+              {{ statistics().pendingfulOperations }}
+            </p>
+          </div>
+          <div class="p-3 bg-red-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="p-6 mb-8 bg-white rounded-lg shadow-md">
+      <h2 class="mb-4 text-lg font-semibold text-gray-900">الفلاتر</h2>
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <!-- School Filter -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >المدرسة</label
+          >
+          <select
+            [value]="schoolFilter()"
+            (change)="onSchoolChange($event)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">جميع المدارس</option>
+            @for (school of uniqueSchools(); track school) {
+            <option [value]="school">{{ school }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Date From -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >من تاريخ</label
+          >
+          <input
+            type="date"
+            [value]="dateFromFilter()"
+            (change)="onDateFromChange($event)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Date To -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >إلى تاريخ</label
+          >
+          <input
+            type="date"
+            [value]="dateToFilter()"
+            (change)="onDateToChange($event)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <!-- Status Filter -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >حالة العملية</label
+          >
+          <select
+            [value]="statusFilter()"
+            (change)="onStatusChange($event)"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">جميع الحالات</option>
+            <option value="Pending">قيد التنفيذ</option>
+            <option value="PaymentReceived">العملية نجحت</option>
+            <option value="PaymentFailed">العملية فشلت</option>
+            <option value="NewPayment">عملية جديدة</option>
+          </select>
+        </div>
+
+        <!-- Search -->
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >البحث</label
+          >
+          <input
+            type="text"
+            [value]="searchFilter()"
+            (input)="onSearchChange($event)"
+            placeholder="اسم الطالب أو رقم الهاتف"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            class="sr-only peer"
+            [checked]="failedOnlyFilter()"
+            (change)="onFailedOnlyToggle($event)"
+          />
+          <div
+            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-green-500 after:content-[''] after:absolute after:w-5 after:h-5 after:bg-white after:rounded-full after:transition-all after:top-0.5 after:left-[2px] peer-checked:after:translate-x-full"
+          ></div>
+          <span class="ml-3 text-sm font-medium text-gray-900"
+            >فشل كل المحاولات</span
+          >
+        </label>
+
+        <label class="inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            class="sr-only peer"
+            [checked]="distinctFilter()"
+            (change)="onDistinctToggle($event)"
+          />
+          <div
+            class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-blue-500 after:content-[''] after:absolute after:w-5 after:h-5 after:bg-white after:rounded-full after:transition-all after:top-0.5 after:left-[2px] peer-checked:after:translate-x-full"
+          ></div>
+          <span class="ml-3 text-sm font-medium text-gray-900"
+            >عدم التكرار</span
+          >
+        </label>
+      </div>
+
+      <!-- Clear Filters Button -->
+      <div class="flex items-center justify-end mt-4 gap-x-6">
+        <button
+          (click)="clearFilters()"
+          class="px-4 py-2 text-white transition-colors bg-gray-500 rounded-md hover:bg-gray-600"
+        >
+          مسح الفلاتر
+        </button>
+        <button
+          (click)="exportData()"
+          class="px-4 py-2 text-white transition-colors rounded-md bg-primaryAdmin hover:bg-green-600"
+        >
+          تصدير البيانات
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="p-4 mb-6 bg-white rounded-lg shadow-md">
+      <p class="text-sm text-gray-600">
+        عرض {{ paginatedData().length }} من أصل
+        {{ filteredData().length }} عملية
+      </p>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-hidden bg-white rounded-lg shadow-md">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead
+            class="text-sm font-semibold text-center text-white bg-secondaryAdmin"
+          >
+            <tr>
+              <th class="p-3">الرقم</th>
+              <th class="p-3">اسم الطالب</th>
+              <th class="p-3">المدرسة</th>
+              <th class="p-3">رقم الهاتف</th>
+              <th class="p-3">الحالة</th>
+              <th class="p-3">تاريخ العملية</th>
+              <!-- <th class="p-3">المبلغ الأصلي</th>
+              <th class="p-3">الخصم</th> -->
+              <th class="p-3">المبلغ النهائي</th>
+              <!-- <th
+                class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+              >
+                التفاصيل
+              </th> -->
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (payment of paginatedData(); track payment.id; let i = $index)
+            {
+            <tr class="text-sm font-medium text-center hover:bg-gray-50">
+              <td class="p-3 whitespace-nowrap">
+                {{ payment.id }}
+              </td>
+              <td class="p-3 border-gray-200 border-x whitespace-nowrap">
+                {{ payment.studentName }}
+              </td>
+              <td class="p-3 whitespace-nowrap">
+                {{ payment.schoolName || "غير محدد" }}
+              </td>
+              <td class="p-3 border-gray-200 whitespace-nowrap border-x">
+                {{ payment.phone }}
+              </td>
+              <td class="p-3 whitespace-nowrap">
+                <span
+                  [class]="getStatusClass(payment.paymentStatus)"
+                  class="inline-flex px-2 text-xs font-semibold leading-5 rounded-full"
+                >
+                  {{ getStatusText(payment.paymentStatus) }}
+                </span>
+              </td>
+              <td class="p-3 border-gray-200 whitespace-nowrap border-x">
+                {{ formatDate(payment.paymentDate) }}
+              </td>
+              <!-- <td class="p-3 whitespace-nowrap">{{ payment.amount }} ر.س</td>
+              <td class="p-3 text-red-600 whitespace-nowrap">
+                {{ payment.discount }} ر.س
+              </td> -->
+              <td class="p-3 font-medium text-green-600 whitespace-nowrap">
+                {{ payment.totalAmount }} ر.س
+              </td>
+
+              <!-- <td class="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                <button
+                  (click)="toggleDetails(payment.id)"
+                  class="text-blue-600 hover:text-blue-900"
+                >
+                  {{ expandedRows().has(payment.id) ? "إخفاء" : "عرض" }}
+                  التفاصيل
+                </button>
+              </td> -->
+            </tr>
+            <!-- @if (expandedRows().has(payment.id)) {
+            <tr>
+              <td colspan="10" class="px-6 py-4 bg-gray-50">
+                <div class="space-y-2">
+                  <h4 class="font-medium text-gray-900">تفاصيل الدورات:</h4>
+                  @for (detail of payment.details; track detail.tutorialId) {
+                  @if (detail.amount > 0) {
+                  <div
+                    class="flex items-center justify-between p-3 bg-white border rounded"
+                  >
+                    <span class="text-sm text-gray-700">{{
+                      detail.tutorialName
+                    }}</span>
+                    <span class="text-sm font-medium text-gray-900"
+                      >{{ detail.amount }} ريال</span
+                    >
+                  </div>
+                  } }
+                </div>
+              </td>
+            </tr>
+            }  -->
+
+            } @empty {
+            <tr>
+              <td colspan="10" class="px-6 py-4 text-center text-gray-500">
+                لا توجد عمليات دفع
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
+      >
+        <div class="flex justify-between flex-1 sm:hidden">
+          <button
+            (click)="previousPage()"
+            [disabled]="currentPage() === 1"
+            class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            السابق
+          </button>
+          <button
+            (click)="nextPage()"
+            [disabled]="currentPage() === totalPages()"
+            class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            التالي
+          </button>
+        </div>
+        <div
+          class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between"
+        >
+          <div>
+            <p class="text-sm text-gray-700">
+              عرض
+              <span class="font-medium">{{
+                (currentPage() - 1) * itemsPerPage() + 1
+              }}</span>
+              إلى
+              <span class="font-medium">{{
+                Math.min(currentPage() * itemsPerPage(), filteredData().length)
+              }}</span>
+              من
+              <span class="font-medium">{{ filteredData().length }}</span>
+              نتيجة
+            </p>
+          </div>
+          <div>
+            <nav
+              class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm"
+              aria-label="Pagination"
+            >
+              <button
+                (click)="previousPage()"
+                [disabled]="currentPage() === 1"
+                class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">السابق</span>
+                <svg
+                  class="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+
+              @for (page of getPageNumbers(); track page) {
+              <button
+                (click)="goToPage(page)"
+                [class]="
+                  page === currentPage()
+                    ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                    : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                "
+                class="relative inline-flex items-center px-4 py-2 text-sm font-medium border"
+              >
+                {{ page }}
+              </button>
+              }
+
+              <button
+                (click)="nextPage()"
+                [disabled]="currentPage() === totalPages()"
+                class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50"
+              >
+                <span class="sr-only">التالي</span>
+                <svg
+                  class="w-5 h-5"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    }@else {
+    <div class="fixed z-50 top-[40%] left-[40%] bg-opacity-60">
+      <div class="flex items-center">
+        <div
+          class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

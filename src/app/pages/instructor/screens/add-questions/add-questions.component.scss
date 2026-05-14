@@ -1,0 +1,23 @@
+ ::ng-deep .custom-select .ng-select-container {
+     @apply border-2 border-gray-400 rounded-md px-4 py-2 bg-gray-50 transition-all;
+ }
+
+ ::ng-deep .custom-select .ng-select-container:hover {
+     @apply border-primaryAdmin/50 bg-white;
+ }
+
+ ::ng-deep .custom-select.ng-select-focused .ng-select-container {
+     @apply border-primaryAdmin bg-white ring-2 ring-primaryAdmin/20;
+ }
+
+ ::ng-deep .custom-select .ng-value-label {
+     @apply text-gray-800 font-medium;
+ }
+
+ ::ng-deep .custom-select .ng-placeholder {
+     @apply text-gray-400;
+ }
+
+ ::ng-deep .custom-select .ng-arrow-wrapper {
+     @apply text-primaryAdmin;
+ }

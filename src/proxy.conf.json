@@ -1,0 +1,7 @@
+{
+    "/Attachments": {
+        "target": "https://backend.alssalem.com",
+        "secure": false,
+        "changeOrigin": true
+    }
+}

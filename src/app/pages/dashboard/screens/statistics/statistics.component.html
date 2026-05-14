@@ -1,0 +1,408 @@
+<div class="min-h-screen pt-6 pb-16">
+  <h2
+    class="flex flex-col items-center justify-center gap-4 mb-6 text-xl font-bold text-center sm:flex-row md:text-3xl text-primaryAdmin"
+  >
+    <span> إحصائيات المدارس </span>
+  </h2>
+  @if (!isLoadingExam()) {
+  <div
+    class="flex flex-col flex-wrap justify-start w-full md:justify-between md:flex-row"
+  >
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
+        <svg
+          class="text-white size-7 md:size-8"
+          viewBox="0 0 28 30"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.2 9.08889C18.2 11.5373 16.3196 13.5222 14 13.5222C11.6804 13.5222 9.79999 11.5373 9.79999 9.08889C9.79999 6.64043 11.6804 4.65556 14 4.65556C16.3196 4.65556 18.2 6.64043 18.2 9.08889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M25.2 12.0444C25.2 13.6768 23.9464 15 22.4 15C20.8536 15 19.6 13.6768 19.6 12.0444C19.6 10.4121 20.8536 9.08889 22.4 9.08889C23.9464 9.08889 25.2 10.4121 25.2 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M19.6 22.3889C19.6 19.1243 17.0927 16.4778 14 16.4778C10.9072 16.4778 8.39999 19.1243 8.39999 22.3889V26.8222H19.6V22.3889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M8.39999 12.0444C8.39999 13.6768 7.14639 15 5.59999 15C4.05359 15 2.79999 13.6768 2.79999 12.0444C2.79999 10.4121 4.05359 9.08889 5.59999 9.08889C7.14639 9.08889 8.39999 10.4121 8.39999 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M22.4 26.8222V22.3889C22.4 20.8312 22.0195 19.3671 21.351 18.0949C21.6863 18.0039 22.0378 17.9556 22.4 17.9556C24.7197 17.9556 26.6 19.9404 26.6 22.3889V26.8222H22.4Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M6.64896 18.0949C5.98058 19.3671 5.59999 20.8312 5.59999 22.3889V26.8222H1.39999V22.3889C1.39999 19.9404 3.2804 17.9556 5.59999 17.9556C5.96219 17.9556 6.31367 18.0039 6.64896 18.0949Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.studentsCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">
+          عدد الطلاب المسجلين
+        </div>
+      </div>
+    </div>
+
+    <div
+      routerLink="/admin/student"
+      class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5"
+    >
+      <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
+        <svg
+          class="text-white size-7 md:size-8"
+          viewBox="0 0 28 30"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.2 9.08889C18.2 11.5373 16.3196 13.5222 14 13.5222C11.6804 13.5222 9.79999 11.5373 9.79999 9.08889C9.79999 6.64043 11.6804 4.65556 14 4.65556C16.3196 4.65556 18.2 6.64043 18.2 9.08889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M25.2 12.0444C25.2 13.6768 23.9464 15 22.4 15C20.8536 15 19.6 13.6768 19.6 12.0444C19.6 10.4121 20.8536 9.08889 22.4 9.08889C23.9464 9.08889 25.2 10.4121 25.2 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M19.6 22.3889C19.6 19.1243 17.0927 16.4778 14 16.4778C10.9072 16.4778 8.39999 19.1243 8.39999 22.3889V26.8222H19.6V22.3889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M8.39999 12.0444C8.39999 13.6768 7.14639 15 5.59999 15C4.05359 15 2.79999 13.6768 2.79999 12.0444C2.79999 10.4121 4.05359 9.08889 5.59999 9.08889C7.14639 9.08889 8.39999 10.4121 8.39999 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M22.4 26.8222V22.3889C22.4 20.8312 22.0195 19.3671 21.351 18.0949C21.6863 18.0039 22.0378 17.9556 22.4 17.9556C24.7197 17.9556 26.6 19.9404 26.6 22.3889V26.8222H22.4Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M6.64896 18.0949C5.98058 19.3671 5.59999 20.8312 5.59999 22.3889V26.8222H1.39999V22.3889C1.39999 19.9404 3.2804 17.9556 5.59999 17.9556C5.96219 17.9556 6.31367 18.0039 6.64896 18.0949Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.subscribersCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">عدد المشتركين</div>
+      </div>
+    </div>
+
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
+        <svg
+          class="text-white size-7 md:size-8"
+          viewBox="0 0 28 30"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.2 9.08889C18.2 11.5373 16.3196 13.5222 14 13.5222C11.6804 13.5222 9.79999 11.5373 9.79999 9.08889C9.79999 6.64043 11.6804 4.65556 14 4.65556C16.3196 4.65556 18.2 6.64043 18.2 9.08889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M25.2 12.0444C25.2 13.6768 23.9464 15 22.4 15C20.8536 15 19.6 13.6768 19.6 12.0444C19.6 10.4121 20.8536 9.08889 22.4 9.08889C23.9464 9.08889 25.2 10.4121 25.2 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M19.6 22.3889C19.6 19.1243 17.0927 16.4778 14 16.4778C10.9072 16.4778 8.39999 19.1243 8.39999 22.3889V26.8222H19.6V22.3889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M8.39999 12.0444C8.39999 13.6768 7.14639 15 5.59999 15C4.05359 15 2.79999 13.6768 2.79999 12.0444C2.79999 10.4121 4.05359 9.08889 5.59999 9.08889C7.14639 9.08889 8.39999 10.4121 8.39999 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M22.4 26.8222V22.3889C22.4 20.8312 22.0195 19.3671 21.351 18.0949C21.6863 18.0039 22.0378 17.9556 22.4 17.9556C24.7197 17.9556 26.6 19.9404 26.6 22.3889V26.8222H22.4Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M6.64896 18.0949C5.98058 19.3671 5.59999 20.8312 5.59999 22.3889V26.8222H1.39999V22.3889C1.39999 19.9404 3.2804 17.9556 5.59999 17.9556C5.96219 17.9556 6.31367 18.0039 6.64896 18.0949Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.activeSubscribersCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">عدد النشظين</div>
+      </div>
+    </div>
+
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-indigo-600 bg-opacity-75 rounded-full">
+        <svg
+          class="text-white size-7 md:size-8"
+          viewBox="0 0 28 30"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18.2 9.08889C18.2 11.5373 16.3196 13.5222 14 13.5222C11.6804 13.5222 9.79999 11.5373 9.79999 9.08889C9.79999 6.64043 11.6804 4.65556 14 4.65556C16.3196 4.65556 18.2 6.64043 18.2 9.08889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M25.2 12.0444C25.2 13.6768 23.9464 15 22.4 15C20.8536 15 19.6 13.6768 19.6 12.0444C19.6 10.4121 20.8536 9.08889 22.4 9.08889C23.9464 9.08889 25.2 10.4121 25.2 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M19.6 22.3889C19.6 19.1243 17.0927 16.4778 14 16.4778C10.9072 16.4778 8.39999 19.1243 8.39999 22.3889V26.8222H19.6V22.3889Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M8.39999 12.0444C8.39999 13.6768 7.14639 15 5.59999 15C4.05359 15 2.79999 13.6768 2.79999 12.0444C2.79999 10.4121 4.05359 9.08889 5.59999 9.08889C7.14639 9.08889 8.39999 10.4121 8.39999 12.0444Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M22.4 26.8222V22.3889C22.4 20.8312 22.0195 19.3671 21.351 18.0949C21.6863 18.0039 22.0378 17.9556 22.4 17.9556C24.7197 17.9556 26.6 19.9404 26.6 22.3889V26.8222H22.4Z"
+            fill="currentColor"
+          ></path>
+          <path
+            d="M6.64896 18.0949C5.98058 19.3671 5.59999 20.8312 5.59999 22.3889V26.8222H1.39999V22.3889C1.39999 19.9404 3.2804 17.9556 5.59999 17.9556C5.96219 17.9556 6.31367 18.0039 6.64896 18.0949Z"
+            fill="currentColor"
+          ></path>
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.studentsCount - examResult.subscribersCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">
+          عدد الغير المشتركين
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-gray-200 bg-opacity-75 rounded-full">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-7 md:size-8 fill-indigo-700"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M2.25 13.5a8.25 8.25 0 0 1 8.25-8.25.75.75 0 0 1 .75.75v6.75H18a.75.75 0 0 1 .75.75 8.25 8.25 0 0 1-16.5 0Z"
+            clip-rule="evenodd"
+          />
+          <path
+            fill-rule="evenodd"
+            d="M12.75 3a.75.75 0 0 1 .75-.75 8.25 8.25 0 0 1 8.25 8.25.75.75 0 0 1-.75.75h-7.5a.75.75 0 0 1-.75-.75V3Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.totalCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">عدد المحاولات</div>
+      </div>
+    </div>
+
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-gray-200 bg-opacity-75 rounded-full">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-7 md:size-8 fill-green-700"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.successCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">عدد مرات النجاح</div>
+      </div>
+    </div>
+    <div class="flex items-center py-6 bg-white rounded-md shadow-sm ps-5">
+      <div class="p-3 bg-gray-200 bg-opacity-75 rounded-full">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          class="size-7 md:size-8 fill-red-700"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+      </div>
+      <div class="mx-5">
+        <h4 class="text-2xl font-semibold text-gray-700">
+          {{ examResult.failCount }}
+        </h4>
+        <div class="text-sm text-gray-500 md:text-base">عدد مرات الرسوب</div>
+      </div>
+    </div>
+  </div>
+  }@else {
+  <div class="flex justify-center w-full gap-2 my-8">
+    <div class="w-5 h-5 bg-blue-600 rounded-full animate-pulse"></div>
+    <div class="w-5 h-5 bg-blue-600 rounded-full animate-pulse"></div>
+    <div class="w-5 h-5 bg-blue-600 rounded-full animate-pulse"></div>
+  </div>
+  }
+  <div
+    class="flex flex-col gap-6 mb-6 bg-white rounded-lg shadow-lg md:p-6 md:flex-row md:items-center md:justify-between"
+  >
+    <div class="relative w-full md:top-3">
+      <input
+        type="text"
+        [(ngModel)]="keyword"
+        (input)="search()"
+        placeholder="ابحث عن اسم ..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div>
+    <div class="flex flex-col w-full gap-y-1">
+      <label for="startDate">بداية الفترة</label>
+      <input
+        type="date"
+        #startDate
+        id="startDate"
+        (change)="selectStart(startDate.value)"
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+    <div class="flex flex-col w-full gap-y-1">
+      <label for="endDate">نهاية الفترة</label>
+      <input
+        type="date"
+        #endDate
+        id="endDate"
+        (change)="selectEnd(endDate.value)"
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  </div>
+  <div class="flex justify-end gap-4 mb-6">
+    <button
+      type="button"
+      (click)="exportTable()"
+      class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700"
+    >
+      <svg
+        class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        class="size-6"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      تصدير البيانات
+    </button>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-white bg-primaryAdmin">
+          <th class="p-3.5 border">اسم المدرسة</th>
+          <th class="p-3.5 border">عدد المشتركين</th>
+          <th class="p-3.5 border whitespace-nowrap">عدد الغير مشتركين</th>
+          <th class="p-3.5 border">اجمالي المسجلين</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading()) { @for (school of allStatisticsSchool; track
+        school.schoolName;) {
+        <tr
+          class="font-medium border-b-4 border-gray-300"
+          [class]="$even ? 'bg-gray-100' : 'bg-white'"
+        >
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ school.schoolName || "-" }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ school.subscribeCount }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ school.totalRegister - school.subscribeCount }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ school.totalRegister }}
+          </td>
+        </tr>
+
+        } }@else {
+        <tr>
+          <td colspan="4" class="py-8 cell">
+            <div
+              class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+            ></div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="flex flex-wrap items-center justify-center mt-8 gap-y-2 gap-x-6">
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasPreviousPage"
+      [disabled]="!allData.hasPreviousPage"
+      (click)="changePage(pageNumber - 1)"
+    >
+      ❮ السابق
+    </button>
+    @for (page of getPageRange(); track page) {
+
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-blue-500]="page === pageNumber"
+      [class.text-white]="page === pageNumber"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+    }
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasNextPage"
+      [disabled]="!allData.hasNextPage"
+      (click)="changePage(pageNumber + 1)"
+    >
+      التالي ❯
+    </button>
+  </div>
+</div>

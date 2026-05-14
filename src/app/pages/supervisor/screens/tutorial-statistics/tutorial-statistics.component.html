@@ -1,0 +1,203 @@
+<app-super-navbar />
+<section>
+  <div [ngClass]="isLoading() ? 'h-screen' : ''" class="relative">
+    @if (!isLoading()) {
+    <div class="w-full px-6 mx-auto md:px-6">
+      <div class="pt-24 border-2 border-primaryAdmin">
+        <a
+          routerLink="/admin/student"
+          class="px-6 py-2 text-lg transition-colors border rounded-lg hover:text-white hover:bg-secondaryAdmin ms-8"
+        >
+          عودة
+        </a>
+        <div class="mt-4 bg-white shadow">
+          <div class="grid grid-cols-1">
+            <div class="pb-8 mb-6 text-center border-b-2">
+              <h1 class="text-4xl font-semibold text-primaryAdmin">
+                اسم الطالب: {{ profileDetails.firstName }}
+                {{ profileDetails.lastName }}
+              </h1>
+              <p
+                (click)="copyText(profileDetails.referenceKey)"
+                class="relative mt-6 text-lg font-light text-gray-600 cursor-copy hover:text-primaryAdmin hover:font-semibold"
+              >
+                الرقم التعريفي: {{ profileDetails.referenceKey }}
+              </p>
+              <p class="mt-6 text-lg font-light text-gray-600">
+                {{ profileDetails.email }}
+              </p>
+              <div
+                class="flex flex-col items-center justify-center gap-2 mt-3 text-lg font-light text-gray-600 md:flex-row"
+              >
+                @if (profileDetails.state) {
+                <p>
+                  {{ profileDetails.state }}
+                </p>
+                <span>|</span>
+                } @if (profileDetails.schoolName) {
+                <p class="">مدرسة {{ profileDetails.schoolName }}</p>
+                }
+              </div>
+            </div>
+          </div>
+          <!-- الدورات -->
+          <div class="w-full mt-4 lg:grid place-items-center">
+            <div
+              class="grid w-full grid-cols-1 gap-4 text-center md:px-4 md:grid-cols-3 xl:grid-cols-5 bg-slate-100 md:bg-transparent md:mt-0"
+            >
+              @for (cart of cartNumber; track cart.id) {
+              <app-card-number [cart]="cart" />
+              }
+            </div>
+            <div
+              class="flex flex-col justify-center w-full px-4 pb-6 mx-auto my-8 gap-x-4 md:flex-row"
+            >
+              <div class="w-full border-b h-fit md:w-1/4">
+                <ul
+                  class="flex flex-col justify-between mb-4 overflow-x-auto gap-y-4 md:mb-0 gap-x-3"
+                >
+                  @for (tab of tabs; track $index) { @if (tab.id === 4) {
+                  <li
+                    [routerLink]="['/supervisor/profile/plan/', userId()]"
+                    class="flex items-center justify-between flex-shrink-0 p-4 text-base font-semibold transition-all duration-200 border rounded-lg cursor-pointer hover:text-white border-secondaryAdmin md:ps-8 md:pe-6 md:text-xl hover:bg-secondaryAdmin"
+                  >
+                    <span>{{ tab.title }}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="hidden size-6 md:block"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 19.5 8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                  </li>
+                  }@else {
+                  <li
+                    (click)="selectTab(tab)"
+                    [class.active]="tab === selectedTab"
+                    class="flex items-center justify-between flex-shrink-0 p-4 text-base font-semibold transition-all duration-200 border rounded-lg cursor-pointer hover:text-white border-secondaryAdmin md:ps-8 md:pe-6 md:text-xl hover:bg-secondaryAdmin"
+                    [class.hidden]="
+                      this.role === 'مشرف مدرسة' && tab.title === 'الإعدادات'
+                    "
+                  >
+                    <span>{{ tab.title }}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="hidden size-6 md:block"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M15.75 19.5 8.25 12l7.5-7.5"
+                      />
+                    </svg>
+                  </li>
+
+                  } } @if (selectedTab.title === 'الاختبارات') {
+                  <div
+                    [ngClass]="isOpen ? 'block' : 'hidden'"
+                    class="flex flex-col items-start self-start w-full px-6 my-2 text-black bg-white gap-y-3"
+                  >
+                    @for (item of allTutorials; track $index) {
+                    <button
+                      type="button"
+                      (click)="selectedTutorial(item.id)"
+                      class="w-full px-6 py-2 text-base transition-colors border shadow-md hover:text-secondaryAdmin"
+                      [ngClass]="
+                        tutorialId === item.id
+                          ? 'text-secondaryAdmin font-semibold'
+                          : ''
+                      "
+                    >
+                      {{ item.name }}
+                    </button>
+                    }
+                  </div>
+                  }
+                </ul>
+              </div>
+              <div
+                class="w-full pt-6 border rounded-lg border-secondaryAdmin md:w-3/4"
+                [class.p-4]="selectedTab.id !== 2"
+              >
+                @if (selectedTab) {
+                <ul class="flex mb-4">
+                  @for (subTab of selectedTab.subTabs; track subTab) {
+                  <li
+                    (click)="selectSubTab(subTab)"
+                    [class.active-sub]="subTab === selectedSubTab"
+                    class="flex-shrink-0 px-4 transition-all duration-200 cursor-pointer border-secondaryAdmin hover:text-primaryAdmin"
+                    [class.border-l-[3px]]="!$last"
+                  >
+                    {{ subTab.title }}
+                  </li>
+                  }
+                </ul>
+                @if(selectedTab.id === 0 && selectedSubTab ==
+                selectedTab.subTabs[0]){
+                <app-table-tutorials [tutorials]="allTutorials" />
+                } @if(selectedTab.id === 0 && selectedSubTab ==
+                selectedTab.subTabs[1]){
+                <app-table-tutorials [tutorials]="stillTutorials" />
+                } @if(selectedTab.id === 0 && selectedSubTab ==
+                selectedTab.subTabs[2]){
+                <app-table-tutorials [tutorials]="finishTutorials" />
+                }
+                <!-- exams -->
+                @if (showTable) { @if(examTutorial && selectedSubTab ==
+                selectedTab.subTabs[0]){
+                <app-table-exams [exams]="examTutorial" />
+                } @if(examTutorial && selectedSubTab == selectedTab.subTabs[1]){
+                <app-table-exams [exams]="examTutorialSuss" />
+                } @if(examTutorial && selectedSubTab == selectedTab.subTabs[2]){
+                <app-table-exams [exams]="examTutorialF" />
+                } }@else { @if(selectedTab.id === 1 && selectedSubTab ==
+                selectedTab.subTabs[0]){
+                <app-table-exams [exams]="allExams" />
+                }@if(selectedTab.id === 1 && selectedSubTab ==
+                selectedTab.subTabs[1]){
+                <app-table-exams [exams]="successExams" />
+                } @if(selectedTab.id === 1 && selectedSubTab ==
+                selectedTab.subTabs[2]){
+                <app-table-exams [exams]="failExams" />
+                } } @if(selectedTab.id === 2 && selectedSubTab ==
+                selectedTab.subTabs[0]){
+                <!-- <app-settings-profile
+                  (sentTab)="getTab($event)"
+                  [profileDetails]="profileDetails"
+                /> -->
+                } }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    } @else {
+    <div
+      class="fixed z-50 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-opacity-60"
+    >
+      <div class="relative flex items-center justify-center">
+        <div
+          class="absolute border-t-4 border-b-4 rounded-full border-secondaryAdmin w-36 h-36 animate-spin"
+        ></div>
+        <img
+          src="assets/imgs/logo2.webp"
+          alt="Logo"
+          class="rounded-full h-28 w-28"
+        />
+      </div>
+    </div>
+    }
+  </div>
+</section>

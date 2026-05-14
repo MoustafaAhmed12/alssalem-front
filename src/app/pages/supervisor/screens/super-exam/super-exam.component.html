@@ -1,0 +1,411 @@
+<div class="pb-8 mx-auto max-w-7xl">
+  <div class="rounded-t-lg md:p-6">
+    <div
+      class="flex flex-col items-center gap-4 md:flex-row md:items-start rtl:space-x-reverse"
+    >
+      <div class="flex-1 text-center md:text-right">
+        <h1 class="mb-2 text-xl font-bold text-gray-800 md:text-2xl">
+          بيانات الطلاب بالمدرسة
+        </h1>
+        <p class="text-sm text-gray-600 md:text-base">
+          مرحباً بك في لوحة تحكم مشرف المدرسة. يمكنك من هنا إشراف ومتابعة جميع
+          الطلاب بالمدرسة.
+        </p>
+      </div>
+      <div
+        class="flex items-center justify-center w-16 h-16 text-2xl text-white rounded-full bg-primary shrink-0"
+      >
+        {{ totalCount }}
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 mb-6 bg-white rounded-b-lg shadow-lg md:p-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <!-- School Select -->
+
+      <div class="col-span-1">
+        <ng-select
+          [items]="allTutorials"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterTutorial($event)"
+          placeholder="حدد الدورة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+
+      <ng-select
+        [items]="allExams"
+        [closeOnSelect]="true"
+        [clearable]="false"
+        bindLabel="name"
+        bindValue="id"
+        (change)="filterExam($event)"
+        placeholder="حدد الاختبار"
+        class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+      >
+      </ng-select>
+
+      <ng-select
+        [closeOnSelect]="true"
+        bindLabel="name"
+        bindValue="name"
+        [searchable]="true"
+        placeholder="حدد حالة الاختبار"
+        (change)="fliterStatus($event)"
+        class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+      >
+        <ng-option [value]="2">الكل</ng-option>
+        <ng-option [value]="1">ناجح</ng-option>
+        <ng-option [value]="0">لم ينجح</ng-option>
+        <ng-option [value]="3">لم يحلوا</ng-option>
+      </ng-select>
+      <div class="col-span-full">
+        <ng-select
+          [items]="allSchools"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterSchool($event)"
+          placeholder="حدد المدرسة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <!-- Grade Select -->
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          [searchable]="true"
+          placeholder="حدد الصف"
+          (change)="fliterState($event)"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <ng-option [value]="'الصف الأول الثانوي'"
+            >الصف الأول الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثاني الثانوي'"
+            >الصف الثاني الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث الثانوي'"
+            >الصف الثالث الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث المتوسط'"
+            >الصف الثالث المتوسط</ng-option
+          >
+        </ng-select>
+      </div>
+
+      <!-- Class Select -->
+      <div class="col-span-1">
+        <ng-select
+          [items]="classNumbers"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          (change)="filterClassNo($event)"
+          placeholder="حدد الفصل"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+
+      <button
+        type="button"
+        (click)="exportTable()"
+        class="flex items-center w-full gap-2 px-5 py-3 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700"
+      >
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        تصدير البيانات
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-sm text-white bg-primary">
+          <th class="p-3 border">اسم الطالب</th>
+          <th class="p-3 border">الصف</th>
+          <th class="p-3 border">الفصل</th>
+          <th class="p-3 border">حالة الامتحان</th>
+          <th class="p-3 border">الدرجة</th>
+          <th class="p-3 border">مراجعة الاجابة</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading()) {
+          @for (
+            student of allStudents;
+            track student.id;
+            let studentIndex = $index
+          ) {
+            <tr
+              class="font-medium text-sm"
+              [class]="$even ? 'bg-gray-100' : 'bg-white'"
+            >
+              <td class="p-3.5 text-center border">
+                <a target="_blank" [routerLink]="['/supervisor/', student.id]">
+                  {{ student.firstName }} {{ student.lastName }}
+                </a>
+              </td>
+              <td class="p-3.5 text-center border">
+                {{ student.grade }}
+              </td>
+              <td class="p-3.5 text-center border">
+                {{ student.classNum }}
+              </td>
+              <td
+                class="p-3.5 text-center flex justify-center items-center border"
+              >
+                @if (student.isSuccess === true) {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-7 fill-green-700"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                } @else if (student.isSuccess === false) {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-7 fill-red-700"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                } @else {
+                  <span class="text-secondary">لم يتم حله</span>
+                }
+              </td>
+              <td class="p-3.5 text-center border">
+                {{ student.maxDegree || 0 }}%
+              </td>
+              <td class="p-3.5 text-center border">
+                @if (student.isSuccess !== null) {
+                  <a
+                    target="_blank"
+                    [routerLink]="['/super/review-answers']"
+                    [queryParams]="{
+                      userId: student.id,
+                      examId: examId,
+                      userName: student.firstName + ' ' + student.lastName,
+                    }"
+                    class="px-4 py-2 text-white bg-secondary rounded-lg hover:bg-opacity-90 transition-all text-xs font-bold shadow-sm"
+                  >
+                    مراجعة الاجابة
+                  </a>
+                } @else {
+                  <span class="text-gray-400 text-xs italic"
+                    >لا يوجد إجابات</span
+                  >
+                }
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="6" class="py-8 cell">
+              <div
+                class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+              ></div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div
+    class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6"
+  >
+    <div class="flex justify-between flex-1 sm:hidden">
+      <button
+        (click)="goToPage(pageNumber() - 1)"
+        [disabled]="pageNumber() === 1"
+        class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+      >
+        السابق
+      </button>
+      <button
+        (click)="goToPage(pageNumber() + 1)"
+        [disabled]="pageNumber() === totalPages()"
+        class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50"
+      >
+        التالي
+      </button>
+    </div>
+    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm text-gray-700">
+          عرض
+          <span class="font-medium">{{
+            (pageNumber() - 1) * itemsPerPage() + 1
+          }}</span>
+          إلى
+          <span class="font-medium">{{
+            Math.min(pageNumber() * itemsPerPage(), totalCount)
+          }}</span>
+          من
+          <span class="font-medium">{{ totalCount }}</span>
+          نتيجة
+        </p>
+      </div>
+      <div>
+        <nav
+          class="relative z-0 inline-flex -space-x-px rounded-md shadow-sm"
+          aria-label="Pagination"
+        >
+          <button
+            (click)="goToPage(pageNumber() - 1)"
+            [disabled]="pageNumber() === 1"
+            class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            <span class="sr-only">السابق</span>
+            <svg
+              class="w-5 h-5 rotate-180"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+
+          @for (page of getPageNumbers(); track page) {
+            <button
+              (click)="goToPage(page)"
+              [class]="
+                page === pageNumber()
+                  ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                  : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+              "
+              class="relative inline-flex items-center px-4 py-2 text-sm font-medium border"
+            >
+              {{ page }}
+            </button>
+          }
+
+          <button
+            (click)="goToPage(pageNumber() + 1)"
+            [disabled]="pageNumber() === totalPages()"
+            class="relative inline-flex items-center px-2 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-md hover:bg-gray-50 disabled:opacity-50"
+          >
+            <span class="sr-only">التالي</span>
+            <svg
+              class="w-5 h-5 rotate-180"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </button>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- <div
+  dir="rtl"
+  [ngClass]="{ 'scale-100': isOpenEmail }"
+  class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+>
+  <div
+    class="flex items-center justify-center mx-auto md:w-[50rem] w-[28rem] px-6"
+  >
+    <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+      <div class="flex justify-between px-8 pt-8 text-center md:text-right">
+        <h2 class="text-xl font-bold lg:text-3xl text-primary">الإيميل</h2>
+        <button (click)="hideEmail()" class="">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="flex space-y-4 rounded-lg flex-col items-center px-4 my-8 overflow-y-auto pt-6 max-h-[30rem] gap-y-6 md:px-10"
+      >
+        <div class="w-full">
+          <input
+            type="text"
+            [(ngModel)]="subject"
+            placeholder="عنوان الإيميل"
+            class="w-full px-8 py-3 text-lg rounded-md outline-none appearance-none ring-1 focus:ring-2 focus:outline-none"
+          />
+        </div>
+        <div class="w-full">
+          <textarea
+            name="content"
+            [(ngModel)]="content"
+            placeholder="نص الإيميل"
+            class="w-full px-8 py-3 text-lg rounded-md outline-none appearance-none ring-1 focus:ring-2 focus:outline-none"
+            id="content"
+            rows="6"
+          ></textarea>
+        </div>
+      </div>
+      <div class="grid w-full place-items-center">
+        <button
+          type="button"
+          (click)="sendEmail()"
+          class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondary hover:bg-primary w-fit focus:outline-none focus:ring-2 focus:ring-offset-2"
+        >
+          @if (isLoadingEmail) {
+          <div
+            class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+          ></div>
+          } @else { إرسال الإيميل }
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->

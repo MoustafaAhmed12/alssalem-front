@@ -1,0 +1,156 @@
+<div class="min-h-screen py-10 bg-gray-50/50">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6">
+    <!-- Header Section -->
+    <div class="mb-12 text-center animate-fade-in">
+      <h1 class="text-2xl font-extrabold text-gray-900 tracking-tight mb-3">
+        نتائج تحديد المستوى
+      </h1>
+      <p class="text-base text-gray-600 max-w-2xl mx-auto font-medium">
+        هنا تجد نتائج اختبارات تحديد المستوى السابقة وتحليلاً لأدائك في الأقسام
+        المختلفة
+      </p>
+    </div>
+
+    @if (isLoading()) {
+      <div class="flex items-center justify-center min-h-[400px]">
+        <div class="flex flex-col items-center">
+          <div
+            class="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin"
+          ></div>
+          <p class="mt-4 text-gray-500 font-medium animate-pulse">
+            جاري تحميل النتائج...
+          </p>
+        </div>
+      </div>
+    } @else {
+      @if (results().length > 0) {
+        <div
+          class="overflow-hidden bg-white shadow-xl rounded-2xl border border-gray-100 animate-fade-in"
+        >
+          <div
+            class="px-8 py-5 bg-gradient-to-r from-secondary to-primary flex justify-between items-center"
+          >
+            <h2 class="text-lg font-bold text-white">
+              تفاصيل اختبارات تحديد المستوى
+            </h2>
+            <span
+              class="px-3 py-1 bg-white/20 rounded-lg text-white text-sm font-medium"
+              >إجمالي النتائج: {{ results().length }}</span
+            >
+          </div>
+
+          <div class="overflow-x-auto min-h-[300px]">
+            <table class="w-full">
+              <thead class="bg-gray-50 border-b border-gray-100">
+                <tr class="text-xs uppercase tracking-wider text-gray-500">
+                  <th class="px-8 py-5 text-center font-bold w-1/4">القسم</th>
+                  <th class="px-8 py-5 text-center font-bold">النتيجة</th>
+                  <th class="px-8 py-5 text-center font-bold">
+                    الحالة ومستوى الأداء
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                @for (item of results(); track item.examId) {
+                  <tr
+                    class="hover:bg-gray-50/80 border-b text-center border-gray-300 transition-colors duration-200"
+                  >
+                    <td class="p-4">
+                      {{ item.category }}
+                    </td>
+                    <td class="p-4 border-x border-gray-300 text-center">
+                      <div
+                        class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-black border-2"
+                        [ngStyle]="{
+                          'background-color': getBgColor(item.result),
+                          'border-color': getBorderColor(item.result),
+                          color: getGradeColor(item.result),
+                        }"
+                      >
+                        {{ item.result }}%
+                      </div>
+                    </td>
+                    <td class="p-4 text-center">
+                      <div class="flex items-center justify-center">
+                        <fa-icon
+                          [icon]="
+                            item.result >= 50
+                              ? faCheckCircle
+                              : faExclamationTriangle
+                          "
+                          [class]="
+                            item.result >= 50
+                              ? 'text-green-500'
+                              : 'text-amber-500'
+                          "
+                          class="mr-2 rtl:ml-2"
+                        ></fa-icon>
+                        <span
+                          class="text-sm font-bold"
+                          [ngStyle]="{ color: getGradeColor(item.result) }"
+                        >
+                          {{
+                            item.result >= 80
+                              ? "أداء ممتاز"
+                              : item.result >= 50
+                                ? "أداء جيد"
+                                : "يحتاج لتحسين"
+                          }}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      } @else {
+        <!-- Empty State -->
+        <div
+          class="flex flex-col items-center justify-center min-h-[400px] bg-white rounded-3xl border-2 border-dashed border-gray-200 p-12 text-center"
+        >
+          <div
+            class="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mb-6"
+          >
+            <fa-icon [icon]="faTrophy" class="text-4xl text-gray-300"></fa-icon>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">
+            لا توجد نتائج بعد
+          </h2>
+          <p class="text-gray-500 max-w-sm mb-8">
+            لم تقم بإجراء أي اختبارات تحديد مستوى حتى الآن. ابدأ رحلتك الان!
+          </p>
+          <button
+            class="px-8 py-3 bg-primary text-white font-bold rounded-xl shadow-lg hover:bg-primary-dark transition-colors"
+          >
+            بدء اختبار تحديد مستوى
+          </button>
+        </div>
+      }
+    }
+
+    <!-- Help Alert -->
+    <div
+      class="mt-16 p-6 bg-blue-50 border border-blue-100 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4"
+    >
+      <div class="flex items-center gap-4">
+        <div
+          class="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm"
+        >
+          <fa-icon
+            [icon]="faInfoCircle"
+            class="text-blue-500 text-xl"
+          ></fa-icon>
+        </div>
+        <div>
+          <h4 class="text-blue-900 font-bold">لماذا اختبار تحديد المستوى؟</h4>
+          <p class="text-blue-700 text-sm">
+            يساعدنا هذا الاختبار على تخصيص تجربتك التعليمية واقتراح أفضل الدورات
+            التدريبية لك.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

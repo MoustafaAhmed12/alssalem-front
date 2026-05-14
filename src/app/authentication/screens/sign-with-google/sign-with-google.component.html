@@ -1,0 +1,103 @@
+<div class="relative w-full">
+  <button
+    type="button"
+    (click)="onOpen()"
+    id="customBtn"
+    class="flex items-center justify-center w-full px-8 py-1.5 mt-2 text-lg font-semibold text-black transition-colors border rounded-full px8 hover:text-primary border-primary focus:outline-none"
+  >
+    @if (isLoading()) {
+    <img
+      class="w-8 h-8 animate-spin text-purple-950"
+      src="https://www.svgrepo.com/show/474682/loading.svg"
+      alt="Loading icon"
+    />
+    } @else { <span> التسجيل بحساب جوجل </span>
+    <div class="w-10">
+      <img
+        src="./../../../../assets/imgs/google.png"
+        class="w-full"
+        alt="google"
+      />
+    </div>
+    }
+  </button>
+  <div
+    [ngClass]="isOpen ? 'scale-100' : 'scale-0'"
+    class="absolute transition-all duration-300 top-[-95px] lg:top-0 right-[280px] lg:right-0"
+  >
+    <div
+      class="absolute left-0 z-20 w-64 p-4 ml-2 -mt-12 transition duration-150 ease-in-out bg-white border-2 rounded shadow-lg border-l-primary"
+    >
+      <svg
+        class="absolute top-0 bottom-0 left-0 hidden h-full -ml-2 lg:block"
+        width="9px"
+        height="16px"
+        viewBox="0 0 9 16"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <g
+          id="Page-1"
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <g
+            id="Tooltips-"
+            transform="translate(-874.000000, -1029.000000)"
+            class="fill-primary"
+          >
+            <g
+              id="Group-3-Copy-16"
+              transform="translate(850.000000, 975.000000)"
+            >
+              <g id="Group-2" transform="translate(24.000000, 0.000000)">
+                <polygon
+                  id="Triangle"
+                  transform="translate(4.500000, 62.000000) rotate(-90.000000) translate(-4.500000, -62.000000) "
+                  points="4.5 57.5 12.5 66.5 -3.5 66.5"
+                ></polygon>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+      <div class="flex items-center justify-between w-full">
+        <p class="pb-1 text-sm font-bold text-gray-800">
+          تسجيل عبر جوجل بحساب:
+        </p>
+        <button
+          type="button"
+          (click)="closePop()"
+          class="text-base hover:text-red-700 hover:font-bold hover:scale-125"
+        >
+          X
+        </button>
+      </div>
+      <div
+        class="flex flex-col items-center justify-between w-full mt-2 gap-y-1.5"
+      >
+        <div class="flex items-center w-full">
+          <button
+            type="button"
+            (click)="getRole('student')"
+            class="w-full px-5 py-1 text-base text-white transition duration-150 ease-in-out bg-indigo-700 rounded focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 focus:bg-indigo-400 focus:outline-none hover:bg-indigo-600"
+          >
+            طالب
+          </button>
+        </div>
+        <div class="flex items-center w-full">
+          <button
+            type="button"
+            (click)="getRole('parent')"
+            class="w-full px-5 py-1 text-base text-white transition duration-150 ease-in-out bg-indigo-700 rounded focus:ring-2 focus:ring-offset-2 focus:ring-indigo-700 focus:bg-indigo-400 focus:outline-none hover:bg-indigo-600"
+          >
+            ولي أمر
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

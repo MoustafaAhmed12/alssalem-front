@@ -1,0 +1,431 @@
+<div class="relative grid h-screen place-items-center bGround">
+  <main class="flex items-center justify-center w-full mx-auto mt-2 md:flex">
+    <div
+      class="flex flex-col justify-center w-11/12 bg-white shadow-xl lg:w-10/12 md:w-8/12 rounded-xl"
+    >
+      <div class="flex justify-center w-full">
+        @if (appConfigService.isMainDomain()) {
+          <a routerLink="/">
+            <img src="assets/imgs/logo2.webp" class="w-24" alt="logo" />
+          </a>
+        } @else {
+          <a routerLink="/">
+            <img
+              [src]="'assets/' + appConfigService.config()?.['logo']"
+              class="w-40"
+              alt="logo"
+            />
+          </a>
+        }
+      </div>
+      <form
+        [formGroup]="registerForm"
+        (ngSubmit)="onRegister()"
+        class="flex flex-col items-center justify-center w-full"
+      >
+        <div class="w-full px-2 pt-2 pb-4 md:px-8">
+          <div class="rounded-md">
+            <div class="grid w-full grid-cols-1 lg:grid-cols-2 gap-x-12">
+              <div class="col-span-1">
+                <div class="relative">
+                  <input
+                    required
+                    name="firstName"
+                    formControlName="firstName"
+                    placeholder=" الاسم الأول"
+                    matInput
+                    [ngClass]="
+                      registerForm.controls['firstName'].errors && submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                  <div
+                    class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+                  >
+                    <fa-icon [icon]="userIcon" class="text-primary"></fa-icon>
+                  </div>
+                </div>
+                @if (submitted && registerForm.controls["firstName"].errors) {
+                  <div>
+                    @if (
+                      registerForm.controls["firstName"].errors["required"]
+                    ) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="col-span-1">
+                <div class="relative">
+                  <input
+                    required
+                    name="lastName"
+                    formControlName="lastName"
+                    placeholder=" الاسم الأخير"
+                    matInput
+                    [ngClass]="
+                      registerForm.controls['lastName'].errors && submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                  <div
+                    class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+                  >
+                    <fa-icon [icon]="userIcon" class="text-primary"></fa-icon>
+                  </div>
+                </div>
+                @if (submitted && registerForm.controls["lastName"].errors) {
+                  <div>
+                    @if (registerForm.controls["lastName"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="grid w-full grid-cols-1 mt-3 lg:grid-cols-2 gap-x-12">
+              <div class="col-span-1">
+                <div class="relative">
+                  <input
+                    required
+                    name="email"
+                    formControlName="email"
+                    placeholder="البريد الإلكتروني"
+                    matInput
+                    [ngClass]="
+                      registerForm.controls['email'].errors && submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                  <div
+                    class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+                  >
+                    <fa-icon [icon]="emailIcon" class="text-primary"></fa-icon>
+                  </div>
+                </div>
+                @if (submitted && registerForm.controls["email"].errors) {
+                  <div>
+                    @if (registerForm.controls["email"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                    @if (registerForm.controls["email"].errors["email"]) {
+                      <p class="text-xs text-red-500 ps-3">
+                        أدخل بريدًا إلكترونيًّا صحيحًا
+                      </p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="col-span-1">
+                <div class="relative">
+                  <!-- <span
+                    class="absolute z-50 p-2 font-semibold text-gray-600 -translate-y-1/2 bg-white rounded-full left-12 top-1/2"
+                  >
+                  </span> -->
+                  <input
+                    type="tel"
+                    name="phone"
+                    formControlName="phone"
+                    placeholder=" رقم الجوال"
+                    autocomplete="off"
+                    matInput
+                    [ngClass]="
+                      registerForm.controls['phone'].errors && submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 ps-32 my-2 text-black placeholder-black border-2 rounded-full appearance-none placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                  <div
+                    class="absolute p-1.5 flex gap-x-4 items-center justify-center bg-white rounded-full top-2.5 px-2 left-3"
+                  >
+                    <span class="text-lg ps-2">966+</span>
+                    <fa-icon [icon]="phoneIcon" class="text-primary"></fa-icon>
+                  </div>
+                </div>
+                @if (submitted && registerForm.controls["phone"].errors) {
+                  <div>
+                    @if (registerForm.controls["phone"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                    @if (registerForm.controls["phone"].errors["pattern"]) {
+                      <p class="text-xs text-red-500 ps-3">
+                        يجب إدخال رقم سعودي صحيح مكون من 9 أرقام ويبدأ بـ 5
+                        (أرقام إنجليزية فقط)
+                      </p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="grid w-full grid-cols-1 mt-3 lg:grid-cols-2 gap-x-12">
+              <div class="col-span-1">
+                <div class="relative">
+                  <input
+                    autocomplete="new-password"
+                    name="password"
+                    formControlName="password"
+                    [type]="passwordFieldType"
+                    placeholder="كلمة المرور"
+                    [ngClass]="
+                      registerForm.controls['password'].errors && submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                  <button
+                    type="button"
+                    class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+                    (click)="togglePasswordVisibility()"
+                  >
+                    @if (passwordFieldType === "password") {
+                      <fa-icon [icon]="eyeIcon" class="text-primary"></fa-icon>
+                    } @else {
+                      <fa-icon
+                        [icon]="eyeSlashIcon"
+                        class="text-primary"
+                      ></fa-icon>
+                    }
+                  </button>
+                </div>
+                @if (submitted && registerForm.controls["password"].errors) {
+                  <div>
+                    @if (registerForm.controls["password"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                    @if (
+                      registerForm.controls["password"].errors["minlength"]
+                    ) {
+                      <p class="text-xs text-red-500 ps-3">
+                        لابد أن لا تقل كلمة المرور عن 6 أحرف
+                      </p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="col-span-1">
+                <div class="relative">
+                  <input
+                    autocomplete="new-password"
+                    name="confirmPassword"
+                    formControlName="confirmPassword"
+                    [type]="passwordFieldType"
+                    placeholder="تأكيد كلمة المرور"
+                    [ngClass]="
+                      registerForm.controls['confirmPassword'].errors &&
+                      submitted
+                        ? 'border-red-400 placeholder:text-red-500'
+                        : 'border-gray-300 focus:border-primary'
+                    "
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black bg-[#b7e4c7] border-2 rounded-full appearance-none pl-14 placeholder:text-right focus:outline-none focus:ring-primary"
+                  />
+                  <button
+                    type="button"
+                    class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+                    (click)="togglePasswordVisibility()"
+                  >
+                    @if (passwordFieldType === "password") {
+                      <fa-icon [icon]="eyeIcon" class="text-primary"></fa-icon>
+                    } @else {
+                      <fa-icon
+                        [icon]="eyeSlashIcon"
+                        class="text-primary"
+                      ></fa-icon>
+                    }
+                  </button>
+                </div>
+                @if (submitted && registerForm.errors?.["PasswordNoMatch"]) {
+                  <div>
+                    <p class="text-xs text-red-500 ps-3">
+                      كلمة المرور غير متطابقة.
+                    </p>
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="grid w-full grid-cols-1 mt-3 lg:grid-cols-2 gap-x-12">
+              <div class="col-span-1">
+                <ng-select
+                  [items]="allSchools"
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="schoolId"
+                  placeholder="اختر المدرسة"
+                  [loading]="isLoading()"
+                  (change)="handleSchoolChange($event)"
+                  [ngClass]="
+                    registerForm.controls['schoolId'].errors && submitted
+                      ? 'border-red-400 placeholder:text-red-500'
+                      : 'border-gray-300 focus:border-primary'
+                  "
+                  class="relative block w-full py-3 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                >
+                </ng-select>
+                @if (submitted && registerForm.controls["schoolId"].errors) {
+                  <div>
+                    @if (registerForm.controls["schoolId"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="col-span-1">
+                <ng-select
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="name"
+                  formControlName="state"
+                  placeholder="اختر الصف"
+                  [ngClass]="
+                    registerForm.controls['state'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="relative block w-full py-3 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                >
+                  <ng-option [value]="'الصف الأول الثانوي'"
+                    >الصف الأول الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثاني الثانوي'"
+                    >الصف الثاني الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثالث الثانوي'"
+                    >الصف الثالث الثانوي</ng-option
+                  >
+                  <ng-option [value]="'الصف الثالث المتوسط'"
+                    >الصف الثالث المتوسط</ng-option
+                  >
+                </ng-select>
+                @if (submitted && registerForm.controls["state"].errors) {
+                  <div>
+                    @if (registerForm.controls["state"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            @if (isSchoolSelected()) {
+              <div class="grid w-full grid-cols-1 lg:grid-cols-2 gap-x-12">
+                <div class="col-span-1">
+                  <input
+                    type="text"
+                    name="name"
+                    formControlName="name"
+                    placeholder="أدخل اسم المدرسة"
+                    autocomplete="off"
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                </div>
+                <div class="col-span-1">
+                  <ng-select
+                    [closeOnSelect]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="schoolType"
+                    placeholder="اختر نوع المدرسة"
+                    class="relative block w-full py-3 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  >
+                    <ng-option [value]="0">حكومية</ng-option>
+                    <ng-option [value]="1">أهلية</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+              <div class="grid w-full grid-cols-1 mt-3 lg:grid-cols-2 gap-x-12">
+                <div class="col-span-1">
+                  <input
+                    type="text"
+                    name="city"
+                    formControlName="city"
+                    placeholder="أدخل اسم المدينة"
+                    class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  />
+                </div>
+                <div class="col-span-1">
+                  <ng-select
+                    [closeOnSelect]="true"
+                    bindLabel="name"
+                    bindValue="id"
+                    formControlName="gender"
+                    placeholder="هل هي بنين ام بنات؟"
+                    class="relative block w-full py-3 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                  >
+                    <ng-option [value]="0">بنين</ng-option>
+                    <ng-option [value]="1">بنات</ng-option>
+                  </ng-select>
+                </div>
+              </div>
+            }
+            <div class="grid w-full grid-cols-1 lg:grid-cols-2 gap-x-12">
+              <div class="col-span-1">
+                <ng-select
+                  [items]="classNumbers"
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  formControlName="classNumber"
+                  placeholder="اختر رقم الفصل"
+                  [ngClass]="
+                    registerForm.controls['classNumber'].errors && submitted
+                      ? 'ring-rose-600 '
+                      : 'border-gray-300 focus:ring-sky-600'
+                  "
+                  class="relative block w-full py-3 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                >
+                </ng-select>
+                @if (submitted && registerForm.controls["classNumber"].errors) {
+                  <div>
+                    @if (
+                      registerForm.controls["classNumber"].errors["required"]
+                    ) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+              <div class="flex flex-col items-center justify-center col-span-1">
+                <button
+                  type="submit"
+                  class="flex justify-center w-2/5 py-3 my-2 text-lg font-semibold text-white transition-colors rounded-full bg-primary hover:bg-secondary focus:outline-none"
+                >
+                  @if (isLoading()) {
+                    <img
+                      class="w-8 h-8 animate-spin text-purple-950"
+                      src="https://www.svgrepo.com/show/474682/loading.svg"
+                      alt="Loading icon"
+                    />
+                  } @else {
+                    دخول
+                  }
+                </button>
+                @if (appConfigService.isMainDomain()) {
+                  <div class="flex items-center justify-center w-full">
+                    <app-sign-with-google />
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+      <p
+        class="flex items-center justify-center pb-2 mb-4 text-sm text-secondary"
+      >
+        هل لديك حساب بالفعل؟
+        <a
+          routerLink="/login"
+          class="px-2 font-semibold cursor-pointe text-primary"
+          >تسجيل دخول
+        </a>
+      </p>
+    </div>
+  </main>
+</div>

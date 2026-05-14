@@ -1,0 +1,243 @@
+<div class="relative grid h-screen place-items-center bGround">
+  <main class="flex items-center justify-center w-full mx-auto md:flex sm:px-6">
+    <div
+      class="flex flex-col justify-center w-11/12 bg-white border shadow-xl lg:w-5/12 md:w-8/12 rounded-xl"
+    >
+      <div
+        class="flex flex-col items-center justify-center w-full pt-2 md:flex-row gap-x-2"
+      >
+        @if (appConfigService.isMainDomain()) {
+          <a routerLink="/">
+            <img src="assets/imgs/logo2.webp" class="w-20" alt="logo" />
+          </a>
+        } @else {
+          <div
+            [class]="isLogoWhite() ? 'bg-secondary p-2 rounded-md' : 'bg-white'"
+          >
+            <a routerLink="/">
+              <img
+                [src]="'assets/' + appConfigService.config()?.['logo']"
+                class="w-36"
+                alt="logo"
+              />
+            </a>
+          </div>
+        }
+        <h1 class="text-xl font-semibold text-primary">صفحة تسجيل ولي الأمر</h1>
+      </div>
+      <form
+        [formGroup]="parentForm"
+        (ngSubmit)="onRegister()"
+        class="flex flex-col items-center justify-center w-full"
+      >
+        <div class="w-full px-2 pt-2 pb-4 md:px-6">
+          <div class="grid w-full grid-cols-1 mb-0 lg:grid-cols-2 gap-x-4">
+            <div class="col-span-1">
+              <div class="relative">
+                <input
+                  name="firstName"
+                  formControlName="firstName"
+                  placeholder=" الأسم الأول"
+                  [ngClass]="
+                    parentForm.controls['firstName'].errors && submitted
+                      ? 'border-red-400 placeholder:text-red-500'
+                      : 'border-gray-300 focus:border-primary'
+                  "
+                  class="relative block w-full py-4 pr-6 mt-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                />
+                <div class="absolute p-1.5 bg-white rounded-full top-3 left-3">
+                  <fa-icon [icon]="userIcon" class="text-primary"></fa-icon>
+                </div>
+                @if (submitted && parentForm.controls["firstName"].errors) {
+                  <div>
+                    @if (parentForm.controls["firstName"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+            <div class="col-span-1">
+              <div class="relative mb-1">
+                <input
+                  name="lastName"
+                  formControlName="lastName"
+                  placeholder=" الأسم الأخير"
+                  [ngClass]="
+                    parentForm.controls['lastName'].errors && submitted
+                      ? 'border-red-400 placeholder:text-red-500'
+                      : 'border-gray-300 focus:border-primary'
+                  "
+                  class="relative block w-full py-4 pr-6 mt-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+                />
+                <div class="absolute p-1.5 bg-white rounded-full top-3 left-3">
+                  <fa-icon [icon]="userIcon" class="text-primary"></fa-icon>
+                </div>
+                @if (submitted && parentForm.controls["lastName"].errors) {
+                  <div>
+                    @if (parentForm.controls["lastName"].errors["required"]) {
+                      <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+          </div>
+          <div class="relative mb-3">
+            <input
+              name="email"
+              formControlName="email"
+              placeholder="البريد الإلكتروني"
+              [ngClass]="
+                parentForm.controls['email'].errors && submitted
+                  ? 'border-red-400 placeholder:text-red-500'
+                  : 'border-gray-300 focus:border-primary'
+              "
+              class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+            />
+            <div class="absolute p-1.5 bg-white rounded-full top-3 left-3">
+              <fa-icon [icon]="emailIcon" class="text-primary"></fa-icon>
+            </div>
+            @if (submitted && parentForm.controls["email"].errors) {
+              <div>
+                @if (parentForm.controls["email"].errors["required"]) {
+                  <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                }
+                @if (parentForm.controls["email"].errors["email"]) {
+                  <p class="text-xs text-red-500 ps-3">
+                    أدخل بريدًا إلكترونيًّا صحيحًا
+                  </p>
+                }
+              </div>
+            }
+          </div>
+          <div class="relative mb-3">
+            <input
+              type="tel"
+              name="phone"
+              formControlName="phone"
+              placeholder=" رقم الجوال"
+              matInput
+              [ngClass]="
+                parentForm.controls['phone'].errors && submitted
+                  ? 'border-red-400 placeholder:text-red-500'
+                  : 'border-gray-300 focus:border-primary'
+              "
+              class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+            />
+            <div class="absolute p-1.5 bg-white rounded-full top-3 left-3">
+              <fa-icon [icon]="phoneIcon" class="text-primary"></fa-icon>
+            </div>
+            @if (submitted && parentForm.controls["phone"].errors) {
+              <div>
+                @if (parentForm.controls["phone"].errors["required"]) {
+                  <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                }
+              </div>
+            }
+          </div>
+          <div class="relative mb-3">
+            <input
+              autocomplete="new-password"
+              name="password"
+              formControlName="password"
+              [type]="passwordFieldType"
+              placeholder="كلمة المرور"
+              [ngClass]="
+                parentForm.controls['password'].errors && submitted
+                  ? 'border-red-400 placeholder:text-red-500'
+                  : 'border-gray-300 focus:border-primary'
+              "
+              class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black border-2 rounded-full appearance-none pl-14 placeholder:text-right bg-[#b7e4c7] focus:outline-none focus:ring-primary"
+            />
+            <button
+              type="button"
+              class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+              (click)="togglePasswordVisibility()"
+            >
+              @if (passwordFieldType === "password") {
+                <fa-icon [icon]="eyeIcon" class="text-primary"></fa-icon>
+              } @else {
+                <fa-icon [icon]="eyeSlashIcon" class="text-primary"></fa-icon>
+              }
+            </button>
+            @if (submitted && parentForm.controls["password"].errors) {
+              <div>
+                @if (parentForm.controls["password"].errors["required"]) {
+                  <p class="text-xs text-red-500 ps-3">هذا الحقل مطلوب</p>
+                }
+                @if (parentForm.controls["password"].errors["minlength"]) {
+                  <p class="text-xs text-red-500 ps-3">
+                    لابد أن لا تقل كلمة المرور عن 8 أحرف
+                  </p>
+                }
+              </div>
+            }
+          </div>
+          <div class="relative mb-3">
+            <input
+              autocomplete="new-password"
+              name="confirmPassword"
+              formControlName="confirmPassword"
+              [type]="passwordFieldType"
+              placeholder="تأكيد كلمة المرور"
+              [ngClass]="
+                parentForm.controls['confirmPassword'].errors && submitted
+                  ? 'border-red-400 placeholder:text-red-500'
+                  : 'border-gray-300 focus:border-primary'
+              "
+              class="relative block w-full py-4 pr-6 my-2 text-black placeholder-black bg-[#b7e4c7] border-2 rounded-full appearance-none pl-14 placeholder:text-right focus:outline-none focus:ring-primary"
+            />
+            <button
+              type="button"
+              class="absolute p-1.5 bg-white rounded-full top-3 left-3"
+              (click)="togglePasswordVisibility()"
+            >
+              @if (passwordFieldType === "password") {
+                <fa-icon [icon]="eyeIcon" class="text-primary"></fa-icon>
+              } @else {
+                <fa-icon [icon]="eyeSlashIcon" class="text-primary"></fa-icon>
+              }
+            </button>
+            @if (submitted && parentForm.errors?.["PasswordNoMatch"]) {
+              <div>
+                <p class="text-xs text-red-500 ps-3">
+                  كلمة المرور غير متطابقة.
+                </p>
+              </div>
+            }
+          </div>
+          <div class="flex flex-col items-center justify-center col-span-1">
+            <button
+              type="submit"
+              class="flex justify-center w-3/5 py-3 my-2 text-lg font-semibold text-white transition-colors rounded-full bg-primary hover:bg-secondary focus:outline-none"
+            >
+              @if (isLoading()) {
+                <img
+                  class="w-8 h-8 animate-spin text-purple-950"
+                  src="https://www.svgrepo.com/show/474682/loading.svg"
+                  alt="Loading icon"
+                />
+              } @else {
+                دخول
+              }
+            </button>
+            @if (appConfigService.isMainDomain()) {
+              <div class="flex items-center justify-center w-full">
+                <app-sign-with-google />
+              </div>
+            }
+          </div>
+        </div>
+      </form>
+      <p class="flex items-center justify-center mb-4 text-sm text-secondary">
+        هل لديك حساب بالفعل؟
+        <a
+          routerLink="/login"
+          class="px-2 font-semibold cursor-pointe text-primary"
+          >تسجيل دخول
+        </a>
+      </p>
+    </div>
+  </main>
+</div>

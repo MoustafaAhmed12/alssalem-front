@@ -1,0 +1,19 @@
+<li class="has-tooltip">
+  <a
+    [routerLink]="link"
+    routerLinkActive="activeLink"
+    ariaCurrentWhenActive="page"
+    [routerLinkActiveOptions]="{ exact: true }"
+    class="flex flex-col p-4 text-gray-500 transition-colors bg-white rounded-lg group hover:bg-primaryAdmin"
+  >
+    <span
+      class="p-1 -mt-8 bg-gray-100 rounded shadow-lg text-secondaryAdmin w-max tooltip"
+      >{{ lable }}</span
+    >
+    <div class="flex h-5">
+      <div class="relative">
+        <fa-icon [icon]="icon"></fa-icon>
+      </div>
+    </div>
+  </a>
+</li>

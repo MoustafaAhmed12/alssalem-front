@@ -1,0 +1,318 @@
+<div
+  class="flex items-center justify-center min-h-full px-4 mx-auto my-8 sm:px-6"
+>
+  <div class="p-4 bg-white border rounded-lg shadow-sm basis-full">
+    <h2 class="text-lg font-bold md:text-2xl text-primaryAdmin">
+      إنشاء اختبار
+    </h2>
+    <div class="px-8 py-6">
+      <div class="grid w-full grid-cols-1 mt-3 md:grid-cols-2 gap-x-4">
+        <div class="col-span-1 py-4 bg-white rounded-lg">
+          <div class="relative bg-inherit">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              [(ngModel)]="name"
+              placeholder="أدخل اسم الامتحان"
+              class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            /><label
+              for="name"
+              class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+              >أدخل اسم الامتحان</label
+            >
+          </div>
+        </div>
+        <div class="col-span-1 py-4 bg-white rounded-lg">
+          <ng-select
+            [items]="examsTutorials"
+            [multiple]="false"
+            [closeOnSelect]="true"
+            [hideSelected]="true"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="true"
+            placeholder="أختر إسم الدورة"
+            (change)="getTutorialId($event)"
+            class="w-full p-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          >
+          </ng-select>
+        </div>
+      </div>
+      <div class="grid w-full grid-cols-1 mt-3 md:grid-cols-2 gap-x-4">
+        <div class="col-span-1 py-4 bg-white rounded-lg">
+          <div class="relative bg-inherit">
+            <input
+              type="number"
+              id="passingPrecent"
+              name="passingPrecent"
+              [(ngModel)]="passingPrecent"
+              placeholder="ادخل نسبة النجاح"
+              class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            />
+            <label
+              for="passingPrecent"
+              class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+            >
+              ادخل نسبة النجاح</label
+            >
+          </div>
+        </div>
+        <div class="col-span-1 py-4 bg-white rounded-lg">
+          <div class="relative bg-inherit">
+            <input
+              type="number"
+              id="durationInMinutes"
+              name="durationInMinutes"
+              placeholder="ادخل مدة الإمتحان بالدقيقة "
+              class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            />
+            <label
+              for="durationInMinutes"
+              class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+            >
+              ادخل مدة الإمتحان بالدقيقة</label
+            >
+          </div>
+        </div>
+      </div>
+      <div
+        class="grid w-full grid-cols-1 mt-3 mb-4 gap-y-4 md:grid-cols-3 gap-x-4"
+      >
+        <div class="flex flex-col w-full gap-y-1">
+          <label for="easyCount" class="text-sm"> عدد الأسئلة السهلة </label>
+          <input
+            type="number"
+            id="easyCount"
+            [(ngModel)]="easyCount"
+            class="py-2 border border-gray-500 rounded-lg pe-2 ps-6 focus:outline-none"
+            placeholder="عدد اسئلة السهلة"
+          />
+        </div>
+        <div class="flex flex-col w-full gap-y-1">
+          <label for="mediumCount" class="text-sm"> عدد اسئلة المتوسطة</label>
+          <input
+            type="number"
+            id="mediumCount"
+            [(ngModel)]="mediumCount"
+            class="py-2 border border-gray-500 rounded-lg pe-2 ps-6 focus:outline-none"
+            placeholder="عدد اسئلة المتوسطة"
+          />
+        </div>
+        <div class="flex flex-col w-full gap-y-1">
+          <label for="hardCount" class="text-sm">عدد اسئلة الصعبة </label>
+          <input
+            type="number"
+            id="hardCount"
+            [(ngModel)]="hardCount"
+            class="py-2 border border-gray-500 rounded-lg pe-2 ps-6 focus:outline-none"
+            placeholder="عدد اسئلة الصعبة"
+          />
+        </div>
+      </div>
+      <div
+        class="grid w-full grid-cols-1 mt-3 mb-4 gap-y-4 md:grid-cols-2 gap-x-4"
+      >
+        <ng-select
+          [items]="allQuestionTypes"
+          [closeOnSelect]="true"
+          [multiple]="true"
+          [hideSelected]="true"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="true"
+          (change)="filterQuestionType($event)"
+          placeholder="نوع السؤال"
+          class="w-full p-1 text-sm text-gray-900 bg-white rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+        <ng-select
+          [items]="allSkills"
+          [multiple]="true"
+          [hideSelected]="true"
+          [closeOnSelect]="false"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="true"
+          placeholder="اسم المهارة"
+          (change)="filterSkillId($event)"
+          class="w-full p-1 text-sm text-gray-900 bg-white rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+
+      <div
+        class="flex items-center justify-between w-full mt-2 text-primaryAdmin"
+      >
+        <div class="flex items-center gap-x-4">
+          <h5 class="font-semibold text-secondaryAdmin">
+            عدد الأسئلة:
+            <span class="text-logoColor1">{{
+              !isLoadingAll ? totalQSelected : 0
+            }}</span>
+          </h5>
+        </div>
+        <button
+          type="button"
+          (click)="saveExam()"
+          class="flex items-center justify-center px-12 py-2 text-lg font-medium text-white transition-colors border-2 border-transparent rounded-lg disabled:cursor-not-allowed w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-2 focus:ring-offset-2"
+        >
+          @if (isLoading) {
+            <div class="flex items-center justify-center w-full bg-opacity-60">
+              <div class="flex items-center justify-center">
+                <div
+                  class="w-8 h-8 border-4 border-blue-600 border-dashed rounded-full animate-spin"
+                ></div>
+              </div>
+            </div>
+          } @else {
+            حفظ
+          }
+        </button>
+      </div>
+      <div
+        class="flex flex-wrap items-center w-full p-4 mt-4 border-2 rounded-lg gap-x-2"
+      >
+        @for (q of selectedQuestions; track q.id) {
+          <div
+            class="flex flex-col w-full pb-8 mt-4 border-b-8 border-dashed border-logoColor1 gap-y-6"
+          >
+            @if (q.exams.length > 0) {
+              <div
+                class="flex items-center justify-between w-full p-4 bg-slate-200 rounded-xl"
+              >
+                @for (exam of q.exams; track $index) {
+                  <div class="flex items-center gap-x-4">
+                    <h5 class="font-semibold text-secondaryAdmin">
+                      اسم الإمتحان:
+                      <span class="text-logoColor1">{{ exam.name }}</span>
+                    </h5>
+                  </div>
+                }
+              </div>
+            }
+            <div
+              class="flex items-center justify-between w-full p-4 bg-slate-200 rounded-xl"
+            >
+              <input
+                type="checkbox"
+                class="size-6"
+                [checked]="selectedIds.includes(q.id)"
+                (change)="handleChoose(q.id, $event, q)"
+              />
+              <div class="flex items-center gap-x-4">
+                <h5 class="font-semibold text-secondaryAdmin">
+                  كود السؤال:
+                  <span class="text-logoColor1">{{ q.id }}</span>
+                </h5>
+              </div>
+              <div class="flex items-center gap-x-4">
+                <h5 class="font-semibold text-secondaryAdmin">
+                  اسم المهارة:
+                  <span class="text-logoColor1">{{ q.skillName }}</span>
+                </h5>
+              </div>
+              <div class="flex items-center gap-x-4">
+                <h5 class="font-semibold text-secondaryAdmin">
+                  مستوي الصعوبة:
+                  <span class="text-logoColor1">{{
+                    q.difficulty === 1
+                      ? "سهل"
+                      : q.difficulty === 2
+                        ? "متوسط"
+                        : "صعبة"
+                  }}</span>
+                </h5>
+              </div>
+            </div>
+            <div class="w-full h-auto px-1 border-2 rounded-md lg:px-8">
+              <img
+                [src]="q.image1Url"
+                class="object-contain object-center w-full h-full"
+                alt="Question Image2"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        }
+        @if (notSelectedQuestions.length > 0) {
+          <h3 class="mt-4 text-xl font-semibold text-red-600">
+            *الأسئلة التي لم يتم اختيارها
+          </h3>
+        }
+        @if (isLoadingAll) {
+          <div class="flex justify-center w-full">
+            <img
+              class="w-16 h-16 animate-spin"
+              src="https://www.svgrepo.com/show/70469/loading.svg"
+              alt="Loading icon"
+            />
+          </div>
+        } @else {
+          @for (q of notSelectedQuestions; track q.id) {
+            <div
+              class="flex flex-col w-full pb-8 mt-4 border-b-8 border-dashed border-logoColor1 gap-y-6"
+            >
+              @if (q.exams.length > 0) {
+                <div
+                  class="flex items-center justify-between w-full p-4 bg-slate-200 rounded-xl"
+                >
+                  @for (exam of q.exams; track $index) {
+                    <div class="flex items-center gap-x-4">
+                      <h5 class="font-semibold text-secondaryAdmin">
+                        اسم الإمتحان:
+                        <span class="text-logoColor1">{{ exam.name }}</span>
+                      </h5>
+                    </div>
+                  }
+                </div>
+              }
+              <div
+                class="flex items-center justify-between w-full p-4 bg-slate-200 rounded-xl"
+              >
+                <input
+                  type="checkbox"
+                  class="size-6"
+                  [checked]="selectedIds.includes(q.id)"
+                  (change)="handleChoose(q.id, $event, q)"
+                />
+                <div class="flex items-center gap-x-4">
+                  <h5 class="font-semibold text-secondaryAdmin">
+                    كود السؤال:
+                    <span class="text-logoColor1">{{ q.id }}</span>
+                  </h5>
+                </div>
+                <div class="flex items-center gap-x-4">
+                  <h5 class="font-semibold text-secondaryAdmin">
+                    اسم المهارة:
+                    <span class="text-logoColor1">{{ q.skillName }}</span>
+                  </h5>
+                </div>
+                <div class="flex items-center gap-x-4">
+                  <h5 class="font-semibold text-secondaryAdmin">
+                    مستوي الصعوبة:
+                    <span class="text-logoColor1">{{
+                      q.difficulty === 1
+                        ? "سهل"
+                        : q.difficulty === 2
+                          ? "متوسط"
+                          : "صعبة"
+                    }}</span>
+                  </h5>
+                </div>
+              </div>
+              <div class="w-full h-auto px-1 border-2 rounded-md lg:px-8">
+                <img
+                  [src]="q.image1Url"
+                  class="object-contain object-center w-full h-full"
+                  alt="Question Image2"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

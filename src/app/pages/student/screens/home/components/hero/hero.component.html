@@ -1,0 +1,165 @@
+<section
+  class="flex items-center justify-center w-full min-h-screen bg-slate-50"
+>
+  <div
+    class="flex flex-col items-center justify-between w-11/12 h-full px-4 pt-20 mx-auto lg:pt-6 lg:flex-row sm:px-8 lg:px-12"
+  >
+    <div class="flex w-fit">
+      <div class="leading-relaxed text-center basis-full lg:pe-4">
+        <div class="text-[32px] font-extrabold text-primary lg:text-5xl">
+          @if (isMain()) {
+            <h1 class="text-secondary lg:text-5xl">
+              {{ "home.welcome" | translate }}
+            </h1>
+            <h1 class="my-4 lg:my-10">
+              {{ "home.platformName" | translate }}
+            </h1>
+            <span class="hidden mt-2 text-2xl lg:text-4xl text-primary"
+              >{{ "navbar.qodrat" | translate }} و
+              {{ "navbar.tahsili" | translate }}</span
+            >
+            <h1 class="lg:text-3xl text-[28px] leading-loose text-secondary">
+              {{ "home.slogan" | translate }}
+            </h1>
+          } @else {
+            <h1 class="text-secondary lg:text-5xl">
+              {{ "home.welcome" | translate }}
+            </h1>
+            <h1 class="my-4 lg:my-10">
+              {{ name() }}
+            </h1>
+            <h1 class="lg:text-2xl text-[28px] leading-loose text-secondary">
+              {{ description() }}
+            </h1>
+          }
+        </div>
+        <div
+          class="flex flex-col items-center justify-center mt-4 mb-10 text-center lg:mb-0 lg:mt-12 gap-y-4"
+        >
+          <div
+            class="flex flex-col justify-center w-full gap-4 lg:flex-row lg:gap-6"
+          >
+            @if (!isAuth()) {
+              <a
+                routerLink="/login"
+                class="px-4 py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer bg-primary hover:animate-pop hover:text-white"
+              >
+                <span>{{ "home.register" | translate }}</span>
+              </a>
+            } @else {
+              <a
+                (click)="scrollToPosition()"
+                [ngClass]="{ 'lg:w-44': isAuth() }"
+                class="w-full py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer lg:w-44 bg-primary hover:animate-pop hover:text-white"
+              >
+                <span>{{ "home.startNow" | translate }}</span>
+              </a>
+            }
+            <a
+              (click)="scrollToSection('discount')"
+              class="w-full px-4 py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer lg:w-44 bg-secondary hover:animate-pop hover:text-white"
+            >
+              <span>{{ "home.specialOffers" | translate }}</span>
+            </a>
+          </div>
+          <div
+            class="flex flex-col items-center justify-center w-full gap-4 lg:flex-row lg:gap-6"
+          >
+            <a
+              routerLink="/profile/plan/0"
+              class="w-full px-4 py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer lg:w-44 bg-logoColor1 hover:animate-pop hover:text-white"
+            >
+              <span>{{ "home.createYourPlan" | translate }}</span>
+            </a>
+            <a
+              routerLink="/level-test"
+              class="w-full px-4 py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer lg:w-44 bg-gradient-to-r from-secondary to-primary hover:from-secondary hover:to-primary hover:animate-pop hover:text-white"
+            >
+              <span>{{ "navbar.levelTest" | translate }}</span>
+            </a>
+          </div>
+          <button
+            (click)="openVideo.set(true)"
+            class="flex items-center justify-center w-full px-4 py-3 text-lg font-semibold text-white transition-all rounded-full cursor-pointer gap-x-3 lg:w-96 bg-gradient-to-r from-secondary to-primary hover:from-secondary hover:to-primary hover:animate-pop hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-7 fill-logoColor1"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+              />
+            </svg>
+
+            <span>{{ "home.platformExplanation" | translate }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hidden lg:block lg:w-[40%]">
+      <img src="assets/imgs/hero.webp" alt="hero" class="w-full h-auto" />
+    </div>
+  </div>
+</section>
+
+@if (openVideo()) {
+  <div
+    class="fixed inset-0 z-[1150] flex items-center justify-center p-4 bg-black bg-opacity-60 backdrop-blur-sm"
+    (click)="openVideo.set(false)"
+  >
+    <div
+      class="relative w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div
+        class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-[#36b290] to-[#2d9478]"
+      >
+        <h2 class="text-lg font-bold text-white md:text-xl">
+          {{ "home.platformFullExplanation" | translate }}
+        </h2>
+        <button
+          type="button"
+          (click)="openVideo.set(false)"
+          class="flex items-center justify-center w-8 h-8 text-white transition-all duration-200 rounded-full hover:bg-white hover:bg-opacity-20 hover:rotate-90"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Video Container -->
+      <div class="p-6 bg-gray-50">
+        <div
+          class="w-full overflow-hidden rounded-xl aspect-video bg-black"
+          id="plyr-player"
+        >
+          <iframe
+            [src]="getEmbedUrl() | safeUrl"
+            allowfullscreen
+            allowtransparency
+            allow="autoplay"
+            class="w-full h-full"
+          ></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+}

@@ -1,0 +1,247 @@
+<app-navbar />
+<div class="pt-24 pb-20 bg-white">
+  <div
+    class="flex flex-col min-h-screen p-4 mx-auto border max-w-7xl rounded-xl lg:flex-row"
+  >
+    <div
+      class="flex-col items-start justify-start p-4 text-gray-600 border-l border-gray-300 lg:flex lg:w-1/2 bg-gray-50 animate-fade-in"
+    >
+      <h2 class="mb-4 text-lg font-semibold text-right text-primaryAdmin">
+        توفر لك منصة السالم التعليمية اختبارات ذاتية لأي مهارة من مهارات القدرات
+        والتحصيلي وموهبة
+      </h2>
+      <h2 class="mb-4 text-lg font-semibold text-right text-secondaryAdmin">
+        مميزات الاختبارات
+      </h2>
+      <ul class="leading-loose">
+        <li>
+          ١ / يمكنك قياس مستواك في كل مهارة تأسيس أو نموذج تدريب بشكل منفرد (
+          تقييم ذاتي )
+        </li>
+        <li>
+          ٢ / تخرج درجة الاختبار مقسمة على المهارات حتى تعرف مستواك الحقيقي (
+          تحديد نقاط القوة والضعف )
+        </li>
+        <li>٣ / جميع أسئلة الاختبار من اختبارات سابقة حقيقية</li>
+        <li>
+          ٤ / يمكنك مراجعة الإجابات ومشاهدة فيديو شرح كل سؤال على حدة ( تغذية
+          راجعة )
+        </li>
+        <li>٥ / يمكنك إعادة الاختبار أكثر من مرة ومشاهدة فيديو الشرح</li>
+        <li>٦ / يتم تحديث الاختبارات باستمرار</li>
+        <li>
+          ٧ / الاختبار مفتوح دائما معك وعند توقفك عند أي سؤال أثناء الاختبار لأي
+          سبب ، يمكنك الرجوع وتكمل الاختبار من المكان الذي توقفت فيه
+        </li>
+      </ul>
+      <h2 class="my-4 text-lg font-semibold text-right text-secondaryAdmin">
+        طريقة الاشتراك
+      </h2>
+      <p>
+        اختر المادة ثم القسم ثم الدورة ثم الاختبار وقم بدفع قيمة الاختبار قم بحل
+        أسئلة الاختبار ثم اضغط مراجعة الاجابات ليظهر لك الإجابات الصحيحة وشرح
+        الفيديو لكل سؤال.
+      </p>
+    </div>
+    <div class="flex flex-col space-y-4 lg:w-1/2">
+      <div
+        class="self-center max-w-xs p-3 mt-6 text-white rounded-lg lg:mt-0 bg-secondaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        اختر المادة
+      </div>
+      <div
+        class="flex flex-wrap self-end max-w-xs gap-2 sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        @for (c of mainCategory; track c.id) {
+        <button
+          [ngClass]="parentId === c.id ? 'bg-logoColor1' : 'bg-primaryAdmin'"
+          class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform rounded sm:text-base hover:scale-105"
+          (click)="showSubOptions(c.id)"
+        >
+          {{ c.name }}
+        </button>
+        }
+      </div>
+      @if ( parentId ) {
+      <div
+        class="self-center max-w-xs p-3 text-white rounded-lg bg-secondaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        اختر القسم
+      </div>
+      } @if(parentId && !isLoading()){
+      <div
+        class="flex flex-wrap self-end max-w-xs gap-2 sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        @for (s of subCategory; track s.id) {
+        <button
+          [ngClass]="categoryId === s.id ? 'bg-logoColor1' : 'bg-primaryAdmin'"
+          class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform rounded sm:text-base hover:scale-105"
+          (click)="handleSubOption(s.id)"
+        >
+          {{ s.name }}
+        </button>
+        }
+      </div>
+      } @if ( categoryId ) {
+      <div
+        class="self-center max-w-xs p-3 text-white rounded-lg bg-secondaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        اختر الدورة
+      </div>
+      } @if(categoryId && !isLoading2()){
+      <div
+        class="flex flex-wrap self-end max-w-xs gap-2 sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        @for (t of tutorialsCategory; track t.id) {
+        <button
+          [ngClass]="tutorialId === t.id ? 'bg-logoColor1' : 'bg-primaryAdmin'"
+          class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform rounded sm:text-base hover:scale-105"
+          (click)="getExams(t.id)"
+        >
+          {{ t.name }}
+        </button>
+        }@empty { لا يوجد دورات بعد }
+      </div>
+      } @if ( tutorialId ) {
+      <div
+        class="self-center max-w-xs p-3 text-white rounded-lg bg-secondaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        اختر الاختبار
+      </div>
+      } @if(tutorialId && !isLoading3()){
+      <div
+        class="flex flex-wrap self-end max-w-xs gap-2 sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        <ng-select
+          [items]="examsTutorial"
+          [multiple]="false"
+          [closeOnSelect]="true"
+          [hideSelected]="true"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="true"
+          (change)="getExam($event)"
+          [loading]="isLoading3()"
+          placeholder="اختر الاختبار"
+          [ngClass]="{ 'mb-48': !exam }"
+          class="w-64 p-1 text-gray-900 bg-white rounded-lg md:w-96 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+        <!-- @for (e of examsTutorial; track e.id) {
+        <button
+          [ngClass]="examId === e.id ? 'bg-logoColor1' : ''"
+          (click)="getExam(e)"
+          class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform rounded bg-primaryAdmin sm:w-auto sm:text-base hover:scale-105"
+        >
+          {{ e.name }}
+        </button>
+        }@empty { لا يوجد امتحانات بعد } -->
+      </div>
+      }
+      <!-- AI Confirmation of User's Final Selection -->
+      @if (exam) {
+      <div class="flex items-center gap-x-3">
+        <div
+          class="self-start max-w-xs p-3 text-black bg-gray-300 rounded-lg ms-4 sm:max-w-md lg:max-w-lg animate-fade-in"
+        >
+          <span> {{ exam.name }}</span>
+        </div>
+        <div
+          class="self-start max-w-xs p-3 text-white rounded-lg bg-primaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+        >
+          <span> سعر الاختبار {{ examPrice[0] }}</span> ر.س
+        </div>
+      </div>
+      <button
+        (click)="checkoutExam()"
+        class="self-start max-w-xs p-3 text-white transition-transform rounded-lg ms-4 hover:animate-pop bg-secondaryAdmin sm:max-w-md lg:max-w-lg animate-fade-in"
+      >
+        <!-- اختبار {{ exam.name }} -->
+        ابدا الاختبار الان
+      </button>
+      }
+    </div>
+  </div>
+</div>
+<!-- anther shape -->
+<!-- <div class="pb-20 bg-white pt-28">
+  <div
+    class="flex flex-col min-h-screen p-4 mx-auto bg-gray-100 max-w-7xl sm:flex-row"
+  >
+    <div
+      class="w-full h-auto p-4 bg-white border-r border-gray-300 sm:w-1/3 sm:h-screen"
+    >
+      <div class="space-y-4">
+        <p class="text-lg font-semibold text-gray-700">
+          اختر نوع الاختبار الذي تريد الاستفسار عنه:
+        </p>
+        <div class="grid grid-cols-2 gap-2 sm:grid-cols-1">
+          <button
+            class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-green-500 rounded hover:bg-green-600 sm:text-base hover:scale-105"
+            (click)="showSubOptions22('قدرات')"
+          >
+            قدرات
+          </button>
+          <button
+            class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-blue-500 rounded hover:bg-blue-600 sm:text-base hover:scale-105"
+            (click)="showSubOptions22('تحصيلي')"
+          >
+            تحصيلي
+          </button>
+          <button
+            class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-purple-500 rounded hover:bg-purple-600 sm:text-base hover:scale-105"
+            (click)="showSubOptions22('موهبة')"
+          >
+            موهبة
+          </button>
+          <button
+            class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-yellow-500 rounded hover:bg-yellow-600 sm:text-base hover:scale-105"
+            (click)="showSubOptions22('قدرات بالانجليزي')"
+          >
+            قدرات بالانجليزي
+          </button>
+        </div>
+        <div *ngIf="selectedMainOption2" class="pt-4">
+          <p class="font-semibold text-gray-700 text-md">اختر القسم:</p>
+          <div class="space-y-2">
+            <button
+              class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-red-500 rounded hover:bg-red-600 sm:text-base hover:scale-105"
+              (click)="handleSubOption2('كمي')"
+            >
+              كمي
+            </button>
+            <button
+              class="w-full px-3 py-2 text-sm text-white transition duration-300 ease-in-out transform bg-indigo-500 rounded hover:bg-indigo-600 sm:text-base hover:scale-105"
+              (click)="handleSubOption2('لفظي')"
+            >
+              لفظي
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col justify-end w-full h-auto p-4 bg-gray-200 sm:w-2/3 sm:h-screen"
+    >
+      <div class="flex flex-col h-full space-y-4 overflow-auto">
+        <div
+          class="self-start max-w-xs p-3 text-white bg-blue-500 rounded-lg sm:max-w-md lg:max-w-lg animate-fade-in"
+        >
+          مرحباً! اختر نوع الاختبار الذي تريد الاستفسار عنه:
+        </div>
+        <div
+          *ngIf="selectedMainOption2"
+          class="self-start max-w-xs p-3 text-white bg-blue-500 rounded-lg sm:max-w-md lg:max-w-lg animate-fade-in"
+        >
+          اختر القسم:
+        </div>
+        <div
+          *ngIf="selectedSubOption2"
+          class="self-end max-w-xs p-3 text-black bg-gray-300 rounded-lg sm:max-w-md lg:max-w-lg animate-fade-in"
+        >
+          تم اختيار {{ selectedSubOption2 }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

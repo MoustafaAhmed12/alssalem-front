@@ -1,0 +1,184 @@
+<div class="min-h-screen pt-6 pb-16">
+  <h2
+    class="flex flex-col items-center justify-center gap-4 mb-6 text-xl font-bold text-center sm:flex-row md:text-3xl text-primaryAdmin"
+  >
+    <span>بيانات المستخدمين:</span>
+    <span class="text-logoColor1">{{ totalCount }} مستخدم</span>
+  </h2>
+  <div
+    class="flex flex-col gap-6 p-6 mb-6 bg-white rounded-lg shadow-lg md:flex-row md:items-center md:justify-between"
+  >
+    <div class="relative w-full md:w-5/12">
+      <input
+        type="text"
+        [(ngModel)]="keyword"
+        placeholder="ابحث عن اسم او دور او إيميل..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        type="button"
+        [routerLink]="['/admin/users/', 0]"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+        إضافة
+      </button>
+    </div>
+  </div>
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-white bg-primaryAdmin">
+          <th class="p-3.5 border">الاسم</th>
+          <th class="p-3.5 border">الإيميل</th>
+          <th class="p-3.5 border whitespace-nowrap">رقم الجوال</th>
+          <th class="p-3.5 border">الدور</th>
+          <th class="p-3.5 border">مقفول؟</th>
+          <th class="p-3.5 border">تعديل او حذف</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading()) { @for (user of paginatedUsers; track user.id;) {
+        <tr
+          class="font-medium border-b-4 border-gray-300"
+          [class]="$even ? 'bg-gray-100' : 'bg-white'"
+        >
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ user.name }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ user.email }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ user.mobileNumber }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ user.roleName }}
+          </td>
+          <td class="p-3.5 text-center border">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                id="switch-3"
+                name="toggle"
+                [checked]="user.isLocked === true"
+                id="toggle"
+                type="checkbox"
+                class="sr-only peer"
+                disabled
+              />
+              <label for="switch-3" class="hidden"></label>
+              <div
+                class="peer h-4 w-11 rounded border bg-slate-600 after:absolute after:-top-1 after:-left-1 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-gray-200 after:transition-all after:content-[''] peer-checked:bg-primaryAdmin peer-checked:after:translate-x-full peer-focus:ring-green-300"
+              ></div>
+            </label>
+          </td>
+          <td class="p-3.5 text-center border">
+            <div class="flex items-center justify-center gap-x-12">
+              <svg
+                [routerLink]="['/admin/users/', user.id]"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 text-green-600 cursor-pointer hover:text-green-700"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                />
+              </svg>
+              <svg
+                (click)="remove(user.id)"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6 text-red-600 cursor-pointer hover:text-red-700"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                />
+              </svg>
+            </div>
+          </td>
+        </tr>
+        } }@else {
+        <tr>
+          <td colspan="6" class="py-8 cell">
+            <div
+              class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+            ></div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="flex flex-wrap items-center justify-center mt-8 gap-y-2 gap-x-6">
+    <!-- زر السابق -->
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="currentPage === 1"
+      [disabled]="currentPage === 1"
+      (click)="changePage(currentPage - 1)"
+    >
+      ❮ السابق
+    </button>
+
+    @for (page of getPageRange(); track page) {
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-blue-500]="page === currentPage"
+      [class.text-white]="page === currentPage"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+    }
+
+    <!-- زر التالي -->
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="currentPage === totalPages"
+      [disabled]="currentPage === totalPages"
+      (click)="changePage(currentPage + 1)"
+    >
+      التالي ❯
+    </button>
+  </div>
+</div>

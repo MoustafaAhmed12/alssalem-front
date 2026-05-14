@@ -1,0 +1,809 @@
+<div class="mx-auto max-w-7xl pt-6" dir="rtl">
+  <!-- ─── Header ─────────────────────────────────────────────────────────── -->
+  <div class="mb-10">
+    <div class="flex flex-col md:flex-row justify-between items-start gap-6">
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-4 text-primary">
+          <i class="fas fa-chart-bar text-2xl"></i>
+          <h1
+            class="text-xl md:text-2xl font-bold flex items-start gap-2 flex-col text-gray-800"
+          >
+            التقرير العام
+            <span class="text-primary mt-2">{{
+              selectedSchoolName() || "حدد المدرسة"
+            }}</span>
+          </h1>
+        </div>
+
+        <div class="flex items-center gap-2 text-gray-500 mb-6 font-medium">
+          <i class="far fa-calendar-alt"></i>
+          <span>التاريخ:</span>
+          <span>{{ currentDate | date: "dd-MM-yyyy" }}</span>
+        </div>
+
+        <div
+          class="bg-blue-50/50 rounded-xl p-6 border-r-4 w-full border-primary"
+        >
+          <p class="text-gray-700 leading-relaxed">
+            تتيح لك هذه الصفحة متابعة الأداء العام للمدرسة بشكل شامل ومنظم.
+            يمكنك استخراج تقارير على مستوى المراحل الدراسية المختلفة أو تحليل
+            أداء كل مرحلة مع فصولها، مما يساعدك على تقييم جودة التعليم واتخاذ
+            قرارات تطوير فعالة بناءً على بيانات دقيقة.
+          </p>
+        </div>
+      </div>
+
+      <div
+        class="flex flex-col items-center justify-center p-6 border border-gray-100 bg-primary text-white rounded-full min-w-[160px]"
+      >
+        <span class="text-sm font-bold mb-1">إجمالي الطلاب</span>
+        <span class="text-4xl font-black">{{ allStudents().length }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Selectors ───────────────────────────────────────────────────────── -->
+  <div
+    class="mb-6 bg-white rounded-xl py-6 px-4 shadow-lg border border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-6"
+  >
+    <div>
+      <label class="block text-sm font-bold text-gray-700 mb-2"
+        >المدرسة <span class="text-red-500">*</span></label
+      >
+      <ng-select
+        [items]="allSchools()"
+        [closeOnSelect]="true"
+        bindLabel="name"
+        bindValue="id"
+        (change)="onSelectSchool($event)"
+        placeholder="حدد المدرسة أولاً"
+        class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500"
+      ></ng-select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-bold text-gray-700 mb-2"
+        >الدورات <span class="text-gray-400 text-xs">(اختياري)</span></label
+      >
+      <ng-select
+        [items]="allTutorials()"
+        [multiple]="true"
+        [closeOnSelect]="false"
+        bindLabel="name"
+        (change)="onSelectTutorials($event)"
+        placeholder="جميع الدورات"
+        class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500"
+      ></ng-select>
+    </div>
+  </div>
+
+  <!-- ─── No school selected ────────────────────────────────────────────── -->
+  @if (!selectedSchoolId()) {
+    <div class="py-20 flex flex-col items-center justify-center gap-4">
+      <i class="fas fa-school text-6xl text-gray-200"></i>
+      <p class="text-gray-400 font-bold text-xl">
+        يرجى تحديد مدرسة لعرض التقرير
+      </p>
+    </div>
+  }
+
+  @if (selectedSchoolId()) {
+    <!-- ─── Loading ────────────────────────────────────────────────────── -->
+    @if (isLoading()) {
+      <div class="py-20 flex flex-col items-center justify-center gap-4">
+        <div
+          class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+        ></div>
+        <p class="text-gray-500 font-bold">جاري تحميل البيانات...</p>
+      </div>
+    }
+
+    @if (!isLoading()) {
+      <!-- ─── Breadcrumb ────────────────────────────────────────────────── -->
+      <div
+        class="flex items-center gap-2 mb-4 text-sm font-bold text-gray-500 flex-wrap"
+      >
+        <button
+          (click)="navToGrade()"
+          class="hover:text-primary transition-colors"
+          [class.text-primary]="currentLevel() === 'grade'"
+        >
+          جميع الصفوف
+        </button>
+        @if (selectedState()) {
+          <i class="fas fa-chevron-left text-xs"></i>
+          <button
+            (click)="navToClass()"
+            class="hover:text-primary transition-colors"
+            [class.text-primary]="currentLevel() === 'class'"
+          >
+            {{ selectedState() }}
+          </button>
+        }
+        @if (selectedClassNo()) {
+          <i class="fas fa-chevron-left text-xs"></i>
+          <span class="text-primary">فصل {{ selectedClassNo() }}</span>
+        }
+      </div>
+
+      <!-- ─── Export Toolbar ───────────────────────────────────────────── -->
+      <div class="flex flex-wrap justify-end gap-3 mb-4">
+        <button
+          (click)="exportCurrentLevel()"
+          class="flex items-center gap-2 px-5 py-2.5 text-white bg-green-600 rounded-lg hover:bg-green-700 transition-all"
+        >
+          <i class="fas fa-file-excel"></i>
+          @if (currentLevel() === "grade") {
+            تصدير الصفوف
+          } @else if (currentLevel() === "class") {
+            تصدير الفصول
+          } @else {
+            تصدير الكل
+          }
+        </button>
+        @if (currentLevel() === "student") {
+          <button
+            (click)="exportSelected()"
+            class="flex items-center gap-2 px-5 py-2.5 text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-all"
+          >
+            <i class="fas fa-check-square"></i>
+            تصدير المحددين
+          </button>
+        }
+      </div>
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- LEVEL 1 — Grade Table                                          -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      @if (currentLevel() === "grade") {
+        @if (gradeRows().length === 0) {
+          <div class="py-16 flex flex-col items-center gap-3">
+            <i class="fas fa-folder-open text-5xl text-gray-200"></i>
+            <p class="text-gray-400 font-bold">لا توجد بيانات</p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full border border-collapse border-gray-300">
+              <thead>
+                <tr class="text-center text-gray-800 bg-gray-300">
+                  <th class="p-3 border">الصف</th>
+                  <th class="p-3 border">عدد الطلاب</th>
+                  <th class="p-3 border">الدورة</th>
+                  <th class="p-3 border">نسبة الإنجاز (دورة)</th>
+                  <th class="p-3 border">تفاصيل</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  row of gradeRows();
+                  track row.state;
+                  let rowEven = $even
+                ) {
+                  @for (
+                    course of row.courseSummaries.length > 0
+                      ? row.courseSummaries
+                      : [
+                          {
+                            tutorialName: "لا توجد دورات",
+                            avgAchievement: 0,
+                            advancePercentage: 0,
+                            successPrecentage: 0,
+                          },
+                        ];
+                    track course.tutorialName;
+                    let i = $index
+                  ) {
+                    <tr
+                      [class]="rowEven ? 'bg-gray-50' : 'bg-white'"
+                      class="hover:bg-blue-50 transition-colors"
+                    >
+                      @if (i === 0) {
+                        <td
+                          class="p-3 text-center border font-bold"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          {{ row.state }}
+                        </td>
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          {{ row.studentCount }}
+                        </td>
+                      }
+
+                      <td class="p-3 text-center border">
+                        {{ course.tutorialName }}
+                      </td>
+                      <td
+                        class="p-3 font-semibold text-center border cursor-pointer hover:bg-blue-50 transition-colors"
+                        (click)="
+                          openAchievementPopup(
+                            course.advancePercentage,
+                            course.successPrecentage,
+                            course.avgAchievement
+                          )
+                        "
+                        title="اضغط لعرض التفاصيل"
+                      >
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold"
+                          [class]="
+                            course.avgAchievement >= 50
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          "
+                        >
+                          {{ course.avgAchievement }}%
+                        </span>
+                      </td>
+
+                      @if (i === 0) {
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          <button
+                            (click)="drillToClass(row)"
+                            class="px-4 py-1.5 bg-primary text-white rounded-lg text-sm hover:opacity-90 transition-all"
+                          >
+                            <i class="fas fa-arrow-left ml-1"></i> عرض الفصول
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- LEVEL 2 — Class Table                                          -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      @if (currentLevel() === "class") {
+        @if (classRows().length === 0) {
+          <div class="py-16 flex flex-col items-center gap-3">
+            <i class="fas fa-folder-open text-5xl text-gray-200"></i>
+            <p class="text-gray-400 font-bold">لا توجد بيانات</p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full border border-collapse border-gray-300">
+              <thead>
+                <tr class="text-center text-gray-800 bg-gray-400">
+                  <th class="p-3 border">رقم الفصل</th>
+                  <th class="p-3 border">عدد الطلاب</th>
+                  <th class="p-3 border">الدورة</th>
+                  <th class="p-3 border">نسبة الإنجاز (دورة)</th>
+
+                  <th class="p-3 border">تفاصيل</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  row of classRows();
+                  track row.classNo;
+                  let rowEven = $even
+                ) {
+                  @for (
+                    course of row.courseSummaries.length > 0
+                      ? row.courseSummaries
+                      : [
+                          {
+                            tutorialName: "لا توجد دورات",
+                            avgAchievement: 0,
+                            advancePercentage: 0,
+                            successPrecentage: 0,
+                          },
+                        ];
+                    track course.tutorialName;
+                    let i = $index
+                  ) {
+                    <tr
+                      [class]="rowEven ? 'bg-gray-50' : 'bg-white'"
+                      class="hover:bg-blue-50 transition-colors"
+                    >
+                      @if (i === 0) {
+                        <td
+                          class="p-3 text-center border font-bold"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          فصل {{ row.classNo }}
+                        </td>
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          {{ row.studentCount }}
+                        </td>
+                      }
+
+                      <td class="p-3 text-center border">
+                        {{ course.tutorialName }}
+                      </td>
+                      <td
+                        class="p-3 font-semibold text-center border cursor-pointer hover:bg-blue-50 transition-colors"
+                        (click)="
+                          openAchievementPopup(
+                            course.advancePercentage,
+                            course.successPrecentage,
+                            course.avgAchievement
+                          )
+                        "
+                        title="اضغط لعرض التفاصيل"
+                      >
+                        <span
+                          class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold"
+                          [class]="
+                            course.avgAchievement >= 50
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          "
+                        >
+                          {{ course.avgAchievement }}%
+                        </span>
+                      </td>
+
+                      @if (i === 0) {
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="
+                            row.courseSummaries.length > 0
+                              ? row.courseSummaries.length
+                              : 1
+                          "
+                        >
+                          <button
+                            (click)="drillToStudent(row)"
+                            class="px-4 py-1.5 bg-primary text-white rounded-lg text-sm hover:opacity-90 transition-all"
+                          >
+                            <i class="fas fa-arrow-left ml-1"></i> عرض الطلاب
+                          </button>
+                        </td>
+                      }
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      <!-- LEVEL 3 — Student Table                                        -->
+      <!-- ═══════════════════════════════════════════════════════════════ -->
+      @if (currentLevel() === "student") {
+        <!-- Visibility Toggles -->
+        <div
+          class="flex flex-wrap items-center justify-start w-full mb-4 gap-x-6"
+        >
+          <label
+            class="flex items-center justify-center cursor-pointer gap-x-2"
+          >
+            <input type="checkbox" class="hidden" [(ngModel)]="showEmail" />
+            <div
+              class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+              [class]="showEmail ? 'bg-primary' : 'bg-white'"
+            ></div>
+            <span>إيميل</span>
+          </label>
+          <label
+            class="flex items-center justify-center cursor-pointer gap-x-2"
+          >
+            <input type="checkbox" class="hidden" [(ngModel)]="showNum" />
+            <div
+              class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+              [class]="showNum ? 'bg-primary' : 'bg-white'"
+            ></div>
+            <span>رقم الجوال</span>
+          </label>
+          <label
+            class="flex items-center justify-center cursor-pointer gap-x-2"
+          >
+            <input type="checkbox" class="hidden" [(ngModel)]="showSchool" />
+            <div
+              class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+              [class]="showSchool ? 'bg-primary' : 'bg-white'"
+            ></div>
+            <span>المدرسة</span>
+          </label>
+        </div>
+
+        @if (studentRows().length === 0) {
+          <div class="py-16 flex flex-col items-center gap-3">
+            <i class="fas fa-folder-open text-5xl text-gray-200"></i>
+            <p class="text-gray-400 font-bold">لا يوجد طلاب</p>
+          </div>
+        } @else {
+          <div class="overflow-x-auto">
+            <table class="w-full border border-collapse border-gray-300">
+              <thead>
+                <tr class="text-center text-gray-800 bg-gray-300">
+                  <th class="p-3 border">
+                    <label
+                      class="flex items-center justify-center cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        class="hidden"
+                        [checked]="selectAll"
+                        (change)="toggleSelectAll()"
+                      />
+                      <div
+                        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                        [class]="selectAll ? 'bg-primary' : 'bg-white'"
+                      >
+                        @if (selectAll) {
+                          <svg
+                            class="w-4 h-4 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M5 13l4 4L19 7"
+                            ></path>
+                          </svg>
+                        }
+                      </div>
+                    </label>
+                  </th>
+                  <th class="p-3 border">اسم الطالب</th>
+                  @if (showSchool) {
+                    <th class="p-3 border">المدرسة</th>
+                  }
+                  <th class="p-3 border">الصف</th>
+                  <th class="p-3 border">الفصل</th>
+                  @if (showNum) {
+                    <th class="p-3 border">الجوال</th>
+                  }
+                  @if (showEmail) {
+                    <th class="p-3 border">الإيميل</th>
+                  }
+                  <th class="p-3 border">الدورة</th>
+                  <th class="p-3 border">نسبة الإنجاز</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  student of pagedStudentRows();
+                  track studentIndex;
+                  let studentIndex = $index
+                ) {
+                  @if (studentIndex > 0) {
+                    <tr>
+                      <td colspan="9" class="border-b-4 border-gray-400"></td>
+                    </tr>
+                  }
+                  @for (
+                    tutorial of student.tutorials;
+                    track i;
+                    let i = $index;
+                    let even = $even
+                  ) {
+                    <tr [class]="even ? 'bg-gray-100' : 'bg-white'">
+                      @if (i === 0) {
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="student.tutorials.length"
+                        >
+                          <label
+                            class="flex items-center justify-center cursor-pointer"
+                          >
+                            <input
+                              type="checkbox"
+                              class="hidden"
+                              [checked]="
+                                selectedStudents[student.email] || false
+                              "
+                              (change)="
+                                selectedStudents[student.email] =
+                                  !selectedStudents[student.email];
+                                updateSelection(student.email)
+                              "
+                            />
+                            <div
+                              class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                              [class]="
+                                selectedStudents[student.email]
+                                  ? 'bg-primary'
+                                  : 'bg-white'
+                              "
+                            >
+                              @if (selectedStudents[student.email]) {
+                                <svg
+                                  class="w-4 h-4 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  stroke-width="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  ></path>
+                                </svg>
+                              }
+                            </div>
+                          </label>
+                        </td>
+                        <td
+                          class="p-3 font-medium text-center border cursor-pointer"
+                          [attr.rowspan]="student.tutorials.length"
+                        >
+                          <a
+                            target="_blank"
+                            [routerLink]="['/supervisor/' + student.id]"
+                            >{{ student.name }}</a
+                          >
+                        </td>
+                        @if (showSchool) {
+                          <td
+                            class="p-3 text-center border"
+                            [attr.rowspan]="student.tutorials.length"
+                          >
+                            {{ student.schoolName }}
+                          </td>
+                        }
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="student.tutorials.length"
+                        >
+                          {{ student.classNo }}
+                        </td>
+                        <td
+                          class="p-3 text-center border"
+                          [attr.rowspan]="student.tutorials.length"
+                        >
+                          {{ student.state }}
+                        </td>
+                        @if (showNum) {
+                          <td
+                            class="p-3 text-center border"
+                            [attr.rowspan]="student.tutorials.length"
+                          >
+                            {{ student.phoneNumber }}
+                          </td>
+                        }
+                        @if (showEmail) {
+                          <td
+                            class="p-3 text-center border"
+                            [attr.rowspan]="student.tutorials.length"
+                          >
+                            {{ student.email }}
+                          </td>
+                        }
+                      }
+                      <td class="p-3 text-center border">
+                        {{ tutorial.tutorialName }}
+                      </td>
+                      <td
+                        class="p-3 font-semibold text-center border cursor-pointer hover:bg-blue-50 transition-colors"
+                        (click)="
+                          openAchievementPopup(
+                            tutorial.advancePercentage,
+                            tutorial.successPrecentage
+                          )
+                        "
+                        title="اضغط لعرض التفاصيل"
+                      >
+                        <span
+                          class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm"
+                          [class]="
+                            round(
+                              (tutorial.advancePercentage *
+                                tutorial.successPrecentage) /
+                                100
+                            ) >= 50
+                              ? 'bg-green-100 text-green-700'
+                              : 'bg-red-100 text-red-700'
+                          "
+                        >
+                          {{
+                            round(
+                              (tutorial.advancePercentage *
+                                tutorial.successPrecentage) /
+                                100
+                            )
+                          }}%
+                        </span>
+                      </td>
+                    </tr>
+                  }
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination -->
+          @if (totalStudentPages() > 1) {
+            <div class="mt-8 flex flex-col items-center gap-4">
+              <!-- Pagination Info -->
+              <div class="text-sm text-gray-500 font-medium">
+                عرض
+                <span class="text-primary font-bold">{{
+                  pagedStudentRows().length
+                }}</span>
+                من أصل
+                <span class="text-gray-900 font-bold">{{ totalItems() }}</span>
+                طالب
+              </div>
+
+              <!-- Pagination Buttons -->
+              <div
+                class="flex items-center justify-center gap-2 select-none flex-wrap"
+              >
+                <button
+                  class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all border shadow-sm"
+                  [class]="
+                    pageNumber <= 1
+                      ? 'border-gray-100 text-gray-300 cursor-not-allowed bg-gray-50'
+                      : 'border-gray-200 text-gray-700 hover:border-primary hover:text-primary bg-white cursor-pointer hover:shadow-md'
+                  "
+                  [disabled]="pageNumber <= 1"
+                  (click)="changePage(pageNumber - 1)"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 rtl:rotate-180"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M15.75 19.5 8.25 12l7.5-7.5"
+                    />
+                  </svg>
+                  السابق
+                </button>
+
+                <div
+                  class="flex items-center gap-1.5 px-2 py-1 bg-gray-50 rounded-2xl border border-gray-100"
+                >
+                  @for (page of getVisiblePages(); track $index) {
+                    @if (page === null) {
+                      <span
+                        class="w-9 h-9 flex items-center justify-center text-gray-400 font-bold"
+                        >...</span
+                      >
+                    } @else {
+                      <button
+                        class="w-10 h-10 rounded-xl text-sm font-bold transition-all border-2"
+                        [class]="
+                          page === pageNumber
+                            ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20 scale-110 z-10'
+                            : 'bg-white border-transparent text-gray-500 hover:border-gray-200 hover:text-primary hover:bg-white'
+                        "
+                        (click)="changePage(page)"
+                      >
+                        {{ page }}
+                      </button>
+                    }
+                  }
+                </div>
+
+                <button
+                  class="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all border shadow-sm"
+                  [class]="
+                    pageNumber >= totalStudentPages()
+                      ? 'border-gray-100 text-gray-300 cursor-not-allowed bg-gray-50'
+                      : 'border-gray-200 text-gray-700 hover:border-primary hover:text-primary bg-white cursor-pointer hover:shadow-md'
+                  "
+                  [disabled]="pageNumber >= totalStudentPages()"
+                  (click)="changePage(pageNumber + 1)"
+                >
+                  التالي
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="2.5"
+                    stroke="currentColor"
+                    class="w-4 h-4 rtl:rotate-180"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m8.25 4.5 7.5 7.5-7.5 7.5"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          }
+        }
+      }
+    }
+  }
+</div>
+
+<!-- ─── Achievement Popup ───────────────────────────────────────────────── -->
+<!-- <div
+  dir="rtl"
+  class="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm transition-all duration-300"
+  [class.hidden]="!isOpenAchievement"
+  (click)="closeAchievementPopup()"
+>
+  <div
+    class="bg-white rounded-3xl shadow-2xl w-80 overflow-hidden transform transition-all duration-300 border border-gray-100"
+    (click)="$event.stopPropagation()"
+  >
+    @if (achievementData) {
+      <div
+        class="p-8 text-center border-b-[6px]"
+        [class]="
+          achievementData.result >= 50 ? 'border-green-500' : 'border-red-500'
+        "
+      >
+        <button
+          (click)="closeAchievementPopup()"
+          class="absolute top-4 left-4 text-gray-400 hover:text-red-500 transition-colors"
+        >
+          <i class="fas fa-times text-lg"></i>
+        </button>
+        <p
+          class="text-xs font-black text-gray-400 uppercase tracking-widest mb-2"
+        >
+          نسبة الإنجاز
+        </p>
+        <span
+          class="text-6xl font-black block"
+          [class]="
+            achievementData.result >= 50 ? 'text-green-600' : 'text-red-600'
+          "
+        >
+          {{ achievementData.result }}%
+        </span>
+      </div>
+      <div class="grid grid-cols-2 divide-x divide-x-reverse divide-gray-100">
+        <div class="p-6 text-center">
+          <p class="text-[10px] font-black text-gray-400 uppercase mb-1">
+            التقدم
+          </p>
+          <span class="text-2xl font-black text-blue-600"
+            >{{ achievementData.advance }}%</span
+          >
+        </div>
+        <div class="p-6 text-center">
+          <p class="text-[10px] font-black text-gray-400 uppercase mb-1">
+            النجاح
+          </p>
+          <span class="text-2xl font-black text-purple-600"
+            >{{ achievementData.success }}%</span
+          >
+        </div>
+      </div>
+    }
+  </div>
+</div> -->

@@ -1,0 +1,336 @@
+<div class="pb-8 mx-auto max-w-6xl py-6" dir="rtl">
+  <!-- Top Navigation -->
+  <div
+    class="flex gap-4 items-center flex-col md:flex-row justify-between mb-8 pb-4 border-b border-gray-100"
+  >
+    <div class="flex flex-col items-start self-start">
+      <h1 class="text-lg font-bold text-gray-800 md:text-xl">
+        مراجعة إجابة الطالب: {{ userName }}
+      </h1>
+      <p class="text-gray-600 mt-1">
+        السؤال رقم {{ pageNumber() }} من {{ totalCount() }}
+      </p>
+    </div>
+    <div class="flex items-center gap-4 self-end">
+      <div class="w-56">
+        <ng-select
+          [items]="[
+            { id: 1, name: 'الإجابات الصحيحة' },
+            { id: 2, name: 'الإجابات الخطأ' },
+            { id: 3, name: 'الأسئلة الغير محلولة' },
+          ]"
+          bindLabel="name"
+          bindValue="id"
+          placeholder="اختر الاسئله"
+          [clearable]="true"
+          (change)="onStatusChange($event?.id)"
+          class="border w-full border-gray-200"
+        >
+        </ng-select>
+      </div>
+      <button
+        routerLink="/super/exams"
+        class="flex items-center gap-2 px-4 py-2 text-white bg-primary rounded-lg transition-all hover:bg-opacity-90 shadow-md h-[42px]"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="size-5"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+          />
+        </svg>
+        رجوع
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistics Ribbon -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+    <div
+      class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center"
+    >
+      <span class="text-sm text-gray-500 font-medium mb-1"
+        >الأسئلة الصحيحة</span
+      >
+      <span class="text-2xl font-bold text-green-600">{{
+        correctAnswersCount()
+      }}</span>
+    </div>
+    <div
+      class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center"
+    >
+      <span class="text-sm text-gray-500 font-medium mb-1"
+        >الأسئلة الخاطئة</span
+      >
+      <span class="text-2xl font-bold text-red-600">{{
+        wrongAnswersCount()
+      }}</span>
+    </div>
+    <div
+      class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center"
+    >
+      <span class="text-sm text-gray-500 font-medium mb-1">لم يتم حلها</span>
+      <span class="text-2xl font-bold text-gray-600">{{
+        unansweredCount()
+      }}</span>
+    </div>
+    <div
+      class="bg-white p-4 rounded-2xl shadow-sm border-primary/20 bg-primary/5 border flex flex-col items-center justify-center text-center"
+    >
+      <span class="text-sm text-primary font-medium mb-1">نسبة النجاح</span>
+      <span class="text-2xl font-bold text-primary"
+        >{{ studentPercentage }}%</span
+      >
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center min-h-[400px]">
+      <div
+        class="w-16 h-16 border-8 border-primary border-dashed rounded-full animate-spin"
+      ></div>
+      <p class="mt-4 text-gray-600 font-medium">جاري تحميل السؤال...</p>
+    </div>
+  } @else {
+    <div class="space-y-6">
+      @if (currentQuestion) {
+        <div
+          class="bg-white rounded-3xl shadow-xl shadow-gray-100 border border-gray-100 overflow-hidden overflow-y-auto"
+        >
+          <!-- Question Header Status -->
+          <div
+            class="px-2 md:px-6 py-4 bg-gray-50 flex items-center justify-between border-b border-gray-100"
+          >
+            <div class="flex items-center gap-2">
+              <span
+                class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-bold"
+                >السؤال {{ pageNumber() }}</span
+              >
+              @if (currentQuestion.skillName) {
+                <span
+                  class="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold"
+                  >{{ currentQuestion.skillName }}</span
+                >
+              }
+            </div>
+            <div>
+              @if (
+                currentQuestion.studentChoice === currentQuestion.correctChoice
+              ) {
+                <span
+                  class="flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-full text-sm font-bold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  إجابة صحيحة
+                </span>
+              } @else {
+                <span
+                  class="flex items-center gap-1.5 px-3 py-1 bg-red-50 text-red-600 rounded-full text-sm font-bold"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    class="size-5"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  إجابة خاطئة
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="p-4 md:p-8 space-y-8">
+            <!-- Images Section -->
+            <div class="grid grid-cols-1 gap-4">
+              @if (currentQuestion.questionImage2) {
+                <div
+                  class="rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex justify-center p-4"
+                >
+                  <img
+                    [src]="currentQuestion.questionImage2"
+                    alt="Question Image 2"
+                    class="max-h-[350px] object-contain"
+                  />
+                </div>
+              }
+              @if (currentQuestion.questionImage) {
+                <div
+                  class="rounded-2xl overflow-hidden border border-gray-100 bg-gray-50 flex justify-center p-4"
+                >
+                  <img
+                    [src]="currentQuestion.questionImage"
+                    alt="Question Image"
+                    class="max-h-[350px] object-contain"
+                  />
+                </div>
+              }
+            </div>
+            <!-- Choices Grid -->
+            <div class="grid grid-cols-4 gap-4 mt-8">
+              @for (choiceId of choiceIds; track choiceId) {
+                <div
+                  [class]="getChoiceClass(choiceId, currentQuestion)"
+                  class="flex items-center justify-center gap-2 p-3 rounded-full transition-all duration-300"
+                >
+                  <div
+                    class="w-8 h-8 rounded-full border-2 flex items-center justify-center shrink-0 shadow-sm"
+                    [class]="getRadioClass(choiceId, currentQuestion)"
+                  >
+                    @if (
+                      choiceId === currentQuestion.studentChoice ||
+                      choiceId === currentQuestion.correctChoice
+                    ) {
+                      <div
+                        class="w-3.5 h-3.5 rounded-full bg-white shadow-inner"
+                      ></div>
+                    }
+                  </div>
+                  <div class="flex flex-col">
+                    <span class="md:text-2xl text-lg font-black">{{
+                      getChoiceLabel(choiceId)
+                    }}</span>
+                    <!-- @if (choiceId === currentQuestion.correctChoice) {
+                      <span
+                        class="text-[10px] uppercase tracking-wider font-bold"
+                        >الإجابة الصحيحة</span
+                      >
+                    } -->
+                    <!-- @if (
+                      choiceId === currentQuestion.studentChoice &&
+                      currentQuestion.studentChoice !==
+                        currentQuestion.correctChoice
+                    ) {
+                      <span
+                        class="text-[10px] uppercase tracking-wider font-bold"
+                        >إجابتك</span
+                      >
+                    } -->
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Video/Explanation -->
+            <!-- @if (currentQuestion.answerUrl) {
+              <div class="pt-8 border-t border-gray-100">
+                <a
+                  [href]="currentQuestion.answerUrl"
+                  target="_blank"
+                  class="inline-flex items-center gap-3 px-8 py-4 bg-red-600 text-white rounded-2xl hover:bg-red-700 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-red-200 font-bold w-full md:w-auto justify-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    class="size-7"
+                  >
+                    <path
+                      d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"
+                    />
+                  </svg>
+                  مشاهدة شرح الحل فيديو
+                </a>
+              </div>
+            } -->
+          </div>
+        </div>
+      }
+
+      <!-- Pagination Navigation -->
+      <div
+        class="flex flex-col md:flex-row items-center justify-between gap-6 md:p-6 p-4 bg-white rounded-3xl shadow-lg border border-gray-50"
+      >
+        <!-- Previous Button -->
+        <button
+          (click)="goToPage(pageNumber() - 1)"
+          [disabled]="pageNumber() === 1"
+          class="flex items-center gap-3 px-6 py-3 bg-gray-50 text-gray-700 rounded-2xl border border-gray-200 transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed group w-full md:w-auto justify-center font-bold"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="size-5 transition-transform group-hover:translate-x-1"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m8.25 4.5 7.5 7.5-7.5 7.5"
+            />
+          </svg>
+          السابق
+        </button>
+
+        <!-- Page Numbers -->
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          @for (page of getPageNumbers(); track page) {
+            @if (page === -1) {
+              <span class="px-2 text-gray-300">...</span>
+            } @else {
+              <button
+                (click)="goToPage(page)"
+                [class]="
+                  page === pageNumber()
+                    ? 'bg-primary text-white scale-110 shadow-lg shadow-primary/30 z-10'
+                    : 'bg-gray-50 text-gray-500 hover:bg-gray-100 border border-gray-100'
+                "
+                class="w-10 h-10 rounded-xl font-black transition-all"
+              >
+                {{ page }}
+              </button>
+            }
+          }
+        </div>
+
+        <!-- Next Button -->
+        <button
+          (click)="goToPage(pageNumber() + 1)"
+          [disabled]="pageNumber() === totalCount()"
+          class="flex items-center gap-3 px-6 py-3 bg-gray-50 text-gray-700 rounded-2xl border border-gray-200 transition-all hover:bg-primary hover:text-white hover:border-primary disabled:opacity-30 disabled:cursor-not-allowed group w-full md:w-auto justify-center font-bold"
+        >
+          التالي
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="size-5 transition-transform group-hover:-translate-x-1"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="m15.75 19.5-7.5-7.5 7.5-7.5"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+</div>

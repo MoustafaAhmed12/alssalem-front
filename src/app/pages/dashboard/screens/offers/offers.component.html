@@ -1,0 +1,202 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isDelete }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'جميع العروض'" />
+    <div class="flex items-center justify-end w-full my-8" dir="rtl">
+      <div class="flex justify-end basis-4/12">
+        <button
+          (click)="showModel()"
+          class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          إضافة
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container p-4 mx-auto">
+    <div class="grid grid-cols-1 gap-x-12 gap-y-8 sm:grid-cols-2">
+      @for (item of allOffers; track item.id) {
+
+      <div class="relative overflow-hidden bg-white rounded-lg shadow-lg">
+        <button
+          (click)="remove(item.id)"
+          class="absolute text-white transition bg-red-500 rounded-full size-6 top-2 right-2 hover:bg-red-700"
+        >
+          ✖
+        </button>
+        <img
+          class="object-cover w-full h-auto"
+          [src]="item.imageUrl"
+          alt="Image"
+        />
+        <div class="p-4 text-center">
+          <h2 class="font-semibold text-gray-800">
+            اسم كود الخصم:
+            <span class="text-lg font-bold text-secondaryAdmin">{{
+              item.promoCodeName
+            }}</span>
+          </h2>
+          <p class="mt-2 text-gray-600">{{ item.text }}</p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- model -->
+  <div
+    [ngClass]="{ 'scale-100': isopen }"
+    class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+  >
+    <div
+      class="flex items-center justify-center mx-auto lg:w-[55rem] max-h-[90vh] h-[90vh] overflow-y-auto md:w-[42rem] w-[25rem] sm:w-[38rem] sm:px-6"
+    >
+      <div class="h-full bg-white rounded-lg shadow-sm md:border basis-full">
+        <div
+          class="flex justify-between px-6 pt-8 text-center md:text-right lg:px-8"
+        >
+          <h2 class="text-xl font-bold lg:text-3xl text-primaryAdmin">
+            اضافة عرض
+          </h2>
+          <button (click)="hideModel()" class="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <form
+          [formGroup]="this.formData"
+          (ngSubmit)="onSubmit()"
+          class="space-y-4 bg-white rounded-lg"
+          autocomplete="off"
+        >
+          <div class="px-6 pb-4 rounded-lg md:px-4 lg:px-8">
+            <div class="flex mt-6 flex-col gap-y-0.5">
+              <textarea
+                name="text"
+                id="text"
+                rows="3"
+                formControlName="text"
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                placeholder="نص للعرض"
+              ></textarea>
+            </div>
+            <div class="flex mt-6 flex-col gap-y-0.5">
+              <ng-select
+                [items]="allPromoCodes"
+                [closeOnSelect]="true"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                formControlName="promoCodeId"
+                placeholder="اختر كود الخصم "
+                [loading]="isLoading"
+                class="w-full p-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              >
+              </ng-select>
+            </div>
+
+            <div class="py-4 bg-white rounded-lg">
+              <div
+                class="relative flex flex-col items-center w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer gap-y-12"
+                (drop)="onFileDrop($event)"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+              >
+                <input
+                  id="dropzone-file"
+                  type="file"
+                  class="absolute inset-0 z-50 w-full h-full opacity-0 cursor-pointer"
+                  (change)="onFileSelected($event)"
+                  name="img"
+                  id="img"
+                />
+                <div class="text-center">
+                  <img
+                    class="w-12 h-12 mx-auto"
+                    src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                    alt=""
+                  />
+                  <h3
+                    class="mt-2 text-sm font-medium text-gray-900 cursor-pointer"
+                  >
+                    <label for="file-upload" class="relative cursor-pointer">
+                      <span>Drag and drop</span>
+                      <span class="text-indigo-600"> or browse </span>
+                      <span>to upload</span>
+                      <input
+                        id="file-upload"
+                        name="file-upload"
+                        type="file"
+                        class="sr-only"
+                      />
+                    </label>
+                  </h3>
+                  <p class="mt-1 text-lg text-blue-600">أختر صورة مميزة</p>
+                </div>
+                @if (previewImageUrl) {
+
+                <img
+                  [src]="previewImageUrl"
+                  class="object-cover w-full h-64"
+                  id="preview"
+                />
+                }
+              </div>
+            </div>
+          </div>
+          <div class="grid w-full place-items-center">
+            <button
+              type="submit"
+              class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin w-fit focus:outline-none focus:ring-1 focus:ring-offset-2"
+            >
+              @if (isLoading) {
+              <div
+                class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+              ></div>
+              } @else{ حفظ }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  @if(isDelete) {
+  <div class="fixed z-50 top-1/2 left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</div>

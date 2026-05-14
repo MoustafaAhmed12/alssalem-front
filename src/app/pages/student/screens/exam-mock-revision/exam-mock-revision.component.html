@@ -1,0 +1,431 @@
+<div class="min-h-screen" dir="rtl">
+  <div class="mx-auto max-w-7xl">
+    @if (!isLoadingRevision()) {
+      <!-- Header -->
+      <div class="md:p-6 p-3 mb-6 bg-white shadow-lg rounded-2xl">
+        <h1 class="mb-4 text-lg font-bold text-gray-800 md:text-3xl">
+          مراجعة الاختبار
+        </h1>
+
+        <!-- Filters -->
+        <div class="flex flex-wrap items-center gap-4 mb-4">
+          <label class="font-medium text-gray-700">تصفية الأسئلة:</label>
+          <div class="flex flex-wrap gap-2">
+            @for (option of filterOptions; track option.value) {
+              <button
+                (click)="onFilterChange(option.value)"
+                [class.bg-indigo-600]="selectedFilter() === option.value"
+                [class.text-white]="selectedFilter() === option.value"
+                [class.bg-gray-100]="selectedFilter() !== option.value"
+                [class.text-gray-700]="selectedFilter() !== option.value"
+                class="px-4 py-2 text-sm font-semibold transition-colors rounded-lg hover:bg-indigo-500 hover:text-white"
+              >
+                {{ option.label }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <!-- <div class="flex flex-wrap gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <span class="text-gray-600">إجمالي الأسئلة:</span>
+          <span class="font-bold text-indigo-600">{{
+            allData().totalCount
+          }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-600">الإجابات الصحيحة:</span>
+          <span class="font-bold text-green-600">{{
+            correctAnswersCount()
+          }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-600">الإجابات الخاطئة:</span>
+          <span class="font-bold text-red-600">{{ wrongAnswersCount() }}</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-gray-600">لم يتم الحل:</span>
+          <span class="font-bold text-gray-500">{{ unansweredCount() }}</span>
+        </div>
+      </div> -->
+
+        <!-- Question Navigator -->
+        <!-- Question Navigator -->
+        <div class="pt-4 mt-4 border-t">
+          <div class="flex flex-wrap gap-2">
+            @for (pageNum of getPageRange(); track $index) {
+              @if (pageNum === "...") {
+                <span class="px-2 text-gray-500 select-none">...</span>
+              } @else {
+                <button
+                  (click)="goToQuestion(+pageNum)"
+                  [class]="getNavigatorButtonClass(+pageNum)"
+                  class="w-10 h-10 font-semibold transition-all rounded-lg hover:scale-110"
+                >
+                  {{ +pageNum }}
+                </button>
+              }
+            }
+          </div>
+        </div>
+      </div>
+
+      @if (currentQuestion()) {
+        <div class="overflow-hidden bg-white shadow-lg rounded-2xl">
+          <!-- Question Header -->
+          <div class="md:p-6 p-3 border-b" [class]="getQuestionHeaderClass()">
+            <div
+              class="flex items-center justify-between flex-col md:flex-row text-white"
+            >
+              <div class="flex items-center gap-3 self-start">
+                <span
+                  class="flex items-center justify-center w-12 h-12 text-2xl font-bold bg-white rounded-full bg-opacity-30"
+                >
+                  {{ currentIndex() }}
+                </span>
+                <div>
+                  <h2 class="text-xl font-bold">
+                    السؤال {{ currentIndex() }} من {{ allData().totalCount }}
+                  </h2>
+                  <p class="mt-1 text-sm opacity-90">
+                    {{ getQuestionStatus() }}
+                  </p>
+                </div>
+              </div>
+              <div class="text-left self-end">
+                @if (currentQuestion()!.choice !== null) {
+                  <div
+                    class="px-4 py-2 mb-2 text-sm bg-white rounded-lg bg-opacity-20"
+                  >
+                    اخترت:
+                    <span class="font-bold">{{
+                      getAnswerLabel(currentQuestion()!.choice!)
+                    }}</span>
+                  </div>
+                }
+                <div
+                  class="px-4 py-2 text-sm bg-white rounded-lg bg-opacity-20"
+                >
+                  الإجابة الصحيحة:
+                  <span class="font-bold">{{
+                    getAnswerLabel(currentQuestion().answer)
+                  }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Question Content -->
+          <div class="md:p-6 p-3">
+            <!-- Question Images -->
+            @if (currentQuestion()!.image2Url) {
+              <div class="mb-6">
+                <img
+                  [src]="currentQuestion()!.image2Url"
+                  alt="سؤال {{ currentIndex() }} - صورة 2"
+                  class="object-contain w-full rounded-lg shadow-md max-h-96 bg-gray-50"
+                />
+              </div>
+            }
+            @if (currentQuestion()!.image1Url) {
+              <div class="mb-6">
+                <img
+                  [src]="currentQuestion()!.image1Url"
+                  alt="سؤال {{ currentIndex() }}"
+                  class="object-contain w-full rounded-lg shadow-md max-h-96 bg-gray-50"
+                />
+              </div>
+            }
+
+            <!-- Answer Options -->
+            <div class="mb-6 space-y-3">
+              <div
+                class="flex items-center justify-between gap-4 p-4 transition-all border-2 cursor-default rounded-xl"
+              >
+                @for (option of answerOptions(); track option.value) {
+                  <div
+                    class="flex items-center justify-center gap-x-4"
+                    [class]="getOptionClass(option.value)"
+                  >
+                    <div
+                      [class]="getRadioClass(option.value)"
+                      class="flex items-center justify-center w-6 h-6 border-2 rounded-full"
+                    >
+                      @if (
+                        isOptionSelected(option.value) ||
+                        isCorrectAnswer(option.value)
+                      ) {
+                        <div class="w-3 h-3 bg-current rounded-full"></div>
+                      }
+                    </div>
+                    <div>
+                      <div class="flex items-center gap-3">
+                        <span class="text-lg font-bold">{{
+                          option.label
+                        }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- <div class="flex items-center gap-2">
+                  @if (isCorrectAnswer(option.value)) {
+                  <span
+                    class="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    صحيحة
+                  </span>
+                  } @if (isWrongChoice(option.value)) {
+                  <span
+                    class="flex items-center gap-1 px-3 py-1 text-sm font-semibold text-red-700 bg-red-100 rounded-full"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    اختيارك
+                  </span>
+                  }
+                </div> -->
+                }
+              </div>
+            </div>
+
+            <!-- Answer Explanation Button -->
+            <div class="mt-6">
+              <button
+                (click)="toggleExplanation()"
+                class="w-full bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-purple-600 hover:to-indigo-700 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2 shadow-lg"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                {{ showExplanation() ? "إخفاء الشرح" : "شرح السؤال" }}
+              </button>
+            </div>
+
+            <!-- Navigation Footer -->
+            <div
+              class="flex items-center justify-between md:p-6 p-3 border-t bg-gray-50"
+            >
+              <button
+                (click)="previousQuestion()"
+                [disabled]="currentIndex() === 0"
+                [class.opacity-50]="currentIndex() === 0"
+                [class.cursor-not-allowed]="currentIndex() === 0"
+                class="flex items-center gap-2 px-6 py-3 font-semibold text-gray-700 transition-all bg-white rounded-lg shadow-md hover:bg-gray-100 disabled:hover:bg-white"
+              >
+                <svg
+                  class="w-5 h-5 rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                السابق
+              </button>
+
+              <div class="font-medium text-gray-600">
+                {{ currentIndex() }} / {{ allData().totalCount }}
+              </div>
+
+              <button
+                (click)="nextQuestion()"
+                [disabled]="currentIndex() === allData().totalCount"
+                [class.opacity-50]="currentIndex() === allData().totalCount"
+                [class.cursor-not-allowed]="
+                  currentIndex() === allData().totalCount
+                "
+                class="flex items-center gap-2 px-6 py-3 font-semibold text-white transition-all bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 disabled:hover:bg-indigo-600"
+              >
+                التالي
+                <svg
+                  class="w-5 h-5 rotate-180"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Video Explanation -->
+            @if (showExplanation() && currentQuestion()!.answerUrl) {
+              <div
+                #videoSection
+                class="mt-6 overflow-hidden shadow-2xl rounded-xl animate-fadeIn"
+              >
+                <div
+                  class="flex flex-col md:flex-row justify-between items-center gap-4 p-4 bg-gray-50 border-b"
+                >
+                  <h3 class="font-bold text-gray-800">شرح السؤال</h3>
+                  @if (isYoutube()) {
+                    <button
+                      (click)="togglePlayer()"
+                      class="group flex items-center gap-2 px-6 py-2 bg-white border-2 border-primaryAdmin text-primaryAdmin font-bold rounded-full hover:bg-primaryAdmin hover:text-white transition-all duration-300 shadow-md hover:shadow-lg text-sm"
+                    >
+                      <svg
+                        class="w-4 h-4 group-hover:rotate-180 transition-transform duration-500"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                      </svg>
+                      {{
+                        useRawYoutube() ? "العودة للمشغل العادي" : "مشغل إضافي"
+                      }}
+                    </button>
+                  }
+                </div>
+
+                <div
+                  #videoContainer
+                  class="relative w-full overflow-hidden bg-black aspect-video rounded-xl group"
+                >
+                  <div
+                    class="w-full h-full"
+                    [id]="!useRawYoutube() && isYoutube() ? 'plyr-player' : ''"
+                  >
+                    <iframe
+                      [src]="videoURL()"
+                      class="w-full h-full"
+                      allow="autoplay"
+                      allowfullscreen
+                      allowtransparency
+                    ></iframe>
+                  </div>
+
+                  <!-- BRANDING OVERLAYS (Only for YouTube) -->
+                  @if (isYoutube()) {
+                    <!-- TOP OVERLAY -->
+                    <div
+                      class="absolute top-0 right-0 left-0 h-[75px] bg-transparent z-[15] cursor-default"
+                    ></div>
+
+                    <!-- BOTTOM RIGHT OVERLAY -->
+                    <div
+                      class="absolute bottom-12 right-0 w-[120px] h-[60px] bg-transparent z-[15] cursor-default"
+                    ></div>
+                  }
+
+                  <!-- Custom Fullscreen Button (Visible on Hover) -->
+                  <button
+                    (click)="toggleFullscreen(videoContainer)"
+                    class="absolute bottom-4 left-4 z-[20] p-2 bg-black/50 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#36b290]"
+                    title="تكبير الشاشة"
+                  >
+                    <svg
+                      class="w-6 h-6"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                      />
+                    </svg>
+                  </button>
+
+                  <!-- END SCREEN OVERLAY -->
+                  @if (isYoutube() && videoEnded()) {
+                    <div
+                      class="absolute inset-0 bg-black/95 z-20 flex flex-col items-center justify-center p-3 md:p-6 text-center animate-fade-in"
+                    >
+                      <div class="mb-4 p-4 bg-white/10 rounded-full">
+                        <svg
+                          class="w-12 h-12 text-[#36b290]"
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd"
+                          />
+                        </svg>
+                      </div>
+                      <h3 class="text-2xl font-bold text-white mb-2">
+                        انتهى شرح السؤال
+                      </h3>
+                      <p class="text-gray-400 mb-6">
+                        يمكنك إعادة مشاهدة الشرح إذا لزم الأمر
+                      </p>
+                      <button
+                        (click)="togglePlayer(); togglePlayer()"
+                        class="px-8 py-3 bg-[#36b290] text-white font-bold rounded-full hover:bg-[#2d9478] transition-all"
+                      >
+                        إعادة المشاهدة
+                      </button>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    } @else {
+      <div class="fixed z-50 top-[43%] lg:left-[32%] left-[40%] bg-opacity-60">
+        <div class="flex items-center">
+          <div
+            class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+          ></div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

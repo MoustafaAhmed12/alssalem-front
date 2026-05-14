@@ -1,0 +1,94 @@
+<nav
+  class="fixed top-0 z-10 flex items-center justify-between w-full h-16 px-2 bg-white border-b md:px-8 gap-x-4 lg:px-16"
+>
+  <div class="items-center hidden p-2 text-sm md:flex gap-x-8 md:text-lg">
+    <h2
+      routerLink="/super"
+      class="text-sm font-semibold transition-colors cursor-pointer text-secondaryAdmin hover:text-primaryAdmin"
+    >
+      الرئيسية
+    </h2>
+    @if (role === "مشرف مدرسة") {
+      <a
+        class="text-sm font-semibold transition-colors cursor-pointer text-secondaryAdmin hover:text-primaryAdmin"
+        routerLink="/super/exams"
+        >مراقبة الاختبارات</a
+      >
+
+      <a
+        class="text-sm font-semibold transition-colors cursor-pointer text-secondaryAdmin hover:text-primaryAdmin"
+        routerLink="/super/average-exams"
+        >متوسط درجة اختبار تحديد المستوي</a
+      >
+    }
+  </div>
+  <div class="flex items-center p-2 text-sm md:hidden gap-x-8 md:text-lg">
+    <!-- Mobile menu button -->
+    <button
+      (click)="toggleMenu()"
+      class="p-2 md:hidden"
+      [class.active]="isMenuOpen"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          *ngIf="!isMenuOpen"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        />
+        <path
+          *ngIf="isMenuOpen"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        />
+      </svg>
+    </button>
+
+    <!-- Navigation items -->
+    <div
+      class="fixed right-0 w-full transition-transform duration-300 ease-in-out transform bg-white top-16 md:relative md:top-0 md:transform-none md:flex md:items-center md:p-2 md:gap-x-8 md:text-lg"
+      [class.translate-x-0]="isMenuOpen"
+      [class.translate-x-full]="!isMenuOpen"
+      [class.hidden]="!isMenuOpen"
+      [class.md:translate-x-0]="true"
+      [class.md:block]="true"
+    >
+      <div class="flex flex-col p-4 space-y-4 md:flex-row md:space-y-0 md:p-0">
+        <h2
+          routerLink="/super"
+          class="text-sm font-semibold transition-colors cursor-pointer text-gray-950 hover:text-primaryAdmin"
+        >
+          الرئيسية
+        </h2>
+        <h2
+          routerLink="/supervisor"
+          class="text-sm font-semibold transition-colors cursor-pointer text-gray-950 hover:text-primaryAdmin"
+        >
+          الطلاب
+        </h2>
+
+        @if (role === "مشرف مدرسة") {
+          <a
+            class="text-sm font-semibold transition-colors cursor-pointer text-gray-950 hover:text-primaryAdmin"
+            routerLink="/supervisor/exams"
+            >مراقبة الاختبارات</a
+          >
+        }
+      </div>
+    </div>
+  </div>
+  <button
+    class="px-6 py-1.5 cursor-pointer text-white transition-colors border rounded-md bg-secondaryAdmin hover:bg-primaryAdmin"
+    (click)="authService.logout()"
+  >
+    تسجيل خروج
+  </button>
+</nav>

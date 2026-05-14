@@ -1,0 +1,38 @@
+a:hover {
+  color: #006c32;
+  font-weight: bold;
+  background-color: #e4efe9;
+  &:hover h2 {
+    color: #006c32 !important;
+  }
+  h2 {
+    color: #fff;
+  }
+}
+.activeLink {
+  color: #006c32;
+  font-weight: bold;
+  background-color: #e4efe9;
+  &:hover h2 {
+    color: #006c32 !important;
+  }
+}
+
+.activeLink {
+  color: #006c32;
+  font-weight: bold;
+  background-color: #e4efe9;
+}
+a:hover {
+  color: #006c32;
+  font-weight: bold;
+  background-color: #e4efe9;
+}
+.tooltip {
+  visibility: hidden;
+  position: absolute;
+}
+.has-tooltip:hover .tooltip {
+  visibility: visible;
+  z-index: 50;
+}

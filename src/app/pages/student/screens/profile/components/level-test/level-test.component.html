@@ -1,0 +1,587 @@
+<app-navbar />
+
+<div
+  class="min-h-screen pt-24 pb-8 bg-gradient-to-br from-blue-50 to-purple-50"
+>
+  <div class="max-w-6xl px-3 mx-auto md:px-6">
+    <!-- Header with Progress -->
+    <div class="mb-8 text-center" [@fadeInUp]>
+      <h1 class="mb-2 text-3xl font-bold text-gray-800">
+        🎯 اختبار تحديد المستوى
+      </h1>
+      <p class="text-gray-600">منصة السالم التعليمية</p>
+
+      <!-- Progress Indicator -->
+      <div class="flex justify-center mt-6">
+        <div class="flex space-x-2 rtl:space-x-reverse">
+          @for (tab of tabs; track tab.id; let i = $index) {
+            <div class="flex items-center">
+              <div
+                class="flex items-center justify-center w-8 h-8 text-sm font-semibold transition-all duration-300 rounded-full"
+                [class.bg-blue-600]="tab.active"
+                [class.bg-green-600]="tab.completed"
+                [class.text-white]="tab.completed || tab.active"
+                [class.bg-gray-300]="!tab.active && !tab.completed"
+                [class.text-gray-600]="!tab.active && !tab.completed"
+              >
+                @if (!tab.completed) {
+                  <span>{{ i + 1 }}</span>
+                } @else {
+                  <span>✓</span>
+                }
+              </div>
+              @if (i < tabs.length - 1) {
+                <div
+                  class="w-12 h-1 mx-2 rounded"
+                  [class.bg-green-400]="
+                    tabs[i + 1].completed || tabs[i + 1].active
+                  "
+                  [class.bg-gray-300]="
+                    !tabs[i + 1].completed && !tabs[i + 1].active
+                  "
+                ></div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="overflow-hidden bg-white rounded-t-lg shadow-lg" [@fadeInUp]>
+      <div class="flex flex-col overflow-x-auto md:flex-row">
+        @for (tab of tabs; track $index) {
+          <button
+            (click)="setActiveTab(tab.id)"
+            class="flex-1 min-w-0 px-6 py-4 text-center transition-all duration-300 border-b-2 hover:bg-gray-50"
+            [class.border-blue-600]="tab.active"
+            [class.text-blue-600]="tab.active"
+            [class.bg-blue-50]="tab.active"
+            [class.border-transparent]="!tab.active"
+            [class.text-gray-600]="!tab.active"
+            [class]="$last ? '!border-gray-700' : ''"
+          >
+            <div
+              class="flex items-center justify-center space-x-2 rtl:space-x-reverse"
+            >
+              <span class="text-lg">{{ tab.icon }}</span>
+              <span class="font-medium">{{ tab.title }}</span>
+              @if (tab.completed) {
+                <span class="text-green-600">✓</span>
+              }
+            </div>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="overflow-hidden bg-white rounded-b-lg shadow-lg">
+      <!-- Instructions Tab -->
+      @if (activeTab === "instructions") {
+        <div [@slideIn] class="px-4 pt-8 pb-4 md:p-8">
+          <div class="space-y-6" [@staggerList]>
+            <div class="mb-8 text-center">
+              <div class="mb-4 text-6xl animate-bounce">📋</div>
+              <h2 class="mb-2 text-lg font-bold text-gray-800 md:text-2xl">
+                مرحبًا بك في اختبار تحديد المستوى
+              </h2>
+              <p class="text-gray-600">
+                اتبع التعليمات التالية للحصول على أفضل النتائج
+              </p>
+            </div>
+
+            <div class="grid gap-8 md:grid-cols-2">
+              <div class="space-y-4">
+                <h3
+                  class="flex items-center text-lg font-semibold text-blue-700"
+                >
+                  <span class="ml-2">🎯</span>
+                  هدف الاختبار
+                </h3>
+                <ul class="space-y-3 text-gray-700">
+                  <li class="flex items-start">
+                    <span class="ml-2 text-blue-500">•</span>
+                    تحديد مستواك بدقة لتصميم خطة تعليمية مناسبة
+                  </li>
+                  <li class="flex items-start">
+                    <span class="ml-2 text-blue-500">•</span>
+                    اختيار الأقسام التي تناسب احتياجك فقط
+                  </li>
+                  <li class="flex items-start">
+                    <span class="ml-2 text-blue-500">•</span>
+                    لا تقلق من النتائج - هدفنا مساعدتك
+                  </li>
+                </ul>
+              </div>
+
+              <div class="space-y-4">
+                <h3
+                  class="flex items-center text-lg font-semibold text-green-700"
+                >
+                  <span class="ml-2">⏰</span>
+                  معلومات مهمة
+                </h3>
+                <ul class="space-y-3 text-gray-700">
+                  <li class="flex items-start">
+                    <span class="ml-2 text-green-500">•</span>
+                    المدة: ساعة إلى ساعتين حسب عدد الأقسام
+                  </li>
+                  <li class="flex items-start">
+                    <span class="ml-2 text-green-500">•</span>
+                    جهز ورقة وقلم للحسابات
+                  </li>
+                  <li class="flex items-start">
+                    <span class="ml-2 text-green-500">•</span>
+                    لا تستخدم الآلة الحاسبة
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div
+              class="p-4 mt-8 rounded-lg md:p-6 bg-gradient-to-r from-blue-50 to-purple-50"
+            >
+              <div class="text-center">
+                <h3 class="mb-4 text-lg font-semibold text-gray-800">
+                  🚀 نصائح للنجاح
+                </h3>
+                <p class="mb-6 text-gray-600">
+                  أجب بهدوء وواقعية، وتذكر أن هذا الاختبار يهدف لمساعدتك في
+                  التعلم بشكل أفضل
+                </p>
+                <button
+                  (click)="setActiveTab('selection')"
+                  class="px-8 py-3 font-semibold text-white transition-all duration-300 transform rounded-lg shadow-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 hover:scale-105"
+                >
+                  ابدأ الاختبار الآن 🎯
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else if (activeTab === "selection") {
+        <div [@slideIn] class="px-4 pt-8 pb-4 md:p-8">
+          <!-- Main Sections -->
+          @if (!selectedMainSection) {
+            <div [@staggerList]>
+              <div class="grid gap-8 md:grid-cols-2">
+                @for (section of mainSections; track $index) {
+                  <div
+                    (click)="selectMainSection(section)"
+                    [@scaleIn]
+                    class="px-4 pt-8 pb-4 transition-all duration-300 transform border-2 border-gray-200 cursor-pointer md:p-8 group rounded-xl hover:border-blue-500 hover:shadow-xl hover:-translate-y-2 bg-gradient-to-br from-white to-gray-50"
+                  >
+                    <div class="text-center">
+                      <div
+                        class="mb-4 text-5xl transition-transform duration-300 group-hover:scale-110"
+                      >
+                        {{ section.icon }}
+                      </div>
+                      <h3
+                        class="mb-2 text-xl font-bold text-gray-800 transition-colors group-hover:text-blue-600"
+                      >
+                        {{ section.name }}
+                      </h3>
+                      <p class="text-gray-600 group-hover:text-gray-700">
+                        {{ section.subcategories.length }} أقسام فرعية
+                      </p>
+                      <div
+                        class="mt-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                      >
+                        <span
+                          class="inline-flex items-center px-3 py-1 text-sm font-medium text-blue-800 bg-blue-100 rounded-full"
+                        >
+                          اضغط للاختيار
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- Subcategories -->
+          @if (selectedMainSection) {
+            <div [@slideIn]>
+              <div class="mb-8">
+                <button
+                  (click)="goBackToMainSections()"
+                  [@fadeInUp]
+                  class="flex items-center mb-4 text-blue-600 transition-colors hover:text-blue-800 group"
+                >
+                  <span
+                    class="ml-1 transition-transform group-hover:-translate-x-1"
+                    >←</span
+                  >
+                  العودة للأقسام الرئيسية
+                </button>
+                <div class="text-center">
+                  <h2 class="mb-2 text-2xl font-bold text-gray-800">
+                    <span class="ml-2 text-3xl">{{
+                      selectedMainSection.icon
+                    }}</span>
+                    {{ selectedMainSection.name }}
+                  </h2>
+                  <p class="text-gray-600">يمكنك اختيار قسم أو أكثر</p>
+                </div>
+              </div>
+
+              <div class="grid gap-6 mb-8 md:grid-cols-2" [@staggerList]>
+                @for (
+                  category of selectedMainSection.subcategories;
+                  track $index
+                ) {
+                  <div
+                    [@scaleIn]
+                    class="p-4 transition-all duration-300 transform border-2 md:p-6 rounded-xl hover:-translate-y-1"
+                    [class.border-green-500]="category.completed"
+                    [class.bg-green-50]="category.completed"
+                    [class.border-blue-500]="
+                      selectedCategories.includes(category) &&
+                      !category.completed
+                    "
+                    [class.bg-blue-50]="
+                      selectedCategories.includes(category) &&
+                      !category.completed
+                    "
+                    [class.border-gray-300]="
+                      !selectedCategories.includes(category) &&
+                      !category.completed
+                    "
+                    [class.hover:border-blue-400]="!category.completed"
+                    [class.hover:shadow-lg]="!category.completed"
+                  >
+                    <div class="flex items-center justify-between mb-4">
+                      <h3 class="text-lg font-semibold text-gray-800">
+                        {{ category.name }}
+                      </h3>
+                      @if (category.completed) {
+                        <div class="text-2xl text-green-600 animate-pulse">
+                          ✅
+                        </div>
+                      }
+                    </div>
+
+                    @if (category.completed) {
+                      <div class="mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-sm text-green-700">النتيجة</span>
+                          <span class="font-bold text-green-700"
+                            >{{ percent(category.percent) }}%</span
+                          >
+                        </div>
+                        <div class="w-full h-2 bg-green-200 rounded-full">
+                          <div
+                            class="h-2 transition-all duration-1000 bg-green-600 rounded-full"
+                            [style.width.%]="percent(category.percent)"
+                          ></div>
+                        </div>
+                      </div>
+                    }
+                    @if (
+                      selectedCategories.includes(category) &&
+                      !category.completed
+                    ) {
+                      <div class="w-full my-6">
+                        <label
+                          class="block mb-2 text-sm font-medium text-gray-700"
+                          >رقم الجوال السعودي</label
+                        >
+                        <div
+                          class="flex items-center w-full h-12 overflow-hidden border-2 border-gray-300 rounded-lg group focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500"
+                        >
+                          <input
+                            type="text"
+                            placeholder="5XXXXXXXX"
+                            class="w-full h-full px-4 focus:outline-none md:text-base text-sm"
+                            [(ngModel)]="phoneNumber"
+                            maxlength="9"
+                            (input)="onPhoneNumberChange()"
+                          />
+                          <div
+                            class="flex items-center h-full px-4 text-gray-500 border-l border-gray-200 bg-gray-50 font-semibold md:text-base text-sm"
+                            dir="ltr"
+                          >
+                            +966
+                          </div>
+                        </div>
+                        @if (
+                          phoneNumber &&
+                          (phoneNumber.length !== 9 ||
+                            !phoneNumber.startsWith("5"))
+                        ) {
+                          <p class="mt-2 text-xs text-red-600">
+                            يجب أن يتكون الرقم من 9 خانات ويبدأ بـ 5
+                          </p>
+                        }
+                      </div>
+                    }
+                    <div class="flex flex-col-reverse gap-3 md:flex-row">
+                      @if (!category.completed && category.examId !== 0) {
+                        <button
+                          (click)="toggleCategorySelection(category)"
+                          class="flex-1 px-4 py-2 text-sm font-medium transition-all duration-200 transform rounded-lg hover:scale-105"
+                          [class.bg-blue-600]="
+                            selectedCategories.includes(category)
+                          "
+                          [class.text-white]="
+                            selectedCategories.includes(category)
+                          "
+                          [class.bg-gray-200]="
+                            !selectedCategories.includes(category)
+                          "
+                          [class.text-gray-700]="
+                            !selectedCategories.includes(category)
+                          "
+                          [class.hover:bg-blue-700]="
+                            selectedCategories.includes(category)
+                          "
+                          [class.hover:bg-gray-300]="
+                            !selectedCategories.includes(category)
+                          "
+                        >
+                          {{
+                            selectedCategories.includes(category)
+                              ? "إلغاء الاختيار"
+                              : "اختيار للاختبار"
+                          }}
+                        </button>
+                      }
+                      @if (
+                        selectedCategories.includes(category) &&
+                        !category.completed
+                      ) {
+                        <button
+                          (click)="startCategoryTest(category)"
+                          class="px-4 py-2 text-sm font-medium text-white transition-all duration-200 transform rounded-lg shadow-md bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:scale-105"
+                        >
+                          ابدأ اختبار تحديد المستوى
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <!-- Generate Study Plan Section -->
+              @if (hasCompletedTests()) {
+                <div [@fadeInUp] class="pt-6 border-t border-gray-200">
+                  <div
+                    class="px-4 pt-8 pb-4 text-center md:p-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl"
+                  >
+                    <div class="mb-4 text-4xl">🎉</div>
+                    <h3 class="mb-2 text-xl font-bold text-gray-800">
+                      رائع! تم الانتهاء من {{ getCompletedTestsCount() }} اختبار
+                    </h3>
+                    <p class="mb-6 text-gray-600">
+                      يمكنك الآن إنشاء خطة دراسية مخصصة بناءً على نتائجك
+                    </p>
+                    <button
+                      (click)="setActiveTab('plan')"
+                      class="px-8 py-3 font-semibold text-white transition-all duration-300 transform rounded-lg shadow-lg bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 disabled:from-purple-400 disabled:to-pink-400 hover:scale-105 disabled:transform-none"
+                    >
+                      <span class="flex items-center">
+                        <span class="ml-2">🚀</span>
+                        إبدأ بإنشاء خطتك الدراسية
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      } @else if (activeTab === "results") {
+        <!-- Results Tab -->
+        <div [@slideIn] class="px-4 pt-8 pb-4 md:p-8">
+          <div class="mb-12 text-center" [@fadeInUp]>
+            <div class="mb-6 text-8xl animate-bounce">🎉</div>
+            <h2 class="mb-4 text-3xl font-bold text-gray-800">
+              قم بإنشاء خطتك الدراسية
+            </h2>
+            <p class="text-lg text-gray-600">
+              قم بإنشاء خطتك الدراسية بناءً على نتائجك
+            </p>
+          </div>
+
+          <!-- Results Summary -->
+          <div
+            class="px-4 pt-8 pb-4 mb-8 md:p-8 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl"
+            [@scaleIn]
+          >
+            <h3 class="mb-6 text-xl font-bold text-center text-gray-800">
+              📊 ملخص النتائج
+            </h3>
+            <div class="grid gap-6 md:grid-cols-2">
+              @for (category of getAllCompletedCategories(); track $index) {
+                <div [@fadeInUp] class="p-4 bg-white rounded-lg shadow-sm">
+                  <div class="flex items-center justify-between mb-3">
+                    <span class="font-semibold text-gray-800">{{
+                      category.name
+                    }}</span>
+                    <span
+                      class="text-2xl font-bold"
+                      [class.text-green-600]="percent(category.percent) >= 70"
+                      [class.text-yellow-600]="
+                        percent(category.percent) >= 50 &&
+                        percent(category.percent) < 70
+                      "
+                      [class.text-red-600]="percent(category.percent) < 50"
+                    >
+                      {{ percent(category.percent) }}%
+                    </span>
+                  </div>
+                  <div class="w-full h-2 bg-gray-200 rounded-full">
+                    <div
+                      class="h-2 transition-all duration-1000 rounded-full"
+                      [class.bg-green-500]="percent(category.percent) >= 70"
+                      [class.bg-yellow-500]="
+                        percent(category.percent) >= 50 &&
+                        percent(category.percent) < 70
+                      "
+                      [class.bg-red-500]="percent(category.percent) < 50"
+                      [style.width.%]="percent(category.percent)"
+                    ></div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="space-y-4 text-center" [@staggerList]>
+            <div class="flex flex-col justify-center gap-4 sm:flex-row">
+              <button
+                (click)="restartTest()"
+                [@scaleIn]
+                class="px-8 py-3 font-semibold text-white transition-all duration-300 transform rounded-lg shadow-lg bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-105"
+              >
+                <span class="flex items-center justify-center">
+                  <span class="ml-2">🔄</span>
+                  إجراء اختبار جديد
+                </span>
+              </button>
+              <button
+                [@scaleIn]
+                (click)="setActiveTab('plan')"
+                class="px-8 py-3 font-semibold text-white transition-all duration-300 transform rounded-lg shadow-lg bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 hover:scale-105"
+              >
+                <span class="flex items-center justify-center">
+                  <span class="ml-2">📋</span>
+                  إنشاء خطتك الدراسية
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div [@slideIn]>
+          <app-plan-study-form
+            [isComponentMode]="true"
+            [defaultCategory]="detectedSectionId"
+          />
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+@if (isOpenAdditionalExam()) {
+  <div
+    [ngClass]="{ 'scale-100': isOpenAdditionalExam() }"
+    class="fixed inset-0 bg-slate-800 top-0 left-0 right-0 z-[5000] grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 place-items-center"
+  >
+    @if (!isLoading()) {
+      @if (errorMessage) {
+        <div class="text-center text-white">
+          <h2 class="text-2xl font-bold">خطأ في تحميل الاختبار</h2>
+          <p class="mt-4">{{ errorMessage }}</p>
+          <button
+            (click)="isOpenAdditionalExam.set(false)"
+            class="px-6 py-2 mt-6 text-white transition-colors border rounded-md bg-secondaryAdmin hover:bg-primaryAdmin"
+          >
+            إغلاق
+          </button>
+        </div>
+      } @else {
+        <div
+          class="flex items-center justify-center mx-auto lg:w-[66vw] rounded-xl md:w-[50rem] w-screen sm:px-6"
+        >
+          @if (activeTabExam === 1) {
+            <div
+              class="h-full overflow-y-auto pt-4 bg-white rounded-lg max-h-[93vh] shadow-sm md:border basis-full"
+            >
+              <app-additional-exam
+                [exam]="exam"
+                [tutorialId]="tuotialId"
+                (sendTab)="changeTab($event)"
+                (sentResultExam)="getTheResultExam($event)"
+                (sentResultInfo)="getTheExamInfo($event)"
+              />
+            </div>
+          } @else if (activeTabExam === 2) {
+            <div
+              class="h-full overflow-y-auto bg-white rounded-lg max-h-[93vh] shadow-sm md:border basis-full"
+            >
+              <div
+                class="flex justify-between px-6 pt-4 text-center md:text-right"
+              >
+                <h2 class="text-xl font-bold lg:text-2xl text-primaryAdmin">
+                  عرض تفصيلي للنتيجة
+                </h2>
+                <button (click)="isOpenAdditionalExam.set(false)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <app-result-additional-exam
+                [correctionExamDetails]="correctionExamDetails"
+              />
+              <div class="flex items-center justify-center mt-4 gap-x-6">
+                @if (counter < 2) {
+                  <button
+                    (click)="changeTab(1)"
+                    class="px-8 py-2 mt-6 mb-10 transition-colors border-2 border-black rounded-full hover:border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+                  >
+                    إعادة الاختبار
+                  </button>
+                }
+                <button
+                  (click)="
+                    isOpenAdditionalExam.set(false); setActiveTab('results')
+                  "
+                  class="px-8 py-2 mt-6 mb-10 transition-colors border-2 border-black rounded-full hover:border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+                >
+                  إغلاق
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    } @else {
+      <div class="flex items-center justify-center w-full gap-x-6">
+        <img
+          class="w-16 h-16 animate-spin"
+          src="https://www.svgrepo.com/show/70469/loading.svg"
+          alt="Loading icon"
+        />
+        <span class="text-lg font-medium text-white">جاري تجهيز الاختبار</span>
+      </div>
+    }
+  </div>
+}

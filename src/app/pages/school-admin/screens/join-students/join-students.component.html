@@ -1,0 +1,668 @@
+<div class="min-h-screen pt-6">
+  <div
+    class="flex flex-col items-center gap-4 md:flex-row px-4 py-3 bg-white rounded-t-lg shadow-lg md:px-6 md:py-4 justify-between rtl:space-x-reverse"
+  >
+    <h1 class="text-xl font-bold text-gray-800 md:text-2xl">
+      الطلاب المشتركين
+    </h1>
+
+    <div
+      class="flex items-center justify-center size-14 text-white text-3xl rounded-full bg-primaryAdmin shrink-0"
+    >
+      {{ isLoading ? 0 : allData.totalCount || 0 }}
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <!-- <div class="p-4 mb-6 bg-white rounded-b-lg shadow-lg md:p-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+
+      <div class="col-span-1">
+        <ng-select
+          [items]="dataTutorialSchools.schools"
+          [multiple]="true"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterSchool($event)"
+          placeholder="حدد المدرسة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [items]="allTutorials"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterTutorial($event)"
+          placeholder="حدد الدورة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          [searchable]="true"
+          placeholder="حدد الصف"
+          (change)="fliterState($event)"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <ng-option [value]="'الصف الأول الثانوي'"
+            >الصف الأول الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثاني الثانوي'"
+            >الصف الثاني الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث الثانوي'"
+            >الصف الثالث الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث المتوسط'"
+            >الصف الثالث المتوسط</ng-option
+          >
+        </ng-select>
+      </div>
+
+      <div class="col-span-1">
+        <ng-select
+          [items]="classNumbers"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          (change)="filterClassNo($event)"
+          placeholder="حدد الفصل"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div> -->
+
+  <div
+    class="flex flex-col gap-6 p-6 mb-6 bg-white rounded-b-lg shadow-lg md:flex-row md:items-center md:justify-between"
+  >
+    <!-- <div class="relative w-full md:w-5/12">
+      <input
+        type="text"
+        [(ngModel)]="keywork"
+        (input)="searchName()"
+        placeholder="ابحث عن طالب او مدرسة او إيميل..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div> -->
+    <div class="w-full md:w-5/12">
+      <ng-select
+        [items]="dataTutorialSchools.schools"
+        [multiple]="true"
+        [closeOnSelect]="true"
+        bindLabel="name"
+        bindValue="id"
+        (change)="filterSchool($event)"
+        placeholder="حدد المدرسة"
+        class="w-full px-2 py-4 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+      >
+      </ng-select>
+    </div>
+    <!-- الأزرار -->
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        (click)="open()"
+        type="button"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all rounded-lg bg-secondaryAdmin hover:bg-orange-500"
+      >
+        اضافة اشترك
+      </button>
+      <button
+        (click)="openConfirm()"
+        type="button"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-red-600 rounded-lg hover:bg-red-700"
+      >
+        @if (isLoadingC) {
+          <div
+            class="w-5 h-5 border-2 border-white border-dashed rounded-full animate-spin border-t-transparent"
+          ></div>
+        } @else {
+          قفل جميع الدورات
+        }
+      </button>
+      <!-- <button
+        type="button"
+        (click)="openEmail()"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-orange-600 rounded-lg hover:bg-orange-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+          />
+        </svg>
+        إرسال إيميل
+      </button> -->
+
+      <button
+        (click)="exportTable()"
+        class="flex items-center p-2 text-sm text-white transition-colors bg-green-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-green-700"
+      >
+        <span>Export</span>
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-center justify-start w-full mb-4 gap-x-6">
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showEmail" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showEmail ? 'bg-primaryAdmin' : 'bg-white'"
+      ></div>
+      <span>إيميل</span>
+    </label>
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showNum" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showNum ? 'bg-primaryAdmin' : 'bg-white'"
+      ></div>
+      <span>رقم الجوال</span>
+    </label>
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showSchool" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showSchool ? 'bg-primaryAdmin' : 'bg-white'"
+      ></div>
+      <span>المدرسة</span>
+    </label>
+  </div>
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    @if (!isLoading) {
+      <table class="w-full border border-collapse border-gray-300">
+        <thead>
+          <tr class="text-center text-white bg-primaryAdmin">
+            <th class="p-3 border">
+              <label class="flex items-center justify-center cursor-pointer">
+                <input
+                  type="checkbox"
+                  class="hidden"
+                  [checked]="selectAll"
+                  (change)="toggleSelectAll()"
+                />
+                <div
+                  class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                  [class]="selectAll ? 'bg-secondaryAdmin' : 'bg-white'"
+                >
+                  @if (selectAll) {
+                    <svg
+                      class="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M5 13l4 4L19 7"
+                      ></path>
+                    </svg>
+                  }
+                </div>
+              </label>
+            </th>
+
+            <th class="p-3 border">اسم الطالب</th>
+            @if (showNum) {
+              <th class="p-3 border">رقم الجوال</th>
+            }
+            @if (showEmail) {
+              <th class="p-3 border">الإيميل</th>
+            }
+            @if (showSchool) {
+              <th class="p-3 border">اسم المدرسة</th>
+            }
+            <th class="p-3 border">الدورة</th>
+            <th class="p-3 border">تاريخ البداية</th>
+            <th class="p-3 border whitespace-nowrap">تاريخ النهاية</th>
+            <th class="p-3 border">مقفولة؟</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (
+            student of allStudentJoin;
+            track studentIndex;
+            let studentIndex = $index
+          ) {
+            @if (studentIndex > 0) {
+              <tr>
+                <td colspan="9" class="border-b-4 border-gray-400"></td>
+              </tr>
+            }
+            @if (student.details.length > 0) {
+              @for (
+                tutorial of student.details;
+                track i;
+                let i = $index;
+                let even = $even
+              ) {
+                <tr
+                  [class]="even ? 'bg-gray-100' : 'bg-white'"
+                  [ngClass]="even ? 'odd:bg-gray-50' : 'even:bg-gray-200'"
+                >
+                  @if (i === 0) {
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.details.length"
+                    >
+                      <label
+                        class="flex items-center justify-center cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          class="hidden"
+                          [checked]="
+                            selectedStudentIds.includes(student.userId)
+                          "
+                          (change)="updateSelection(student.userId, $event)"
+                        />
+                        <div
+                          class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                          [class]="
+                            selectedStudentIds.includes(student.userId)
+                              ? 'bg-secondaryAdmin'
+                              : 'bg-white'
+                          "
+                        >
+                          @if (selectedStudentIds.includes(student.userId)) {
+                            <svg
+                              class="w-4 h-4 text-white"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M5 13l4 4L19 7"
+                              ></path>
+                            </svg>
+                          }
+                        </div>
+                      </label>
+                    </td>
+                    <td
+                      class="p-3 font-medium text-center border cursor-pointer whitespace-nowrap"
+                      [attr.rowspan]="student.details.length"
+                    >
+                      <a
+                        target="_blank"
+                        [routerLink]="['/supervisor/', student.userId]"
+                      >
+                        {{ student.studentName }}
+                      </a>
+                    </td>
+                    @if (showNum) {
+                      <td
+                        class="p-3 text-center border"
+                        [attr.rowspan]="student.details.length"
+                      >
+                        {{ student.phoneNumber }}
+                      </td>
+                    }
+                    @if (showEmail) {
+                      <td
+                        class="p-3 text-center border"
+                        [attr.rowspan]="student.details.length"
+                      >
+                        {{ student.email }}
+                      </td>
+                    }
+                    @if (showSchool) {
+                      <td
+                        class="p-3 text-center border whitespace-nowrap"
+                        [attr.rowspan]="student.details.length"
+                      >
+                        {{ student.schoolName }}
+                      </td>
+                    }
+                  }
+
+                  <!-- بيانات الدورات -->
+                  <td class="p-3 text-center border whitespace-nowrap">
+                    {{ tutorial.tutorialName }}
+                  </td>
+                  <td
+                    class="p-3 font-medium text-center border whitespace-nowrap"
+                  >
+                    {{ tutorial.startDate | date: "dd-MM-YYYY" }}
+                  </td>
+                  <td
+                    class="p-3 font-medium text-center border whitespace-nowrap"
+                    [ngClass]="
+                      !checkEndDateForClinet(tutorial.endDate)
+                        ? 'bg-red-500 text-white px-3 py-1 rounded'
+                        : ''
+                    "
+                  >
+                    {{ tutorial.endDate | date: "dd-MM-YYYY" }}
+                  </td>
+                  <td class="p-3 text-center border">
+                    <label
+                      class="relative inline-flex items-center cursor-pointer"
+                    >
+                      <input
+                        id="switch-3"
+                        name="toggle"
+                        [checked]="tutorial.isLocked"
+                        id="toggle"
+                        type="checkbox"
+                        class="sr-only peer"
+                        (click)="
+                          changeLocked(
+                            student.userId,
+                            tutorial.tutorialId,
+                            tutorial.isLocked
+                          )
+                        "
+                      />
+                      <label for="switch-3" class="hidden"></label>
+                      <div
+                        class="peer h-4 w-11 rounded border bg-slate-600 after:absolute after:-top-1 after:-left-1 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-gray-200 after:transition-all after:content-[''] peer-checked:bg-primaryAdmin peer-checked:after:translate-x-full peer-focus:ring-green-300"
+                      ></div>
+                    </label>
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr class="bg-white">
+                <td class="p-3 text-center border">
+                  <label
+                    class="flex items-center justify-center cursor-pointer"
+                  >
+                    <input
+                      type="checkbox"
+                      class="hidden"
+                      [checked]="selectedStudentIds.includes(student.userId)"
+                      (change)="updateSelection(student.userId, $event)"
+                    />
+                    <div
+                      class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                      [class]="
+                        selectedStudentIds.includes(student.userId)
+                          ? 'bg-secondaryAdmin'
+                          : 'bg-white'
+                      "
+                    >
+                      @if (selectedStudentIds.includes(student.userId)) {
+                        <svg
+                          class="w-4 h-4 text-white"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M5 13l4 4L19 7"
+                          ></path>
+                        </svg>
+                      }
+                    </div>
+                  </label>
+                </td>
+                <td
+                  class="p-3 font-medium text-center border cursor-pointer whitespace-nowrap"
+                >
+                  <a
+                    target="_blank"
+                    [routerLink]="['/supervisor/', student.userId]"
+                  >
+                    {{ student.studentName }}
+                  </a>
+                </td>
+                @if (showNum) {
+                  <td class="p-3 text-center border">
+                    {{ student.phoneNumber }}
+                  </td>
+                }
+                @if (showEmail) {
+                  <td class="p-3 text-center border">
+                    {{ student.email }}
+                  </td>
+                }
+                @if (showSchool) {
+                  <td class="p-3 text-center border whitespace-nowrap">
+                    {{ student.schoolName }}
+                  </td>
+                }
+                <td
+                  colspan="4"
+                  class="p-3 text-center border text-red-500 font-bold whitespace-nowrap"
+                >
+                  تم انتهاء من مدة الاشتراك
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="flex items-center justify-center w-full h-64">
+        <div
+          class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+        ></div>
+      </div>
+    }
+  </div>
+
+  <div class="flex flex-wrap items-center justify-center mt-8 gap-y-2 gap-x-6">
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasPreviousPage"
+      [disabled]="!allData.hasPreviousPage"
+      (click)="changePage(pageNumber - 1)"
+    >
+      ❮ السابق
+    </button>
+    @for (page of getPageRange(); track page) {
+      <button
+        class="px-4 py-2 transition-all border rounded-md"
+        [class.bg-blue-500]="page === pageNumber"
+        [class.text-white]="page === pageNumber"
+        (click)="changePage(page)"
+      >
+        {{ page }}
+      </button>
+    }
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasNextPage"
+      [disabled]="!allData.hasNextPage"
+      (click)="changePage(pageNumber + 1)"
+    >
+      التالي ❯
+    </button>
+  </div>
+</div>
+
+<div
+  dir="rtl"
+  [ngClass]="{ 'scale-100': isOpen }"
+  class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+>
+  <div
+    class="flex items-center justify-center mx-auto md:w-[42rem] w-[28rem] px-6"
+  >
+    <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+      <div class="flex justify-between px-8 pt-8 text-center md:text-right">
+        <h2 class="text-xl font-bold lg:text-2xl text-primaryAdmin">
+          اضافة اشترك
+        </h2>
+        <button (click)="hide()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="px-4 py-4 bg-white rounded-lg lg:px-8">
+        <ng-select
+          [items]="dataTutorialSchools.tutorials"
+          [multiple]="true"
+          [closeOnSelect]="false"
+          [hideSelected]="true"
+          bindLabel="name"
+          bindValue="id"
+          [searchable]="true"
+          [(ngModel)]="tutorialIds"
+          placeholder="أختر الدورات"
+          class="w-full p-2 my-4 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+        <!-- <div class="flex flex-col mt-3 gap-y-1">
+          <label for="startDate">بداية الاشتراك</label>
+          <input
+            type="date"
+            name="startDate"
+            [(ngModel)]="startSub"
+            id="startDate"
+            placeholder="أدخل  التاريخ"
+            class="w-full px-4 py-2.5 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          />
+        </div>
+        <div class="flex flex-col mt-3 gap-y-1">
+          <label for="endDate">نهاية الاشتراك</label>
+          <input
+            type="date"
+            name="endDate"
+            [(ngModel)]="endSub"
+            id="endDate"
+            placeholder="أدخل التاريخ"
+            class="w-full px-4 py-2.5 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          />
+        </div> -->
+      </div>
+      <div class="grid w-full place-items-center">
+        <button
+          type="button"
+          (click)="addSub()"
+          class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin w-fit focus:outline-none focus:ring-2 focus:ring-offset-2"
+        >
+          @if (isLoadingSub) {
+            <div
+              class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+            ></div>
+          } @else {
+            حفظ
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal for Lock All -->
+<div
+  dir="rtl"
+  [ngClass]="{
+    'scale-100': isOpenConfirm,
+    'scale-0': !isOpenConfirm
+  }"
+  class="fixed inset-0 top-0 left-0 right-0 z-[120] grid items-center justify-center w-full h-full transition-transform duration-500 bg-gray-900/60 backdrop-blur-sm place-items-center"
+>
+  <div class="flex items-center justify-center mx-auto md:w-[32rem] w-[24rem] px-6">
+    <div class="bg-white rounded-2xl shadow-2xl overflow-hidden basis-full">
+      <div class="p-8 text-center">
+        <div
+          class="flex items-center justify-center w-20 h-20 mx-auto mb-6 bg-red-100 rounded-full"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-10 h-10 text-red-600"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z"
+            />
+          </svg>
+        </div>
+        <h2 class="mb-4 text-2xl font-bold text-gray-900">تأكيد عملية القفل</h2>
+        <p class="text-lg text-gray-600">
+          هل أنت متأكد من قفل جميع الدورات لعدد
+          <span class="font-bold text-red-600">{{ selectedCount }}</span> طالب؟
+        </p>
+      </div>
+      <div class="flex gap-4 p-6 border-t border-gray-100 bg-gray-50">
+        <button
+          type="button"
+          (click)="lockAllTutorials(); isOpenConfirm = false"
+          class="flex-1 px-6 py-3 text-lg font-bold text-white transition-all bg-red-600 rounded-xl hover:bg-red-700 active:scale-95 shadow-lg shadow-red-200"
+        >
+          نعم، قفل الكل
+        </button>
+        <button
+          type="button"
+          (click)="isOpenConfirm = false"
+          class="flex-1 px-6 py-3 text-lg font-bold text-gray-700 transition-all bg-white border-2 border-gray-200 rounded-xl hover:bg-gray-50 active:scale-95"
+        >
+          إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+

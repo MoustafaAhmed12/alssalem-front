@@ -1,0 +1,77 @@
+<section
+  class="flex flex-col items-center justify-around px-6 py-16 mx-auto mt-32 mb-24 border-2 shadow-lg w-[90%] rounded-xl md:flex-row gap-x-6"
+  [class]="isLogoWhite() ? 'bg-secondary' : 'bg-white'"
+>
+  @if (appConfigService.isMainDomain()) {
+  <div class="self-start mt-16 md:mt-0 basis-1/2">
+    <img src="assets/imgs/logo2.webp" class="w-full" alt="about-us" />
+  </div>
+  <div class="basis-1/2">
+    <div class="flex flex-col">
+      <h2 class="mb-8 font-bold md:text-2xl text-primaryAdmin">
+        منصة السالم في القدرات والتحصيلي نقدم
+      </h2>
+      <div class="flex flex-col gap-y-8">
+        <p class="w-11/12 text-xl text-textNav">
+          محتوى تعليمي متكامل: يعتبر موقع السالم مصدرًا شاملاً للمحتوى التعليمي،
+          حيث يغطي جميع المواضيع الرئيسية في امتحانات القدرات والتحصيلي، مما
+          يساعد الطلاب على إعدادها بشكل شامل.
+        </p>
+        <p class="w-11/12 text-xl text-textNav">
+          جودة عالية: يتميز الموقع بجودة عالية في المحتوى والدروس، حيث يعمل فريق
+          من المحترفين والمتخصصين على تطوير وتقديم موارد تعليمية متميزة.
+        </p>
+        <p class="w-11/12 text-xl text-textNav">
+          تفاعلية وسهولة الاستخدام: يوفر الموقع واجهة سهلة الاستخدام وتفاعلية،
+          مما يسهل على الطلاب تصفح المحتوى وحل التمارين بكل يسر وسلاسة. الحقيقي.
+        </p>
+        <p class="w-11/12 text-xl text-textNav">
+          تخصيص التجربة التعليمية: بفضل التقنيات المبتكرة المستخدمة، يمكن للطلاب
+          تخصيص تجربتهم التعليمية وفقًا لاحتياجاتهم الشخصية.
+        </p>
+        <p class="w-11/12 text-xl text-textNav">
+          مراقبة وتتبع التقدم: يتيح الموقع للطلاب متابعة تقدمهم وتقييم أدائهم في
+          الوقت الحقيقي، مما يساعدهم في تحديد نقاط القوة والضعف وتحسين أدائهم.
+        </p>
+        <p class="w-11/12 text-xl text-textNav">
+          تحديثات مستمرة: يهتم الموقع بمتابعة التحديثات في امتحانات القدرات
+          والتحصيلي وتحديث المحتوى بناءً على هذه التحديثات، مما يضمن تحديث
+          المعلومات والمهارات لدى الطلاب.
+        </p>
+        <!-- <button
+          class="my-4 text-xl font-semibold text-right transition-colors hover:text-secondaryAdmin"
+        >
+          هل لديك أي استفسارات ؟
+        </button> -->
+      </div>
+    </div>
+  </div>
+  }@else {
+  <div class="self-start mt-16 md:mt-0 basis-1/3">
+    <img
+      [src]=" 'assets/' +
+         appConfigService.config()?.['logo']
+      "
+      class="w-full"
+      alt="about-us"
+    />
+  </div>
+  <div class="basis-1/2">
+    <div class="flex flex-col">
+      <h2
+        class="mb-8 font-bold md:text-2xl"
+        [class]="isLogoWhite() ? 'text-white' : 'text-primary'"
+      >
+        {{ appConfigService.config()?.['aboutus_title'] }}
+      </h2>
+      <div class="flex flex-col gap-y-8">
+        <p
+          class="w-11/12 md:text-xl text-base"
+          [class]="isLogoWhite() ? 'text-slate-100' : 'text-textNav'"
+          [innerHTML]="(appConfigService.config()?.['aboutus_desc'] ?? '') | preserveNewlineWithSvg"
+        ></p>
+      </div>
+    </div>
+  </div>
+  }
+</section>

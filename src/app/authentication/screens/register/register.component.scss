@@ -1,0 +1,10 @@
+.bGround {
+  background-image: url("./../../../../assets/imgs/auth1.png");
+  background-position: left;
+  background-size: cover;
+}
+@media (max-width: 1024px) {
+  .bGround {
+    background-image: none;
+  }
+}

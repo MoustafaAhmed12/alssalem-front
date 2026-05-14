@@ -1,0 +1,445 @@
+<section
+  [ngClass]="{
+    'h-screen w-full flex flex-col pt-16 gap-y-12 mb-52': !isLoading(),
+    'h-screen w-full': isLoading(),
+  }"
+>
+  @if (!isLoading()) {
+    <div>
+      <div
+        class="relative bg-[#34B08F] text-white min-h-[22rem] lg:min-h-[24rem] px-2 md:px-8 lg:ps-8 pt-8"
+      >
+        <div
+          class="flex items-center justify-between w-full px-4 pt-4 pb-6 text-base md:text-xl md:px-0 lg:w-1/2"
+        >
+          <div class="flex flex-col font-medium gap-y-2">
+            <h4 class="text-gray-100">
+              {{ "coursePage.teacher" | translate }}
+            </h4>
+            <h3 class="font-semibold text-black">
+              {{ "coursePage.teacherPrefix" | translate }}
+              {{ theMainDetails.teacherName }}
+            </h3>
+          </div>
+
+          <div class="flex flex-col font-medium gap-y-2">
+            <h4 class="text-gray-100">
+              {{ "coursePage.category" | translate }}
+            </h4>
+            <h3 class="font-semibold text-black">
+              {{ theMainDetails.parentCategory }} &gt;
+              {{ theMainDetails.categoryName }}
+            </h3>
+          </div>
+        </div>
+
+        <!-- اسم الدورة -->
+        <div class="w-full my-6 lg:w-8/12">
+          <h2
+            class="text-2xl text-center text-black md:text-3xl lg:text-4xl xl:text-5xl lg:text-start"
+          >
+            {{ "coursePage.course" | translate }} {{ theMainDetails.name }}
+          </h2>
+        </div>
+
+        <div
+          class="flex flex-wrap w-full py-8 mt-12 text-base border-t border-gray-800 justify-evenly lg:justify-between md:text-xl gap-y-4 gap-x-3 lg:gap-x-0 lg:w-1/2"
+        >
+          <div class="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+
+            <span class="mx-2">{{ theMainDetails.durationInWeeks }}</span>
+            <span>{{ "coursePage.week" | translate }}</span>
+          </div>
+          <!-- student -->
+          <div class="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+              />
+            </svg>
+            <span class="mx-2">{{ theMainDetails.numberOfStudents }}</span>
+            <span>{{ "coursePage.student" | translate }}</span>
+          </div>
+          <div class="flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              xmlns:xlink="http://www.w3.org/1999/xlink"
+              version="1.1"
+              id="Layer_1"
+              class="size-6"
+              viewBox="0 0 392.575 392.575"
+              xml:space="preserve"
+            >
+              <path
+                style="fill: #ffffff"
+                d="M237.576,330.72h-38.529c-6.012,0-10.925-4.848-10.925-10.925V281.33  c0-2.844,1.164-5.624,3.168-7.758l75.636-75.636V32.829c0-6.012-4.848-10.925-10.925-10.925H84.558v51.782  c0,6.012-4.848,10.925-10.925,10.925H21.851v275.265c0,6.012,4.848,10.925,10.925,10.925h223.418  c6.012,0,10.925-4.848,10.925-10.925V305.96l-21.721,21.592C243.329,329.556,240.549,330.72,237.576,330.72z"
+              />
+              <path
+                style="fill: #56ace0"
+                d="M73.568,84.611H44.671l-2.715,252.315c-0.065,6.012,4.784,10.99,10.731,11.055l179.782,2.004  c6.012,0.065,10.99-4.784,11.055-10.731l0.065-10.279c-1.745,1.228-3.943,1.875-6.077,1.875h-38.529  c-6.012,0-10.925-4.848-10.925-10.925v-38.529c0-2.844,1.164-5.624,3.168-7.758l53.527-53.527l1.875-164.267  c0.065-6.012-4.784-10.99-10.731-11.055L84.364,43.237V73.75C84.558,79.698,79.58,84.611,73.568,84.611z"
+              />
+              <g>
+                <path
+                  style="fill: #194f82"
+                  d="M211.846,83.641h-90.634c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h90.634c6.012,0,10.925,4.848,10.925,10.925C222.772,78.793,217.923,83.641,211.846,83.641z"
+                />
+                <path
+                  style="fill: #194f82"
+                  d="M211.846,145.379H76.929c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h134.982   c6.012,0,10.925,4.848,10.925,10.925C222.772,140.53,217.923,145.379,211.846,145.379z"
+                />
+                <path
+                  style="fill: #194f82"
+                  d="M211.846,207.116H76.929c-6.012,0-10.925-4.848-10.925-10.925c0-6.077,4.848-10.925,10.925-10.925   h134.982c6.012,0,10.925,4.848,10.925,10.925C222.836,202.267,217.923,207.116,211.846,207.116z"
+                />
+                <path
+                  style="fill: #194f82"
+                  d="M152.76,268.983h-75.83c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h75.83c6.012,0,10.925,4.848,10.925,10.925C163.685,264.134,158.772,268.983,152.76,268.983z"
+                />
+                <path
+                  style="fill: #194f82"
+                  d="M152.76,330.72h-75.83c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h75.83   c6.012,0,10.925,4.848,10.925,10.925S158.772,330.72,152.76,330.72z"
+                />
+                <path
+                  style="fill: #194f82"
+                  d="M384.453,149.968l-15.451-15.451c-11.895-10.731-26.958-10.667-38.529,0L288.84,176.15V32.829   c0-18.036-14.675-32.711-32.711-32.711H82.683c-8.727,0-17.002,3.426-23.208,9.568L9.568,59.593C3.362,65.799,0,73.944,0,82.671   v277.075c0,18.036,14.675,32.711,32.711,32.711h223.418c18.036,0,32.711-14.675,32.711-32.711V284.11l95.612-95.612   C395.572,176.991,394.99,160.183,384.453,149.968z M62.642,37.354V62.76H37.236L62.642,37.354z M267.055,359.811   c0,6.012-4.848,10.925-10.925,10.925H32.711c-6.012,0-10.925-4.848-10.925-10.925v-275.2h51.782   c6.012,0,10.925-4.848,10.925-10.925V21.904h171.636c6.012,0,10.925,4.848,10.925,10.925v165.107l-75.572,75.636   c-2.004,2.004-3.168,4.784-3.168,7.758v38.529c0,6.012,4.848,10.925,10.925,10.925h38.529c2.844,0,5.624-1.164,7.758-3.168   l21.657-21.657L267.055,359.811L267.055,359.811z M233.115,308.934h-23.079v-23.079l106.408-106.473l23.079,23.079L233.115,308.934   z M369.002,173.047l-13.964,13.964l-23.079-23.079l13.964-13.964c2.78-2.263,5.301-2.004,7.758,0l15.386,15.386   C371.006,166.776,371.394,171.108,369.002,173.047z"
+                />
+              </g>
+              <g>
+                <polygon
+                  style="fill: #ffc10d"
+                  points="62.642,37.354 37.236,62.76 62.642,62.76  "
+                />
+                <polygon
+                  style="fill: #ffc10d"
+                  points="210.036,285.791 210.036,308.934 233.115,308.934 339.588,202.526 316.444,179.383  "
+                />
+              </g>
+              <path
+                style="fill: #ffffff"
+                d="M353.616,149.968c-2.392-2.004-4.978-2.263-7.758,0l-13.964,13.964l23.079,23.079l13.964-13.964  c2.392-1.939,2.004-6.271,0-7.758L353.616,149.968z"
+              />
+            </svg>
+            <span class="mx-2">{{ theMainDetails.examsCount }}</span>
+            <span>{{ "examsCategory.exam" | translate }}</span>
+          </div>
+        </div>
+
+        <!-- course Details -->
+        <div
+          class="absolute hidden transition-all duration-500 bg-white border-2 rounded-lg cursor-pointer lg:block lg:top-52 lg:end-10 xl:end-28 w-fit lg:mb-0"
+        >
+          <app-card-details
+            [toCheckoutFn]="toCheckout.bind(this)"
+            [theMainDetails]="theMainDetails"
+            [isLoading]="isLoadingFree()"
+          />
+        </div>
+        @if (
+          tutorialId === 1 ||
+          tutorialId === 2 ||
+          tutorialId === 3 ||
+          tutorialId === 4
+        ) {
+          <div
+            class="absolute hidden w-[36%] p-4 transition-all duration-500 bg-white border-2 rounded-lg cursor-pointer lg:block lg:top-[42rem] lg:end-4 xl:end-12 lg:mb-0"
+            [ngClass]="
+              theMainDetails.isOpen ? 'lg:top-[45rem]' : 'lg:top-[47rem]'
+            "
+          >
+            <app-instructions>
+              <button
+                (click)="isVideoOpen = true"
+                type="button"
+                class="inline-block mt-2 text-blue-500 video hover:underline"
+              >
+                {{ "coursePage.watchVideo" | translate }}
+              </button>
+            </app-instructions>
+          </div>
+        }
+      </div>
+
+      <!-- sm -->
+      <div class="grid w-full place-items-center">
+        <div
+          class="w-11/12 mt-4 bg-white border-2 rounded-lg cursor-pointer md:w-10/12 lg:hidden lg:mb-0"
+        >
+          <app-card-details
+            [toCheckoutFn]="toCheckout.bind(this)"
+            [theMainDetails]="theMainDetails"
+            [isLoading]="isLoadingFree()"
+          />
+        </div>
+      </div>
+      <!-- tabs -->
+      <div class="w-full px-2 mt-8 md:px-8 md:w-10/12 lg:w-7/12 lg:ps-16">
+        <div class="flex border-b md:gap-x-6 gap-x-2">
+          @for (tab of tabs; track tab.label; let i = $index) {
+            <div
+              (click)="selectTab(i)"
+              [ngClass]="selectedTab === i ? 'border-b-2 border-blue-500' : ''"
+              class="px-2 py-2 cursor-pointer"
+            >
+              <h2 class="text-lg md:text-2xl">{{ tab.label | translate }}</h2>
+            </div>
+          }
+        </div>
+        <!-- tabs Content -->
+        <div class="p-4 my-6 mt-4 border">
+          @if (selectedTab === 0) {
+            <div>
+              <h2 class="mb-3 text-xl font-bold">
+                {{ "coursePage.courseFeatures" | translate }}
+                {{ theMainDetails.name }}
+              </h2>
+              <p
+                class="w-11/12 mt-2 text-base text-textNav"
+                [innerHTML]="
+                  theMainDetails.description | preserveNewlineWithSvg
+                "
+              ></p>
+            </div>
+          } @else if (selectedTab === 1) {
+            @if (!isLoadingUnits()) {
+              <app-content-of-course
+                [allUnits]="allUnits"
+                [isOpen]="theMainDetails.isOpen"
+              />
+            } @else {
+              <div class="flex flex-col gap-y-5 animate-pulse">
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+                <div class="w-full h-12 bg-gray-300 rounded-md"></div>
+              </div>
+            }
+          } @else {
+            <h1
+              class="text-xl font-bold text-center text-primaryAdmin md:text-start md:text-2xl"
+            >
+              {{ "coursePage.courseFiles" | translate }}
+            </h1>
+            <div class="flex w-full mt-4 ps-2 md:ps-4 gap-x-4">
+              @if (!isLoadingAtt()) {
+                @if (!isError) {
+                  @for (item of allAttachments; track item.id) {
+                    <div
+                      class="flex flex-col items-center justify-center pb-8 my-6 ps-3 gap-y-4"
+                    >
+                      <a [href]="item.link" target="_blank">
+                        <svg
+                          class="size-12"
+                          version="1.1"
+                          id="Layer_1"
+                          xmlns="http://www.w3.org/2000/svg"
+                          xmlns:xlink="http://www.w3.org/1999/xlink"
+                          viewBox="0 0 303.188 303.188"
+                          xml:space="preserve"
+                        >
+                          <g>
+                            <polygon
+                              style="fill: #e8e8e8"
+                              points="219.821,0 32.842,0 32.842,303.188 270.346,303.188 270.346,50.525 	"
+                            />
+                            <path
+                              style="fill: #fb3449"
+                              d="M230.013,149.935c-3.643-6.493-16.231-8.533-22.006-9.451c-4.552-0.724-9.199-0.94-13.803-0.936
+      c-3.615-0.024-7.177,0.154-10.693,0.354c-1.296,0.087-2.579,0.199-3.861,0.31c-1.314-1.36-2.584-2.765-3.813-4.202
+      c-7.82-9.257-14.134-19.755-19.279-30.664c1.366-5.271,2.459-10.772,3.119-16.485c1.205-10.427,1.619-22.31-2.288-32.251
+      c-1.349-3.431-4.946-7.608-9.096-5.528c-4.771,2.392-6.113,9.169-6.502,13.973c-0.313,3.883-0.094,7.776,0.558,11.594
+      c0.664,3.844,1.733,7.494,2.897,11.139c1.086,3.342,2.283,6.658,3.588,9.943c-0.828,2.586-1.707,5.127-2.63,7.603
+      c-2.152,5.643-4.479,11.004-6.717,16.161c-1.18,2.557-2.335,5.06-3.465,7.507c-3.576,7.855-7.458,15.566-11.815,23.02
+      c-10.163,3.585-19.283,7.741-26.857,12.625c-4.063,2.625-7.652,5.476-10.641,8.603c-2.822,2.952-5.69,6.783-5.941,11.024
+      c-0.141,2.394,0.807,4.717,2.768,6.137c2.697,2.015,6.271,1.881,9.4,1.225c10.25-2.15,18.121-10.961,24.824-18.387
+      c4.617-5.115,9.872-11.61,15.369-19.465c0.012-0.018,0.024-0.036,0.037-0.054c9.428-2.923,19.689-5.391,30.579-7.205
+      c4.975-0.825,10.082-1.5,15.291-1.974c3.663,3.431,7.621,6.555,11.939,9.164c3.363,2.069,6.94,3.816,10.684,5.119
+      c3.786,1.237,7.595,2.247,11.528,2.886c1.986,0.284,4.017,0.413,6.092,0.335c4.631-0.175,11.278-1.951,11.714-7.57
+      C231.127,152.765,230.756,151.257,230.013,149.935z M119.144,160.245c-2.169,3.36-4.261,6.382-6.232,9.041
+      c-4.827,6.568-10.34,14.369-18.322,17.286c-1.516,0.554-3.512,1.126-5.616,1.002c-1.874-0.11-3.722-0.937-3.637-3.065
+      c0.042-1.114,0.587-2.535,1.423-3.931c0.915-1.531,2.048-2.935,3.275-4.226c2.629-2.762,5.953-5.439,9.777-7.918
+      c5.865-3.805,12.867-7.23,20.672-10.286C120.035,158.858,119.587,159.564,119.144,160.245z M146.366,75.985
+      c-0.602-3.514-0.693-7.077-0.323-10.503c0.184-1.713,0.533-3.385,1.038-4.952c0.428-1.33,1.352-4.576,2.826-4.993
+      c2.43-0.688,3.177,4.529,3.452,6.005c1.566,8.396,0.186,17.733-1.693,25.969c-0.299,1.31-0.632,2.599-0.973,3.883
+      c-0.582-1.601-1.137-3.207-1.648-4.821C147.945,83.048,146.939,79.482,146.366,75.985z M163.049,142.265
+      c-9.13,1.48-17.815,3.419-25.979,5.708c0.983-0.275,5.475-8.788,6.477-10.555c4.721-8.315,8.583-17.042,11.358-26.197
+      c4.9,9.691,10.847,18.962,18.153,27.214c0.673,0.749,1.357,1.489,2.053,2.22C171.017,141.096,166.988,141.633,163.049,142.265z
+       M224.793,153.959c-0.334,1.805-4.189,2.837-5.988,3.121c-5.316,0.836-10.94,0.167-16.028-1.542
+      c-3.491-1.172-6.858-2.768-10.057-4.688c-3.18-1.921-6.155-4.181-8.936-6.673c3.429-0.206,6.9-0.341,10.388-0.275
+      c3.488,0.035,7.003,0.211,10.475,0.664c6.511,0.726,13.807,2.961,18.932,7.186C224.588,152.585,224.91,153.321,224.793,153.959z"
+                            />
+                            <polygon
+                              style="fill: #fb3449"
+                              points="227.64,25.263 32.842,25.263 32.842,0 219.821,0 	"
+                            />
+                            <g>
+                              <path
+                                style="fill: #a4a9ad"
+                                d="M126.841,241.152c0,5.361-1.58,9.501-4.742,12.421c-3.162,2.921-7.652,4.381-13.472,4.381h-3.643
+        v15.917H92.022v-47.979h16.606c6.06,0,10.611,1.324,13.652,3.971C125.321,232.51,126.841,236.273,126.841,241.152z
+         M104.985,247.387h2.363c1.947,0,3.495-0.546,4.644-1.641c1.149-1.094,1.723-2.604,1.723-4.529c0-3.238-1.794-4.857-5.382-4.857
+        h-3.348C104.985,236.36,104.985,247.387,104.985,247.387z"
+                              />
+                              <path
+                                style="fill: #a4a9ad"
+                                d="M175.215,248.864c0,8.007-2.205,14.177-6.613,18.509s-10.606,6.498-18.591,6.498h-15.523v-47.979
+        h16.606c7.701,0,13.646,1.969,17.836,5.907C173.119,235.737,175.215,241.426,175.215,248.864z M161.76,249.324
+        c0-4.398-0.87-7.657-2.609-9.78c-1.739-2.122-4.381-3.183-7.926-3.183h-3.773v26.877h2.888c3.939,0,6.826-1.143,8.664-3.43
+        C160.841,257.523,161.76,254.028,161.76,249.324z"
+                              />
+                              <path
+                                style="fill: #a4a9ad"
+                                d="M196.579,273.871h-12.766v-47.979h28.355v10.403h-15.589v9.156h14.374v10.403h-14.374
+        L196.579,273.871L196.579,273.871z"
+                              />
+                            </g>
+                            <polygon
+                              style="fill: #d1d3d3"
+                              points="219.821,50.525 270.346,50.525 219.821,0 	"
+                            />
+                          </g>
+                        </svg>
+                      </a>
+                      <h2>{{ item.name }}</h2>
+                    </div>
+                  }
+                } @else {
+                  <div class="flex items-center justify-center w-full my-4">
+                    <div
+                      class="px-10 py-4 text-yellow-600 bg-orange-200 border-l-4 border-yellow-500 rounded-lg"
+                    >
+                      <p>{{ "coursePage.buyToViewFiles" | translate }}</p>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <div class="flex items-center justify-center w-full my-4">
+                  <div
+                    class="w-10 h-10 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+                  ></div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+        @if (
+          tutorialId === 1 ||
+          tutorialId === 2 ||
+          tutorialId === 3 ||
+          tutorialId === 4
+        ) {
+          <div class="grid w-full place-items-center">
+            <div
+              class="w-10/12 p-4 mt-4 bg-white border-2 rounded-lg cursor-pointer lg:hidden lg:mb-0"
+            >
+              <app-instructions [id]="tutorialId">
+                <button
+                  (click)="isVideoOpen = true"
+                  type="button"
+                  class="inline-block mt-2 text-blue-500 video hover:underline"
+                >
+                  {{ "coursePage.watchVideo" | translate }}
+                </button>
+              </app-instructions>
+            </div>
+          </div>
+        }
+      </div>
+      <div class="flex flex-col justify-between w-full lg:flex-row pe-10">
+        <div class="w-full lg:w-8/12">
+          <!-- @for (item of AllComments; track $index) { -->
+          <app-comments-student
+            [commentsData]="comments()"
+            (onPageChangeRequest)="loadPage($event)"
+          />
+
+          <!-- } @if (hasNext) {
+        <button
+          type="button"
+          (click)="getMoreComments()"
+          class="font-bold transition-all ps-8 md:ps-16 text-logoColor1 hover:text-secondaryAdmin hover:scale-105"
+        >
+          إظهار المزيد من الأراء
+        </button>
+        } -->
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div
+      class="fixed z-40 top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 bg-opacity-60"
+    >
+      <div class="relative flex items-center justify-center">
+        <div
+          class="absolute border-t-4 border-b-4 rounded-full border-secondaryAdmin w-36 h-36 animate-spin"
+        ></div>
+        <img
+          src="assets/imgs/logo2.webp"
+          alt="logo"
+          class="rounded-full h-28 w-28"
+        />
+      </div>
+    </div>
+  }
+</section>
+@if (isVideoOpen) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+  >
+    <div
+      class="relative flex flex-col items-center justify-center w-11/12 px-4 py-8 text-center bg-white rounded-lg shadow-lg md:w-8/12 gap-y-10"
+    >
+      <div class="w-full md:px-0 md:w-3/4 xl:w-11/12">
+        <h2 class="mb-4 font-bold md:text-xl">
+          {{ "coursePage.watchBeforeStart" | translate }}
+        </h2>
+        <div class="relative flex items-center justify-center w-full">
+          <iframe
+            class="w-11/12 h-96"
+            [src]="
+              'https://drive.google.com/file/d/1VzxlftWhajz5owMue1cshZau2aschFhj/preview'
+                | safeUrl
+            "
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+          <div
+            class="absolute inset-0 flex items-center justify-center text-xl font-bold text-white bg-black bg-opacity-50 opacity-0 cursor-pointer right-6 lg:right-8 xl:right-13 overlay hover:opacity-100"
+          ></div>
+        </div>
+      </div>
+      <button
+        type="button"
+        (click)="isVideoOpen = false"
+        class="absolute text-xl text-red-500 transition-transform top-3 hover:scale-110 right-5"
+      >
+        X
+      </button>
+    </div>
+  </div>
+}

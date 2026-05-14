@@ -1,0 +1,49 @@
+<div
+  class="fixed inset-0 z-[50050] scale-0 transition-transform transform duration-700 flex items-center justify-center bg-opacity-50"
+  [class]="
+    showPopup() && allOffers.length > 0
+      ? 'scale-100 bg-black'
+      : 'scale-0 bg-transparent'
+  "
+>
+  <div
+    id="organization"
+    class="h-full bg-white shadow-lg rounded-lg w-[21rem] md:w-[28rem]"
+    style="height: calc(100vh - 80px)"
+  >
+    <swiper-container
+      class="w-full h-full"
+      autoplay-delay="2000"
+      navigation="true"
+    >
+      @if (!isLoading) {
+        @for (item of allOffers; track item.id) {
+          <swiper-slide
+            class="relative flex flex-col overflow-y-auto scroll-bar"
+          >
+            <button
+              (click)="hideBanner()"
+              class="absolute text-lg font-bold text-red-700 transition-transform hover:scale-110 top-1 right-3"
+            >
+              X
+            </button>
+            <img
+              [src]="item.imageUrl"
+              class="w-full rounded-t-lg"
+              style="height: calc(100vh - 145px)"
+              [alt]="item.text"
+            />
+            <button
+              (click)="
+                toCheckout(item.tutorialId, item.packageId, item.promoCode)
+              "
+              class="w-full py-4 text-white transition-colors rounded-b-lg bg-secondaryAdmin hover:bg-primaryAdmin"
+            >
+              {{ "home.subscribe" | translate }}
+            </button>
+          </swiper-slide>
+        }
+      }
+    </swiper-container>
+  </div>
+</div>

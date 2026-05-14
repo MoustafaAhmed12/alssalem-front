@@ -1,0 +1,55 @@
+@if (!isLoading()) {
+  <div id="discount" class="px-8 py-2 m-auto md:px-16">
+    <div class="flex items-center justify-center w-full">
+      <img
+        ngSrc="assets/imgs/p0.png"
+        alt="header Package"
+        width="466"
+        height="115"
+        class="w-[421px] md:w-[466px] h-auto"
+      />
+    </div>
+    <div class="grid grid-cols-1 place-items-center gap-y-2 lg:grid-cols-2">
+      @for (package of allPackage; track package.id) {
+        <div
+          [routerLink]="['/package', package.id]"
+          class="py-8 m-auto md:px-16"
+        >
+          <div
+            class="flex flex-col items-center justify-center col-span-1 cursor-pointer gap-y-6 hover:animate-pop"
+          >
+            @if (package.imageUrl) {
+              <img
+                class="w-[400px] object-cover rounded-lg object-center md:w-[430px]"
+                [ngSrc]="package.imageUrl"
+                width="430"
+                height="300"
+                [alt]="'home.packageAlt' | translate"
+              />
+            } @else {
+              <div
+                class="w-[400px] h-[300px] bg-gray-200 rounded-lg flex items-center justify-center"
+              >
+                <span class="text-gray-400">{{
+                  "home.noImage" | translate
+                }}</span>
+              </div>
+            }
+            <h2
+              class="w-11/12 mt-1 text-lg font-extrabold leading-relaxed text-center md:text-xl text-primaryAdmin"
+            >
+              {{ package.name }}
+            </h2>
+            <button class="grid place-items-center">
+              <a
+                class="px-12 py-3 text-xl font-semibold text-black transition-all rounded-full bg-secondaryAdmin hover:bg-primaryAdmin w-fit hover:text-white"
+              >
+                <span>{{ "home.subscribe" | translate }}</span>
+              </a>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

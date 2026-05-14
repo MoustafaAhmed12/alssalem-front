@@ -1,0 +1,310 @@
+<main>
+  @if (!isCorrecting()) {
+  <button
+    (click)="openPopup()"
+    class="flex justify-end px-4 py-2 m-auto my-3 text-black transition-colors bg-white border-2 rounded-lg md:hidden md:px-12 hover:bg-red-700 hover:text-white"
+  >
+    إنهاء الاختبار
+  </button>
+
+  <div
+    class="flex items-center justify-between w-full px-2 py-2 mx-auto mt-2 border rounded-lg lg:px-8 bg-secondaryAdmin lg:w-11/12"
+  >
+    <p class="text-base">
+      السؤال
+      <span class="font-bold text-logoColor1">{{ currentPage }}</span>
+      من
+      {{ question.totalCount }}
+    </p>
+    <div
+      class="flex items-center justify-center text-lg gap-x-4 text-logoColor1"
+    >
+      <cd-timer
+        #basicTimer
+        format="hms"
+        [countdown]="isCountdown"
+        [startTime]="startTime"
+        (onComplete)="onComplete()"
+      ></cd-timer>
+      <button
+        (click)="toggleTimer()"
+        class="px-4 py-1 text-sm rounded-md md:text-base text-amber-50 bg-logoColor1"
+      >
+        {{ isPaused ? "استمر" : "وقف" }}
+      </button>
+    </div>
+    <button
+      (click)="openPopup()"
+      class="hidden px-4 py-2 text-black transition-colors bg-white border-2 rounded-lg md:block md:px-12 hover:bg-red-700 hover:text-white"
+    >
+      إنهاء الاختبار
+    </button>
+  </div>
+  @if (!isLoading()) {
+  <h3 class="mt-4 text-xl leading-loose lg:text-3xl ps-12 text-logoColor1">
+    {{ examName }}
+  </h3>
+  @for (question of allQuestions; track question.id; let i = $index) { @if (i+1
+  === currentPage) {
+  <div class="px-2 py-4 bg-white rounded-lg lg:px-8">
+    <div class="flex justify-end w-full">
+      <button
+        (click)="addtofavouriteQuestions(question)"
+        type="button"
+        class="px-6 py-2 text-sm font-semibold text-white rounded-md md:text-base gap-x-3 w-fit bg-logoColor1"
+        [class.bg-secondaryAdmin]="question.isFavourite"
+      >
+        @if (!isLoadingF()) {
+        <span>
+          {{ question.isFavourite ? "مُميز ⭐" : "إضافة إلي المفضلة" }}</span
+        >
+        }@else {
+        <div class="flex items-center">
+          <div
+            class="w-6 h-6 border-4 border-dashed rounded-full border-primaryAdmin animate-spin"
+          ></div>
+        </div>
+        }
+      </button>
+    </div>
+
+    <div class="flex flex-col items-center justify-center w-full mt-2">
+      @if ( question.image2Url !== null){
+      <div class="w-full px-1 border-2 rounded-md lg:px-8 md:w-9/12">
+        <img
+          [src]="question.image2Url"
+          class="object-contain object-center w-full h-full"
+          alt="Question Image"
+          loading="lazy"
+        />
+      </div>
+      } @if (question.image1Url !== null) {
+      <div
+        class="w-full h-auto px-1 mt-2 border-2 rounded-md lg:px-8 md:w-9/12"
+      >
+        <img
+          [src]="question.image1Url"
+          class="object-contain object-center w-full h-full py-2"
+          alt="Question Image"
+          loading="lazy"
+        />
+      </div>
+      }
+      <div
+        class="flex items-center justify-between w-full pl-4 font-bold lg:px-8 mt-14 md:w-2/3 gap-x-6"
+      >
+        @if (choicesCount === 4) { @if (isEnglish) { @for (n of ['A', 'B', 'C',
+        'D']; track j; let j = $index) {
+        <input
+          type="radio"
+          [id]="'isRight' + j"
+          name="answer"
+          [value]="j + 1"
+          (change)="updateAnswer(question.id, j + 1)"
+          [checked]="isChecked(question.id, j + 1)"
+          class="hidden"
+        />
+        <label
+          [for]="'isRight' + j"
+          class="flex items-center text-xl cursor-pointer"
+        >
+          <span
+            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+          ></span>
+          {{ n }}
+        </label>
+        } }@else { @for (n of ['أ', 'ب', 'ج', 'د']; track j; let j = $index) {
+        <input
+          [id]="'isRight' + j"
+          type="radio"
+          name="answer"
+          (change)="updateAnswer(question.id, j + 1)"
+          class="hidden"
+          [value]="j + 1"
+          [checked]="isChecked(question.id, j + 1)"
+        />
+        <label
+          [for]="'isRight' + j"
+          class="flex items-center text-xl cursor-pointer"
+        >
+          <span
+            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+          ></span>
+          {{ n }}</label
+        >
+        } } }@else { @for (n of ['A', 'B', 'C', 'D', 'E']; track j; let j =
+        $index) {
+        <input
+          [id]="'isRight' + j"
+          type="radio"
+          name="answer"
+          (change)="updateAnswer(question.id, j + 1)"
+          class="hidden"
+          [value]="j + 1"
+          [checked]="isChecked(question.id, j + 1)"
+        />
+        <label
+          [for]="'isRight' + j"
+          class="flex items-center text-xl cursor-pointer"
+        >
+          <span
+            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+          ></span>
+          {{ n }}
+        </label>
+        } }
+      </div>
+    </div>
+  </div>
+  } } } @else {
+
+  <div
+    class="flex flex-col items-center justify-center w-full px-6 mt-2 animate-pulse"
+  >
+    <div
+      class="w-full h-64 px-1 mt-2 bg-gray-200 border-2 rounded-md lg:px-8 md:w-9/12"
+    ></div>
+    <div
+      class="flex items-center justify-between w-full mt-8 lg:px-8 md:w-9/12"
+    >
+      <span class="bg-gray-200 border border-black rounded-full size-10"></span>
+      <span class="bg-gray-200 border border-black rounded-full size-10"></span>
+      <span class="bg-gray-200 border border-black rounded-full size-10"></span>
+      <span class="bg-gray-200 border border-black rounded-full size-10"></span>
+    </div>
+  </div>
+  }
+  <div
+    class="flex items-center justify-between w-full px-2 m-auto mt-8 lg:px-8 md:w-2/3"
+  >
+    <button
+      (click)="prevQuestion()"
+      [disabled]="currentPage === 1"
+      type="button"
+      class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 rounded-l-md disabled:cursor-not-allowed disabled:bg-slate-500 hover:bg-gray-800 hover:text-white"
+    >
+      <div class="flex flex-row align-middle">
+        <svg
+          class="w-5 ml-2"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        <p class="ml-2">السابق</p>
+      </div>
+    </button>
+    @if (currentPage === question.totalCount) {
+    <button
+      (click)="openPopup()"
+      class="flex items-center px-6 py-2 transition-all bg-white border border-gray-700 rounded-md hover:animate-pop gap-x-2 text-gray-950 hover:bg-secondaryAdmin hover:text-white"
+    >
+      <span>إنهاء الاختبار</span>
+      <svg
+        class="w-5 mr-2"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+    </button>
+    }@else {
+    <button
+      (click)="nextQuestion()"
+      type="button"
+      class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 disabled:cursor-not-allowed disabled:bg-slate-500 rounded-l-md hover:bg-gray-800 hover:text-white"
+    >
+      <div class="flex flex-row align-middle">
+        <span class="mr-2">التالي</span>
+        <svg
+          class="w-5 mr-2"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      </div>
+    </button>
+    }
+  </div>
+  <div class="flex flex-wrap items-center justify-center gap-4 px-8 pb-10 my-4">
+    @for (pageNum of getPageRange(); track pageNum) {
+    <button
+      class="px-3 py-2 border rounded-md"
+      (click)="gotoPage(pageNum)"
+      [class.active]="pageNum === currentPage"
+    >
+      {{ pageNum }}
+    </button>
+    }
+  </div>
+  }@else {
+  <div class="fixed z-50 top-[43%] lg:left-[32%] left-[40%] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</main>
+
+@if (isOpen()) {
+<div
+  class="fixed inset-0 z-[150] flex items-center justify-center bg-black bg-opacity-50"
+  (click)="closePopup()"
+>
+  <div
+    class="relative flex flex-col items-center justify-center w-full max-w-lg md:max-w-2xl px-8 py-10 border-2 shadow-lg border-[#002C3D] bg-[#F7F8F3] rounded-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <span
+      (click)="closePopup()"
+      class="absolute text-lg font-semibold transition-colors cursor-pointer top-4 right-5 hover:text-red-500"
+      >X</span
+    >
+    <h3 class="mt-3 text-lg font-semibold leading-6 text-center text-[#002C3D]">
+      @if (emptyAnswers().length > 0) {
+      <span>⚠️ يوجد بعض الأسئلة لم يتم الإجابة عنها بعد.</span>
+      <br />
+      } هل ترغب في إنهاء الاختبار الآن؟
+      <br /><br />
+      @if (emptyAnswers().length > 0) { إذا اخترت
+      <span class="font-bold text-red-600">"نعم"</span>، سيتم إنهاء الاختبار
+      فورًا ولن تتمكن من تعديل إجاباتك.<br />
+      أما إذا اخترت <span class="font-bold text-green-600">"لا"</span>، فسيتم
+      نقلك مباشرة إلى الأسئلة غير المُجابة لتتمكن من حلها قبل الإنهاء. }
+    </h3>
+
+    <div
+      class="flex items-center justify-center w-full mt-10 text-lg font-semibold lg:w-2/3 gap-x-6 text-[#F7F8F3]"
+    >
+      <button (click)="confirm()" class="px-6 py-1 rounded-md bg-[#002C3D]">
+        نعم
+      </button>
+      <button
+        (click)="closePopup()"
+        type="button"
+        class="px-6 py-1 rounded-md bg-[#F8444F]"
+      >
+        لا
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,595 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-7xl">
+    <div class="p-6">
+      <!-- Header -->
+      <div class="flex items-center flex-col md:flex-row gap-4 mb-6">
+        <button
+          (click)="activeTab.set(0)"
+          [class]="
+            activeTab() === 0
+              ? 'bg-secondaryAdmin'
+              : 'bg-logoColor1 hover:bg-primaryAdmin'
+          "
+          class="px-6 py-2 rounded-sm border bg-logoColor1 hover:bg-primaryAdmin text-white"
+        >
+          اختر اختبارات
+        </button>
+        <button
+          (click)="activeTab.set(1)"
+          [class]="
+            activeTab() === 1
+              ? 'bg-secondaryAdmin'
+              : 'bg-logoColor1 hover:bg-primaryAdmin'
+          "
+          class="px-6 py-2 rounded-sm border bg-logoColor1 hover:bg-primaryAdmin text-white"
+        >
+          اكتب اكواد الأسئلة
+        </button>
+      </div>
+      <div class="my-8">
+        <h1 class="mb-2 text-3xl font-bold text-gray-800">
+          {{ currentExamId ? "تعديل اختبار محاكي" : "إنشاء اختبار محاكي" }}
+        </h1>
+        <p class="text-gray-600">
+          {{
+            currentExamId
+              ? "قم بتعديل بيانات الاختبار"
+              : "قم بإنشاء اختبار محاكي جديد"
+          }}
+          من خلال
+          {{ activeTab() === 0 ? "اختيار الاختبارات" : "كتابة أكواد الأسئلة" }}.
+        </p>
+      </div>
+
+      <form (ngSubmit)="submitForm()" class="space-y-6">
+        <!-- الأزرار في الأعلى -->
+        <div
+          class="flex flex-col md:flex-row gap-4 pb-6 border-b-2 border-gray-100"
+        >
+          <button
+            type="submit"
+            [disabled]="!isFormValid() || isLoading()"
+            class="flex-1 px-6 py-3 font-bold text-white transition-colors bg-green-600 rounded-lg shadow-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed hover:shadow-xl"
+          >
+            {{
+              isLoading()
+                ? "جاري الحفظ..."
+                : currentExamId
+                  ? "حفظ التعديلات"
+                  : "إنشاء الاختبار"
+            }}
+          </button>
+          <button
+            type="button"
+            (click)="resetForm()"
+            class="px-6 py-3 font-semibold text-gray-700 transition-colors bg-gray-200 rounded-lg hover:bg-gray-300"
+          >
+            إعادة تعيين
+          </button>
+        </div>
+
+        <!-- اسم الاختبار -->
+        <div>
+          <label class="block mb-2 text-sm font-semibold text-gray-700">
+            اسم الاختبار <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            [(ngModel)]="formData.name"
+            name="name"
+            required
+            class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+            placeholder="أدخل اسم الاختبار"
+          />
+        </div>
+
+        <!-- الوقت ونسبة النجاح -->
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <!-- الوقت -->
+          <div>
+            <label class="block mb-2 text-sm font-semibold text-gray-700">
+              المدة (بالدقائق)
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="formData.durationInMinutes"
+              name="duration"
+              min="0"
+              class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+              placeholder="60"
+            />
+          </div>
+
+          <!-- نسبة النجاح -->
+          <div>
+            <label class="block mb-2 text-sm font-semibold text-gray-700">
+              نسبة النجاح (%) <span class="text-red-500">*</span>
+            </label>
+            <input
+              type="number"
+              [(ngModel)]="formData.successPercent"
+              name="successPercent"
+              required
+              min="0"
+              max="100"
+              class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+              placeholder="70"
+            />
+          </div>
+        </div>
+
+        <!-- إتاحة المراجعة -->
+        <div class="flex items-center space-x-3 space-x-reverse">
+          <input
+            type="checkbox"
+            [(ngModel)]="formData.isRevisionAvailable"
+            name="revision"
+            id="revision"
+            class="w-5 h-5 text-indigo-600 border-2 border-gray-300 rounded focus:ring-indigo-500"
+          />
+          <label
+            for="revision"
+            class="text-sm font-semibold text-gray-700 cursor-pointer"
+          >
+            إتاحة المراجعة بعد الاختبار
+          </label>
+        </div>
+
+        <!-- اختيار الاختبارات -->
+        @if (activeTab() === 0) {
+          <div class="pt-6 border-t-2 border-gray-200">
+            <h2 class="mb-4 text-xl font-bold text-gray-800">
+              اختيار الاختبارات
+            </h2>
+
+            <div class="grid grid-cols-1 gap-4 mb-4 md:grid-cols-2">
+              <!-- اختيار الدورة -->
+
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                  اختر الدورة
+                </label>
+                <ng-select
+                  [items]="tutorials()"
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  name="tutorial"
+                  [(ngModel)]="selectedTutorialId"
+                  (change)="onTutorialChange($event)"
+                  placeholder="حدد الدورة"
+                  class="w-full p-1 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                </ng-select>
+                <!-- <select
+                [(ngModel)]="selectedTutorialId"
+                (ngModelChange)="onTutorialChange()"
+                name="tutorial"
+                class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none"
+              >
+                <option [value]="null">-- اختر دورة --</option>
+                @for (tutorial of tutorials(); track tutorial.id) {
+                <option [value]="tutorial.id">{{ tutorial.name }}</option>
+                }
+              </select> -->
+              </div>
+              <!-- اختيار الاختبار -->
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                  اختر الاختبار
+                </label>
+                <ng-select
+                  [items]="allExams()"
+                  [closeOnSelect]="true"
+                  name="exam"
+                  bindLabel="name"
+                  bindValue="id"
+                  [disabled]="!selectedTutorialId"
+                  [(ngModel)]="selectedExamId"
+                  placeholder="حدد اختبار"
+                  class="w-full p-1 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                </ng-select>
+                <!-- <select
+                [(ngModel)]="selectedExamId"
+                name="exam"
+                [disabled]="!selectedTutorialId"
+                class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+              >
+                <option [value]="null">-- اختر اختبار --</option>
+                @for (exam of availableExams(); track exam.id) {
+                <option [value]="exam.id">{{ exam.name }}</option>
+                } -->
+                <!-- </select> -->
+              </div>
+            </div>
+
+            <button
+              type="button"
+              (click)="addExam()"
+              [disabled]="!selectedTutorialId || !selectedExamId"
+              class="w-full px-6 py-3 font-semibold text-white transition-colors bg-indigo-600 rounded-lg md:w-auto hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              + إضافة الاختبار
+            </button>
+          </div>
+        }
+
+        <!-- قائمة الاختبارات المحددة -->
+        @if (activeTab() === 0) {
+          @if (selectedExams().length > 0) {
+            <div class="p-4 border-2 border-indigo-100 rounded-lg bg-indigo-50">
+              <h3 class="mb-3 text-lg font-bold text-gray-800">
+                الاختبارات المحددة ({{ selectedExams().length }})
+              </h3>
+              <div class="space-y-2">
+                @for (exam of selectedExams(); track $index) {
+                  <div
+                    class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm"
+                  >
+                    <div>
+                      <p class="font-semibold text-gray-800">
+                        {{ exam.examName }}
+                      </p>
+                      <p class="text-sm text-gray-600">
+                        {{ exam.tutorialName }}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      (click)="removeExam($index)"
+                      class="px-3 py-1 font-semibold text-red-500 transition-colors rounded hover:text-red-700 hover:bg-red-50"
+                    >
+                      حذف
+                    </button>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+        }
+
+        @if (activeTab() === 1) {
+          <!-- Tab 1: Question Codes Mode -->
+          <div class="pt-6 border-t-2 border-gray-200">
+            <h2 class="mb-4 text-xl font-bold text-gray-800">
+              إضافة أكواد الأسئلة
+            </h2>
+
+            <div class="grid grid-cols-1 gap-4 mb-4">
+              <!-- اختيار الدورة -->
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                  اختر الدورة
+                </label>
+                <ng-select
+                  [items]="tutorials()"
+                  [closeOnSelect]="true"
+                  bindLabel="name"
+                  bindValue="id"
+                  placeholder="حدد الدورة"
+                  (change)="onTutorialChangeForQuestions($event)"
+                  class="w-full p-1 text-gray-900 placeholder-transparent bg-transparent rounded-lg ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                </ng-select>
+              </div>
+
+              <!-- إدخال رقم السؤال -->
+              <div>
+                <label class="block mb-2 text-sm font-semibold text-gray-700">
+                  أدخل رقم السؤال واضغط Enter
+                </label>
+                <input
+                  type="number"
+                  [(ngModel)]="questionCodeInput"
+                  name="questionCodeInput"
+                  min="1"
+                  (keydown)="addQuestionCode($event)"
+                  [disabled]="!selectedTutorialIdForQuestions"
+                  placeholder="أدخل رقم السؤال"
+                  class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none disabled:bg-gray-100 disabled:cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            <!-- عرض الدورات والأسئلة المضافة -->
+            @if (tutorialsWithQuestions().length > 0) {
+              <div
+                class="p-4 border-2 border-indigo-100 rounded-lg bg-indigo-50"
+              >
+                <h3 class="mb-3 text-lg font-bold text-gray-800">
+                  الدورات والأسئلة المضافة ({{
+                    tutorialsWithQuestions().length
+                  }})
+                </h3>
+                <div class="space-y-3">
+                  @for (
+                    tutorial of tutorialsWithQuestions();
+                    track tutorial.tutorialId
+                  ) {
+                    <div class="p-3 bg-white rounded-lg shadow-sm">
+                      <div class="flex items-center justify-between mb-2">
+                        <p class="font-semibold text-gray-800">
+                          {{ tutorial.tutorialName }}
+                        </p>
+                        <button
+                          type="button"
+                          (click)="
+                            removeTutorialWithQuestions(tutorial.tutorialId)
+                          "
+                          class="px-3 py-1 font-semibold text-red-500 transition-colors rounded hover:text-red-700 hover:bg-red-50"
+                        >
+                          حذف الدورة
+                        </button>
+                      </div>
+                      <div class="flex flex-wrap gap-2">
+                        @for (code of tutorial.questionIds; track code) {
+                          <div
+                            class="flex items-center gap-2 px-3 py-1 bg-indigo-100 rounded-full"
+                          >
+                            <span class="font-semibold text-indigo-700">{{
+                              code
+                            }}</span>
+                            <button
+                              type="button"
+                              (click)="
+                                removeQuestionCode(tutorial.tutorialId, code)
+                              "
+                              class="text-red-500 hover:text-red-700 font-bold"
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+
+            <hr class="my-6 border-gray-300" />
+            <h2 class="mb-4 text-xl font-bold text-gray-800">
+              أو قم بالبحث والاختيار من بنك الأسئلة
+            </h2>
+
+            <div
+              class="grid w-full grid-cols-1 mt-3 mb-4 gap-y-4 md:grid-cols-2 lg:grid-cols-3 gap-x-4"
+            >
+              <div class="col-span-full">
+                <ng-select
+                  [items]="allExams()"
+                  [multiple]="true"
+                  [closeOnSelect]="false"
+                  [hideSelected]="false"
+                  bindLabel="name"
+                  [searchable]="true"
+                  (change)="filterByExams($event)"
+                  placeholder="فلتر بالاختبارات"
+                  class="w-full p-1 text-gray-900 bg-white rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                >
+                </ng-select>
+              </div>
+              <input
+                type="text"
+                (input)="handleSearchQuestions($event)"
+                class="py-2 border border-gray-500 rounded-lg pe-2 ps-6 focus:outline-none"
+                placeholder="البحث بنص السؤال"
+              />
+              <ng-select
+                [multiple]="false"
+                [closeOnSelect]="true"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                [searchable]="true"
+                placeholder="مستوي الصعوبة"
+                (change)="filterDifficulty($event)"
+                class="w-full p-1 text-sm text-gray-900 bg-white rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              >
+                <ng-option [value]="1">سهل</ng-option>
+                <ng-option [value]="2">متوسط</ng-option>
+                <ng-option [value]="3">صعب</ng-option>
+              </ng-select>
+            </div>
+
+            <div
+              class="flex flex-col md:flex-row items-center justify-between w-full mt-2 text-xl text-primaryAdmin gap-4"
+            >
+              <h3 class="font-bold">تصفح الأسئلة</h3>
+              <div class="flex items-center gap-x-4">
+                <h5 class="text-lg font-semibold text-secondaryAdmin">
+                  الأسئلة الغير مختارة:
+                  <span class="text-logoColor1">{{
+                    !isLoadingAll() ? totalQNotSelected() : 0
+                  }}</span>
+                </h5>
+              </div>
+              <div class="flex items-center gap-x-4">
+                <h5 class="text-lg font-semibold text-secondaryAdmin">
+                  الأسئلة المختارة:
+                  <span class="text-logoColor1">{{
+                    !isLoadingAll() ? totalQSelected() : 0
+                  }}</span>
+                </h5>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-wrap items-start justify-between w-full p-4 mt-4 border-2 rounded-lg gap-4 bg-white"
+            >
+              @if (isLoadingAll()) {
+                <div class="flex justify-center w-full">
+                  <img
+                    class="w-16 h-16 animate-spin"
+                    src="https://www.svgrepo.com/show/70469/loading.svg"
+                    alt="Loading icon"
+                  />
+                </div>
+              } @else {
+                @for (q of notSelectedQuestions(); track q.id) {
+                  <div
+                    class="flex flex-col w-full md:w-[49%] pb-6 mt-4 border-b-4 border-dashed border-indigo-200 gap-y-4"
+                  >
+                    <div
+                      class="flex flex-wrap items-center justify-between w-full p-3 bg-slate-100 rounded-xl gap-2"
+                    >
+                      <div class="flex items-center gap-2">
+                        <input
+                          type="checkbox"
+                          class="size-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          [checked]="selectedIds().includes(q.id)"
+                          (change)="handleChoose(q.id, $event, q)"
+                        />
+                        <h5 class="font-semibold text-sm text-gray-700">
+                          كود: <span class="text-indigo-600">{{ q.id }}</span>
+                        </h5>
+                      </div>
+                      <h5 class="font-semibold text-sm text-gray-700">
+                        مهارة:
+                        <span
+                          class="text-indigo-600 truncate max-wxs"
+                          [title]="q.skillName"
+                          >{{ q.skillName || "---" }}</span
+                        >
+                      </h5>
+                      <!-- <h5 class="font-semibold text-sm text-gray-700">
+                        صعوبة:
+                        <span class="text-indigo-600">
+                          {{
+                            q.difficulty === 1
+                              ? "سهل"
+                              : q.difficulty === 2
+                                ? "متوسط"
+                                : q.difficulty === 3
+                                  ? "صعب"
+                                  : "---"
+                          }}
+                        </span>
+                      </h5> -->
+                      <h5 class="font-semibold text-sm text-gray-700">
+                        <span class="text-indigo-600">
+                          {{ q.exams?.[0]?.name || "---" }}
+                        </span>
+                      </h5>
+                    </div>
+                    <div class="w-full h-auto px-1 border rounded-md">
+                      @if (q.image1Url) {
+                        <img
+                          [src]="q.image1Url"
+                          class="object-contain object-center w-full max-h-[300px]"
+                          alt="Question Image"
+                          loading="lazy"
+                        />
+                      } @else {
+                        <p class="p-4 text-center text-gray-500">
+                          {{ q.text || "لا يوجد ملف صورة متاح" }}
+                        </p>
+                      }
+                    </div>
+                  </div>
+                } @empty {
+                  <p
+                    class="text-lg text-red-600 p-4 w-full text-center font-semibold"
+                  >
+                    لا يوجد أسئلة تطابق الفلتر الحالي
+                  </p>
+                }
+
+                <div
+                  class="flex flex-wrap items-center justify-center w-full mt-6 py-4 border-t gap-4"
+                >
+                  <button
+                    type="button"
+                    [disabled]="pageNumber === 1"
+                    (click)="onPageChange(pageNumber - 1)"
+                    class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition"
+                  >
+                    السابق
+                  </button>
+                  <span class="text-lg font-bold text-gray-700 mx-4"
+                    >الصفحة {{ pageNumber }}</span
+                  >
+                  <button
+                    type="button"
+                    [disabled]="pageNumber * pageSize >= totalQuestionsCount"
+                    (click)="onPageChange(pageNumber + 1)"
+                    class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed hover:bg-indigo-700 transition"
+                  >
+                    التالي
+                  </button>
+                </div>
+              }
+
+              @if (selectedQuestions().length > 0) {
+                <h3
+                  class="mt-8 text-2xl w-full font-bold text-indigo-700 border-b pb-2"
+                >
+                  الأسئلة المختارة ({{ selectedQuestions().length }})
+                </h3>
+              }
+
+              @for (q of selectedQuestions(); track q.id) {
+                <div
+                  class="flex flex-col w-full md:w-[49%] pb-6 mt-4 border-b-4 border-dashed border-green-200 gap-y-4"
+                >
+                  <div
+                    class="flex flex-wrap items-center justify-between w-full p-3 bg-green-50 rounded-xl gap-2 border border-green-100"
+                  >
+                    <div class="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        class="size-5 rounded border-gray-300 text-green-600 focus:ring-green-500"
+                        [checked]="selectedIds().includes(q.id)"
+                        (change)="handleChoose(q.id, $event, q)"
+                      />
+                      <h5 class="font-semibold text-sm text-gray-700">
+                        كود: <span class="text-green-700">{{ q.id }}</span>
+                      </h5>
+                    </div>
+                    <h5 class="font-semibold text-sm text-gray-700">
+                      مهارة:
+                      <span
+                        class="text-green-700 truncate max-wxs"
+                        [title]="q.skillName"
+                        >{{ q.skillName || "---" }}</span
+                      >
+                    </h5>
+                    <h5 class="font-semibold text-sm text-gray-700">
+                      صعوبة:
+                      <span class="text-green-700">
+                        {{
+                          q.difficulty === 1
+                            ? "سهل"
+                            : q.difficulty === 2
+                              ? "متوسط"
+                              : q.difficulty === 3
+                                ? "صعب"
+                                : "---"
+                        }}
+                      </span>
+                    </h5>
+                  </div>
+                  <div class="w-full h-auto px-1 border rounded-md bg-white">
+                    @if (q.image1Url) {
+                      <img
+                        [src]="q.image1Url"
+                        class="object-contain object-center w-full max-h-[300px]"
+                        alt="Question Image"
+                        loading="lazy"
+                      />
+                    } @else {
+                      <p class="p-4 text-center text-gray-500">
+                        {{ q.text || "تم اختيار السؤال بالكود" }}
+                      </p>
+                    }
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </form>
+    </div>
+  </div>
+</div>

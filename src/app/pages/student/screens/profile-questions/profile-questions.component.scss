@@ -1,0 +1,42 @@
+.active {
+  @apply bg-primaryAdmin text-white;
+}
+.active-sub {
+  @apply text-secondaryAdmin font-bold;
+}
+.transition-transform {
+  transition: transform 0.3s ease;
+}
+.transform {
+  transform: translateX(0);
+}
+.-translate-x-full {
+  transform: translateX(-100%);
+}
+.transition-all {
+  transition: all 0.2s ease-in-out;
+}
+
+.active {
+  background-color: #eab766;
+  color: #fff;
+  border: 1px solid;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 80px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}

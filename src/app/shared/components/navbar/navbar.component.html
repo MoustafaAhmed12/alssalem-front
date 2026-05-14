@@ -1,0 +1,672 @@
+<nav
+  id="nav-bar"
+  class="fixed top-0 z-[550] w-full backdrop-blur-md transition-all duration-300"
+  [class]="
+    isLogoWhite()
+      ? 'bg-primary shadow-lg'
+      : 'bg-white shadow-md border-b border-gray-100'
+  "
+>
+  <div
+    class="flex items-center justify-between px-4 mx-auto sm:px-6 lg:px-24 h-20"
+  >
+    <!-- Logo -->
+    <!-- Logo Section -->
+    <div class="flex items-center gap-3 flex-shrink-0">
+      <div class="flex-shrink-0">
+        @if (appConfigService.isMainDomain()) {
+          <img
+            routerLink="/"
+            ngSrc="assets/imgs/logo2.webp"
+            alt="Logo"
+            width="150"
+            height="159"
+            class="w-12 md:w-14 cursor-pointer transition-transform hover:scale-105"
+            priority
+          />
+        } @else {
+          <img
+            [src]="'assets/' + appConfigService.config()?.['logo']"
+            routerLink="/"
+            alt="Logo"
+            class="w-16 md:w-20 cursor-pointer transition-transform hover:scale-105"
+            loading="lazy"
+          />
+        }
+      </div>
+
+      <!-- Vertical Separator -->
+      <div class="h-8 w-px bg-gray-300/50"></div>
+
+      <!-- Second Logo (Elite Logo) -->
+      <div class="flex-shrink-0">
+        <img
+          routerLink="/"
+          src="assets/imgs/لوجو النخبة.png"
+          alt="لوجو النخبة"
+          class="h-10 md:h-12 w-auto cursor-pointer transition-transform hover:scale-105"
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div
+      class="justify-center hidden w-full mx-auto lg:flex"
+      id="navbar-sticky"
+    >
+      <ul
+        class="flex items-center gap-0.5 text-[13px] font-medium"
+        [class]="isLogoWhite() ? 'text-white' : 'text-gray-700'"
+      >
+        <li>
+          <a
+            routerLink="/"
+            [routerLinkActive]="
+              isLogoWhite()
+                ? 'bg-secondary text-white shadow-md'
+                : 'bg-primary text-white shadow-md'
+            "
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="block px-3 py-2 font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white hover:shadow-sm"
+          >
+            <span>{{ "navbar.home" | translate }}</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/profile/plan"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            class="block px-3 py-2 font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white hover:shadow-sm"
+          >
+            <span>{{ "navbar.myPlan" | translate }}</span>
+          </a>
+        </li>
+
+        @for (category of allCategories(); track category.id) {
+          @if (category.children?.length !== 0) {
+            <app-navbar-item [category]="category" />
+          }
+        }
+
+        <li
+          (mouseenter)="menu_button()"
+          (mouseleave)="menu_button_close()"
+          class="relative"
+        >
+          <a
+            routerLink="/best-tutorials"
+            routerLinkActive="activeLink"
+            class="flex items-center gap-1 px-3 py-2 font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white hover:shadow-sm"
+          >
+            <span>{{ "navbar.featuredCourses" | translate }}</span>
+            <svg
+              [ngClass]="menu_show() ? 'rotate-180' : ''"
+              class="w-4 h-4 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 9l6 6 6-6" />
+            </svg>
+          </a>
+
+          <ul
+            [ngClass]="
+              menu_show()
+                ? 'opacity-100 translate-y-0 visible'
+                : 'opacity-0 -translate-y-2 invisible'
+            "
+            class="absolute end-0 z-[3500] flex flex-col w-72 mt-2 overflow-hidden text-white transition-all duration-300 bg-primary rounded-xl shadow-2xl"
+          >
+            @for (item of tutorailsFav; track item.id) {
+              <li>
+                <a
+                  [routerLink]="['/tutorial/', item.id]"
+                  class="block px-5 py-3 font-semibold transition-all duration-200 hover:bg-secondary hover:pe-6"
+                >
+                  <span>{{ item.name }}</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </li>
+
+        <li>
+          <a
+            routerLink="/about-us"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="block px-3 py-2 font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white hover:shadow-sm"
+          >
+            <span>{{ "navbar.aboutUs" | translate }}</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            routerLink="/article"
+            routerLinkActive="activeLink"
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="block px-3 py-2 font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white hover:shadow-sm"
+          >
+            <span>{{ "navbar.articles" | translate }}</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Actions Section (Theme & Lang) -->
+    <div class="hidden lg:flex items-center gap-2 mx-4">
+      <!-- Theme Toggle -->
+      <!-- <button
+        (click)="toggleTheme()"
+        class="p-2 rounded-full transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-800"
+        [class]="
+          isLogoWhite() ? 'text-white hover:bg-white/10' : 'text-gray-600'
+        "
+        [title]="isDarkMode() ? 'Light Mode' : 'Dark Mode'"
+      >
+        @if (isDarkMode()) {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+          />
+        </svg>
+        } @else {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-5 h-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+          />
+        </svg>
+        }
+      </button> -->
+
+      <!-- Language Toggle -->
+      <button
+        (click)="changeLang(currentLang() === 'ar' ? 'en' : 'ar')"
+        class="flex items-center gap-1 px-2 py-1 rounded-lg transition-all duration-200 hover:bg-gray-100"
+        [class]="
+          isLogoWhite() ? 'text-white hover:bg-white/10' : 'text-gray-600'
+        "
+      >
+        @if (currentLang() === "ar") {
+          <span class="font-bold text-xs uppercase">EN</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5 text-gray-800"
+            viewBox="0 0 50 30"
+            width="50"
+            height="30"
+          >
+            <clipPath id="t">
+              <path d="M25,15h25v15zv15h-25zh-25v-15zv-15h25z" />
+            </clipPath>
+            <path d="M0,0v30h50v-30z" fill="#012169" />
+            <path d="M0,0 50,30M50,0 0,30" stroke="#fff" stroke-width="6" />
+            <path
+              d="M0,0 50,30M50,0 0,30"
+              clip-path="url(#t)"
+              stroke="#C8102E"
+              stroke-width="4"
+            />
+            <path
+              d="M-1 11h22v-12h8v12h22v8h-22v12h-8v-12h-22z"
+              fill="#C8102E"
+              stroke="#fff"
+              stroke-width="2"
+            />
+          </svg>
+        } @else {
+          <span class="font-bold text-xs uppercase">AR</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-5 h-5"
+            viewBox="0 0 640 480"
+          >
+            <path fill="#007a3d" d="M0 0h640v480H0z" />
+            <path fill="#fff" d="M220 280h200v20H220z" />
+            <path fill="#fff" d="M270 200h100v20H270z" />
+          </svg>
+        }
+      </button>
+    </div>
+
+    <!-- Auth Section Desktop -->
+    <div class="hidden lg:flex items-center gap-3 flex-shrink-0">
+      @if (!isAuth()) {
+        <a
+          routerLink="/login"
+          class="px-6 py-2 font-semibold text-white transition-all duration-200 rounded-lg bg-secondary hover:bg-primary hover:shadow-lg whitespace-nowrap"
+        >
+          <span>تسجيل الدخول</span>
+        </a>
+      } @else {
+        <div
+          (mouseenter)="menu_Profile()"
+          (mouseleave)="menu_Profile_close()"
+          class="relative flex items-center cursor-pointer group"
+        >
+          <!-- Profile Button -->
+          <div
+            class="flex items-center gap-3 px-3 py-2 rounded-full transition-all duration-300 group-hover:bg-white/10 border-2 border-transparent group-hover:border-secondary/30"
+          >
+            <!-- User Info -->
+            <div
+              class="flex items-center gap-2"
+              [class]="isLogoWhite() ? 'text-white' : 'text-gray-700'"
+            >
+              <div class="flex flex-col items-start">
+                <p
+                  class="text-sm font-bold leading-tight truncate max-w-[120px]"
+                >
+                  {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+                </p>
+              </div>
+
+              <svg
+                [ngClass]="menu_show_Profile() ? 'rotate-180' : ''"
+                class="w-4 h-4 transition-transform duration-300"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </div>
+          </div>
+
+          <!-- Dropdown Menu -->
+          <ul
+            [ngClass]="
+              menu_show_Profile()
+                ? 'opacity-100 translate-y-0 visible'
+                : 'opacity-0 -translate-y-2 invisible pointer-events-none'
+            "
+            class="absolute start-0 z-[100] flex flex-col w-64 overflow-hidden bg-white rounded-2xl shadow-2xl top-full border border-gray-100 transition-all duration-300"
+          >
+            <div class="py-2">
+              @if (roleCode() === "student") {
+                <li>
+                  <a
+                    routerLink="/profile/plan"
+                    routerLinkActive="bg-primary/5 text-primary"
+                    class="flex items-center gap-3 px-5 py-3 font-semibold text-gray-700 transition-all duration-200 hover:bg-primary/5 hover:text-primary group"
+                  >
+                    <svg
+                      class="w-5 h-5 text-gray-400 group-hover:text-primary transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      />
+                    </svg>
+                    <span>{{ "navbar.profile" | translate }}</span>
+                  </a>
+                </li>
+              }
+
+              <li class="border-t border-gray-100 mt-2 pt-2">
+                <button
+                  (click)="authService.logout()"
+                  class="w-full flex items-center gap-3 px-5 py-3 font-semibold text-red-600 transition-all duration-200 hover:bg-red-50 group"
+                >
+                  <svg
+                    class="w-5 h-5 text-red-400 group-hover:text-red-600 transition-colors"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                    />
+                  </svg>
+                  <span>{{ "navbar.logout" | translate }}</span>
+                </button>
+              </li>
+            </div>
+          </ul>
+        </div>
+      }
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      (click)="mobile_menu_button()"
+      type="button"
+      [ngClass]="
+        mobile_menu_show() ? 'bg-primary text-white' : 'hover:bg-gray-100'
+      "
+      class="inline-flex items-center justify-center p-2.5 text-sm transition-all duration-200 rounded-lg lg:hidden focus:outline-none"
+      aria-controls="navbar-sticky"
+      aria-expanded="false"
+    >
+      @if (mobile_menu_show()) {
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      } @else {
+        <svg
+          class="w-6 h-6"
+          aria-hidden="true"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+      }
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    [ngClass]="
+      mobile_menu_show() ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+    "
+    class="lg:hidden overflow-hidden transition-all duration-300 ease-in-out"
+  >
+    <ul class="flex flex-col p-4 space-y-2 bg-gray-50 border-t border-gray-200">
+      <!-- Mobile Actions (Theme & Lang) -->
+      <li
+        class="flex items-center justify-between px-4 py-2 bg-white rounded-lg shadow-sm"
+      >
+        <span class="text-sm font-semibold text-gray-600 dark:text-gray-300">{{
+          "navbar.settings" | translate
+        }}</span>
+        <div class="flex items-center gap-3">
+          <!-- <button
+            (click)="toggleTheme()"
+            class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            @if (isDarkMode()) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 text-yellow-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            } @else {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+              />
+            </svg>
+            }
+          </button> -->
+
+          <div class="w-px h-6 bg-gray-200"></div>
+
+          <button
+            (click)="changeLang(currentLang() === 'ar' ? 'en' : 'ar')"
+            class="flex items-center gap-2"
+          >
+            @if (currentLang() === "ar") {
+              <span class="font-bold text-xs uppercase text-gray-600">EN</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 rounded shadow-sm"
+                viewBox="0 0 50 30"
+              >
+                <path d="M0 0h50v30H0z" fill="#012169" />
+                <path d="M0 0l50 30M50 0 0 30" stroke="#fff" stroke-width="6" />
+                <path
+                  d="M0 0l50 30M50 0 0 30"
+                  stroke="#C8102E"
+                  stroke-width="4"
+                />
+                <path d="M25 0v30M0 15h50" stroke="#fff" stroke-width="10" />
+                <path d="M25 0v30M0 15h50" stroke="#C8102E" stroke-width="6" />
+              </svg>
+            } @else {
+              <span class="font-bold text-xs uppercase text-gray-600">AR</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-6 h-6 rounded shadow-sm"
+                viewBox="0 0 640 480"
+              >
+                <path fill="#007a3d" d="M0 0h640v480H0z" />
+                <path fill="#fff" d="M220 280h200v20H220z" />
+                <path fill="#fff" d="M270 200h100v20H270z" />
+              </svg>
+            }
+          </button>
+        </div>
+      </li>
+
+      <li (click)="mobile_menu_clase()">
+        <a
+          routerLink="/"
+          routerLinkActive="activeLink"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="block px-4 py-3 font-semibold transition-all duration-200 rounded-lg hover:bg-primary hover:text-white"
+        >
+          <span>{{ "navbar.home" | translate }}</span>
+        </a>
+      </li>
+
+      <li (click)="mobile_menu_clase()">
+        <a
+          routerLink="/profile/plan"
+          routerLinkActive="activeLink"
+          ariaCurrentWhenActive="page"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="block px-4 py-3 font-semibold transition-all duration-200 rounded-lg hover:bg-primary hover:text-white"
+        >
+          <span>{{ "navbar.myPlan" | translate }}</span>
+        </a>
+      </li>
+
+      <div (click)="mobile_menu_button()" class="space-y-2">
+        @for (category of allCategories(); track category.id) {
+          <app-navbar-item [category]="category" />
+        }
+      </div>
+
+      <li>
+        <a
+          (click)="mobile_menu_clase()"
+          routerLink="/best-tutorials"
+          RouterLinkActive="activeLink"
+          class="block px-4 py-3 font-semibold transition-all duration-200 rounded-lg hover:bg-primary hover:text-white"
+        >
+          <span>{{ "navbar.featuredCourses" | translate }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a
+          (click)="mobile_menu_clase()"
+          routerLink="/about-us"
+          RouterLinkActive="activeLink"
+          class="block px-4 py-3 font-semibold transition-all duration-200 rounded-lg hover:bg-primary hover:text-white"
+        >
+          <span>{{ "navbar.aboutUs" | translate }}</span>
+        </a>
+      </li>
+
+      <li>
+        <a
+          (click)="mobile_menu_clase()"
+          routerLink="/article"
+          RouterLinkActive="activeLink"
+          class="block px-4 py-3 font-semibold transition-all duration-200 rounded-lg hover:bg-primary hover:text-white"
+        >
+          <span>{{ "navbar.articles" | translate }}</span>
+        </a>
+      </li>
+
+      @if (!isAuth()) {
+        <li class="pt-2">
+          <a
+            routerLink="/login"
+            class="block px-4 py-3 font-semibold text-center text-white transition-all duration-200 rounded-lg bg-secondary hover:bg-primary"
+          >
+            {{ "navbar.login" | translate }}
+          </a>
+        </li>
+      } @else {
+        <li
+          (click)="menu_Profile()"
+          class="relative p-4 cursor-pointer bg-white rounded-lg shadow-sm"
+        >
+          <div class="flex items-center justify-between text-primary">
+            <div class="flex items-center gap-2">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <p class="text-sm font-semibold truncate">
+                {{ currentUser()?.firstName }} {{ currentUser()?.lastName }}
+              </p>
+            </div>
+            <svg
+              [ngClass]="menu_show_Profile() ? 'rotate-180' : ''"
+              class="w-5 h-5 transition-transform duration-200"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </div>
+
+          <ul
+            [ngClass]="
+              menu_show_Profile()
+                ? 'max-h-40 mt-3 opacity-100'
+                : 'max-h-0 opacity-0'
+            "
+            class="overflow-hidden transition-all duration-300 space-y-1"
+          >
+            <li
+              (click)="mobile_menu_clase()"
+              routerLink="/profile/plan"
+              routerLinkActive="activeLink"
+              class="block px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-primary hover:text-white"
+            >
+              <span>{{ "navbar.profile" | translate }}</span>
+            </li>
+            <li
+              (click)="authService.logout()"
+              class="block px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg cursor-pointer hover:bg-red-600 hover:text-white"
+            >
+              <span>{{ "navbar.logout" | translate }}</span>
+            </li>
+          </ul>
+        </li>
+      }
+    </ul>
+  </div>
+</nav>
+
+<!-- Scroll to Top Button -->
+<button
+  [hidden]="!showButton()"
+  class="fixed bottom-6 end-6 z-[500] group"
+  (click)="scrollToTop()"
+>
+  <div
+    class="p-3 transition-all duration-300 bg-white border-2 border-primary rounded-full shadow-lg hover:bg-primary hover:border-secondary hover:shadow-xl transform hover:scale-110"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="2"
+      stroke="currentColor"
+      class="w-5 h-5 text-primary group-hover:text-white transition-colors duration-300"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M4.5 15.75l7.5-7.5 7.5 7.5"
+      />
+    </svg>
+  </div>
+</button>

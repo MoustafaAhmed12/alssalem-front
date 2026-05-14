@@ -1,0 +1,161 @@
+<!-- Floating Action Button -->
+<button
+  (click)="toggleChat()"
+  class="fixed bottom-6 right-6 z-[1000] flex items-center justify-center w-14 h-14 bg-[#36b290] text-white rounded-full shadow-lg hover:bg-[#2d9478] hover:scale-110 transition-all duration-300 group"
+>
+  @if (!isOpen()) {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-8 h-8"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"
+      />
+    </svg>
+  } @else {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="w-8 h-8"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
+  }
+</button>
+
+<!-- Chat Window -->
+@if (isOpen()) {
+  <div
+    class="fixed bottom-24 right-4 md:right-6 w-[90vw] md:w-[400px] h-[500px] bg-white rounded-2xl shadow-2xl z-[999] flex flex-col overflow-hidden animate-fade-in-up border border-gray-100"
+  >
+    <!-- Header -->
+    <div
+      class="bg-gradient-to-r from-[#36b290] to-[#2d9478] p-4 flex items-center gap-3"
+    >
+      <div
+        class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+          />
+        </svg>
+      </div>
+      <div>
+        <h3 class="text-white font-bold text-lg">مساعد السالم الذكي</h3>
+        <p class="text-green-50 text-xs">متاح لمساعدتك 24/7</p>
+      </div>
+    </div>
+
+    <!-- Messages Area -->
+    <div
+      #messagesContainer
+      class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50 scroll-smooth"
+    >
+      @if (geminiService.messages().length === 0) {
+        <div class="text-center text-gray-500 mt-10">
+          <p class="mb-2">👋 أهلاً بك!</p>
+          <p class="text-sm">كيف يمكنني مساعدتك في دراستك اليوم؟</p>
+        </div>
+      }
+      @for (msg of geminiService.messages(); track $index) {
+        <div
+          [class]="
+            msg.role === 'user' ? 'flex justify-start' : 'flex justify-end'
+          "
+        >
+          <div
+            [class]="
+              msg.role === 'user'
+                ? 'bg-[#36b290] text-white rounded-tr-xl rounded-tl-xl rounded-bl-xl msg-user'
+                : 'bg-white text-gray-800 border border-gray-200 rounded-tr-xl rounded-tl-xl rounded-br-xl msg-bot'
+            "
+            class="p-3 max-w-[85%] shadow-sm text-sm"
+          >
+            <!-- Using innerHTML carefully here, ideally utilize a pipe for markdown -->
+            <div [innerHTML]="formatText(msg.text)"></div>
+            <p
+              class="text-[10px] mt-1 opacity-70"
+              [class.text-green-100]="msg.role === 'user'"
+            >
+              {{ msg.timestamp | date: "shortTime" }}
+            </p>
+          </div>
+        </div>
+      }
+      @if (geminiService.isLoading()) {
+        <div class="flex justify-end">
+          <div
+            class="bg-gray-200 p-3 rounded-xl rounded-br-none flex items-center gap-1"
+          >
+            <div class="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+            <div
+              class="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-100"
+            ></div>
+            <div
+              class="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-200"
+            ></div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Input Area -->
+    <div class="p-4 bg-white border-t border-gray-100">
+      <div
+        class="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2 border border-gray-200 focus-within:border-[#36b290] focus-within:ring-1 focus-within:ring-[#36b290] transition-colors"
+      >
+        <textarea
+          rows="1"
+          [(ngModel)]="userInput"
+          (keydown.enter)="handleEnter($event)"
+          placeholder="اكتب سؤالك هنا..."
+          class="flex-1 bg-transparent border-none outline-none text-sm text-gray-700 placeholder-gray-400 resize-none overflow-hidden max-h-32 py-2"
+          style="min-height: 20px"
+        ></textarea>
+        <button
+          (click)="sendMessage()"
+          [disabled]="!userInput().trim() || geminiService.isLoading()"
+          class="p-2 text-[#36b290] hover:bg-green-50 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="w-6 h-6 rotate-180"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+}

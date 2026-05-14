@@ -1,0 +1,44 @@
+<form>
+  <p
+    class="text-xl font-semibold text-blue-900 transition-all cursor-pointer hover:text-black"
+  >
+    أضف تعليق علي الدورة
+  </p>
+  <textarea
+    [(ngModel)]="comment"
+    name="comment"
+    class="w-full h-40 p-4 mt-5 text-lg border border-gray-300 rounded-lg outline-none resize-none placeholder:text-base focus:border-2 focus:border-primaryAdmin"
+    placeholder="أضف تعليقك هنا"
+  ></textarea>
+  <div class="flex items-center justify-between w-full mt-3">
+    <!-- <div class="flex items-center space-x-1">
+    @for (star of stars; track i; let i = $index) {
+      <svg
+        class="w-6 h-6 transition-colors cursor-pointer hover:text-yellow-400"
+        [ngClass]="{
+          'text-yellow-400': i < userRating,
+          'text-gray-300': i >= userRating
+        }"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="currentColor"
+        viewBox="0 0 24 24"
+        (click)="rate(i + 1)"
+      >
+        <path
+          d="M12 .587l3.668 7.431L24 9.753l-6 5.847 1.416 8.243L12 18.897l-7.416 4.946L6 15.6l-6-5.847 8.332-1.735L12 .587z"
+        />
+      </svg>
+      }
+    </div> -->
+    <button
+      (click)="onSubmit()"
+      class="flex items-center justify-center p-3 px-16 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-1 focus:ring-offset-2"
+    >
+      @if (isLoading()) {
+      <div
+        class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+      ></div>
+      } @else { حفظ}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,326 @@
+<div class="min-h-screen pt-6 pb-16">
+  <!-- عنوان الصفحة -->
+  <h2
+    class="flex flex-col items-center justify-center gap-4 mb-6 text-xl font-bold text-center sm:flex-row md:text-3xl text-primaryAdmin"
+  >
+    <span>عمليات الدفع</span>
+    <div
+      class="px-4 py-3 text-lg font-bold text-green-700 bg-green-100 rounded-lg"
+    >
+      إجمالي المال: {{ totalMoney | currency : " " }}
+      <span class="text-secondaryAdmin">ر.س</span>
+    </div>
+  </h2>
+
+  <div
+    class="flex flex-col gap-6 mb-6 bg-white rounded-lg shadow-lg md:p-6 md:flex-row md:items-center md:justify-between"
+  >
+    <div class="relative w-full md:top-3">
+      <input
+        type="text"
+        [(ngModel)]="keyword"
+        (input)="search()"
+        placeholder="ابحث عن اسم ..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div>
+    <div class="flex flex-col w-full gap-y-1">
+      <label for="startDate">بداية الفترة</label>
+      <input
+        type="date"
+        #startDate
+        id="startDate"
+        (change)="selectStart(startDate.value)"
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+    <div class="flex flex-col w-full gap-y-1">
+      <label for="endDate">نهاية الفترة</label>
+      <input
+        type="date"
+        #endDate
+        id="endDate"
+        (change)="selectEnd(endDate.value)"
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+  </div>
+  <div
+    class="flex flex-col gap-6 mb-6 bg-white rounded-lg shadow-lg md:p-6 md:flex-row md:items-center md:justify-between"
+  >
+    <ng-select
+      [items]="allSchools"
+      [multiple]="true"
+      [closeOnSelect]="true"
+      bindLabel="name"
+      bindValue="id"
+      (change)="fliterSchools($event)"
+      placeholder="حدد المدارس"
+      class="p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg w-full md:w-[28rem] disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+    >
+    </ng-select>
+    <ng-select
+      [closeOnSelect]="true"
+      bindLabel="name"
+      bindValue="name"
+      [searchable]="true"
+      placeholder="حدد العملية"
+      (change)="fliterState($event)"
+      class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg md:w-72 disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+    >
+      <ng-option [value]="0">العمليات قيد التنفيذ</ng-option>
+      <ng-option [value]="1">العمليات الناجحة</ng-option>
+      <ng-option [value]="2">العمليات الفاشلة</ng-option>
+    </ng-select>
+    <button
+      type="button"
+      (click)="exportTable()"
+      class="flex items-center justify-center gap-2 px-5 py-3 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700"
+    >
+      <svg
+        class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        class="size-6"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+      تصدير البيانات
+    </button>
+  </div>
+  <div class="flex items-center justify-between w-full">
+    <input type="checkbox" (change)="toggleUnique($event)" />
+    <h3>{{ displayedData.length }}</h3>
+  </div>
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-white bg-primaryAdmin">
+          <th class="p-3.5 border">اسم الطالب</th>
+          <th class="p-3.5 border">اسم المدرسة</th>
+          <th class="p-3.5 border">تاريخ الشراء</th>
+          <th class="p-3.5 border">رقم الجوال</th>
+          <th class="p-3.5 border">حالة العملية</th>
+          <th class="p-3.5 border">مبلغ الدفع</th>
+          <th class="p-3.5 border">التفاصيل</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading()) { @for (payment of displayedData; track payment.id;)
+        {
+        <tr
+          class="font-medium border-b-4 border-gray-300"
+          [class]="$even ? 'bg-gray-100' : 'bg-white'"
+        >
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ payment.studentName }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ payment.schoolName || "-" }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ payment.paymentDate | date : "dd-MM-yyyy - h:mm a" }}
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ payment.phone || "-" }}
+          </td>
+          <td
+            class="p-3.5 text-center border whitespace-nowrap"
+            [ngClass]="
+              payment.paymentStatus === 0
+                ? 'text-yellow-600'
+                : payment.paymentStatus === 1
+                ? 'text-primaryAdmin'
+                : payment.paymentStatus === 2
+                ? 'text-red-700'
+                : 'text-blue-600'
+            "
+          >
+            <span>
+              {{
+                payment.paymentStatus === 0
+                  ? "قيد التنفيذ"
+                  : payment.paymentStatus === 1
+                  ? "العملية نجحت"
+                  : payment.paymentStatus === 2
+                  ? "العملية فشلت"
+                  : "عملية جديدة"
+              }}
+            </span>
+            @if (payment.paymentStatus === 0) {
+            <button
+              (click)="checkPaymentStatus(payment.id)"
+              class="border bg-gray-300 text-sm text-black rounded-md px-4 py-1.5"
+            >
+              فحص العملية
+            </button>
+            }
+          </td>
+          <td class="p-3.5 text-center border whitespace-nowrap">
+            {{ payment.totalAmount }}
+          </td>
+          <td
+            (click)="showModalDetails(payment.id)"
+            class="p-3.5 cursor-pointer text-center border text-primaryAdmin font-semibold hover:text-secondaryAdmin transition-colors whitespace-nowrap"
+          >
+            التفاصيل
+          </td>
+        </tr>
+
+        } }@else {
+        <tr>
+          <td colspan="7" class="py-8 cell">
+            <div
+              class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+            ></div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="flex flex-wrap items-center justify-center mt-8 gap-y-2 gap-x-6">
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasPreviousPage"
+      [disabled]="!allData.hasPreviousPage"
+      (click)="changePage(pageNumber - 1)"
+    >
+      ❮ السابق
+    </button>
+    @for (page of getPageRange(); track page) {
+
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-blue-500]="page === pageNumber"
+      [class.text-white]="page === pageNumber"
+      (click)="changePage(page)"
+    >
+      {{ page }}
+    </button>
+    }
+    <button
+      class="px-4 py-2 transition-all border rounded-md"
+      [class.bg-gray-300]="!allData.hasNextPage"
+      [disabled]="!allData.hasNextPage"
+      (click)="changePage(pageNumber + 1)"
+    >
+      التالي ❯
+    </button>
+  </div>
+</div>
+
+<div
+  dir="rtl"
+  [ngClass]="{ 'scale-100': modalDetails }"
+  class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+>
+  <div
+    class="flex items-center justify-center mx-auto md:w-[38rem] w-80 sm:px-6"
+  >
+    <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+      <div
+        class="flex justify-between px-2 pt-8 text-center md:text-right lg:px-8"
+      >
+        <h2 class="text-xl font-bold lg:text-2xl text-primaryAdmin">
+          تفاصيل العملية
+        </h2>
+        <button (click)="hideModalDetails()" class="">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div class="w-10/12 pt-4 mx-auto">
+        <div class="py-6 -my-3 divide-y-2 divide-gray-200">
+          @if (isLoading1 === false) { @for (item of paymentDetails?.details;
+          track $index) {
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-normal text-gray-500">اسم الدورة</dt>
+            <dd class="text-base font-medium text-gray-900">
+              {{ item.tutorialName }}
+            </dd>
+          </dl>
+          @if (paymentDetails?.details.length === 1) {
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-normal text-gray-500">سعر الدورة</dt>
+            <dd class="text-base font-medium text-primaryAdmin">
+              {{ item.amount | currency : " " }} ر.س
+            </dd>
+          </dl>
+          } } @if (paymentDetails?.details.length > 1) {
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-normal text-gray-500">سعر البكدج</dt>
+            <dd class="text-base font-medium text-primaryAdmin">
+              {{ paymentDetails.totalAmount | currency : " " }} ر.س
+            </dd>
+          </dl>
+          }
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-normal text-gray-500">مبلغ الخصم</dt>
+            <dd class="text-base font-medium text-gray-900">
+              {{ paymentDetails?.discount | currency : " " }} ر.س
+            </dd>
+          </dl>
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-bold text-gray-900">الإجمالي</dt>
+            <dd class="text-base font-bold text-gray-900">
+              {{ paymentDetails?.totalAmount | currency : " " }}
+              <span class="font-bold text-secondaryAdmin">ر.س</span>
+            </dd>
+          </dl>
+          <dl class="flex items-center justify-between gap-4 py-3">
+            <dt class="text-base font-bold text-gray-900">
+              كود الخصم المستخدم
+            </dt>
+            <dd class="text-base font-bold text-gray-900">
+              {{ paymentDetails?.promoCodeName || "-" }}
+            </dd>
+          </dl>
+          }@else {
+          <div class="flex items-center justify-center space-x-2 bg-white">
+            <span class="sr-only">Loading...</span>
+            <div
+              class="h-6 w-6 bg-black rounded-full animate-bounce [animation-delay:-0.3s]"
+            ></div>
+            <div
+              class="h-6 w-6 bg-black rounded-full animate-bounce [animation-delay:-0.15s]"
+            ></div>
+            <div class="w-6 h-6 bg-black rounded-full animate-bounce"></div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

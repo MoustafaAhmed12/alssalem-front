@@ -1,0 +1,514 @@
+<app-super-navbar />
+
+<div class="relative flex bg-gray-100">
+  <!-- Mobile Menu Button -->
+  @if (!isMobileMenuOpen()) {
+  <button
+    class="fixed z-50 p-3 mt-16 text-white rounded-lg shadow-lg top-4 right-4 bg-secondaryAdmin"
+    (click)="toggleMobileMenu()"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M4 6h16M4 12h16M4 18h16"
+      ></path>
+    </svg>
+  </button>
+  }
+  <!-- Mobile Overlay -->
+  <div
+    class="fixed inset-0 z-30 transition-opacity duration-300 bg-black bg-opacity-50 lg:hidden"
+    [class.hidden]="!isMobileMenuOpen()"
+    (click)="closeMobileMenu()"
+  ></div>
+
+  <!-- Sidebar -->
+  <div
+    class="fixed z-40 max-w-sm pt-20 overflow-y-auto transition-all duration-300 bg-white border-l border-gray-200 shadow-lg lg:relative lg:z-auto w-80 lg:max-w-none lg:block"
+    [class.hidden]="!isMobileMenuOpen()"
+    [class.block]="isMobileMenuOpen()"
+  >
+    <button
+      class="absolute z-10 p-2 text-gray-500 top-20 left-4 lg:hidden"
+      (click)="closeMobileMenu()"
+    >
+      <svg
+        class="w-6 h-6"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"
+        ></path>
+      </svg>
+    </button>
+
+    <!-- Header -->
+    <div
+      class="p-4 text-white border-b border-gray-200 lg:p-6 bg-secondaryAdmin"
+    >
+      <h2 class="text-lg font-bold text-white lg:text-xl">الخطط الدراسية</h2>
+    </div>
+
+    @if (isLoading()) {
+    <div class="p-4 text-center">
+      <div
+        class="w-8 h-8 mx-auto mb-2 border-4 border-blue-500 rounded-full border-t-transparent animate-spin"
+      ></div>
+      <p class="text-sm text-gray-600">جارٍ التحميل...</p>
+    </div>
+    } @else {
+    <!-- Plans List -->
+    <div class="p-3 lg:p-4">
+      @for (plan of plans; track plan.id) {
+      <div
+        class="p-3 mb-3 text-sm transition-all duration-300 border border-gray-200 rounded-lg cursor-pointer lg:p-4 hover:bg-blue-50 hover:shadow-md lg:text-base"
+        [class.bg-blue-100]="planName === plan.name"
+        [class.border-blue-300]="planName === plan.name"
+        (click)="selectPlan(plan); closeMobileMenu()"
+      >
+        <h3 class="font-semibold text-right text-gray-800 truncate">
+          {{ plan.name }}
+        </h3>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- Main Content -->
+  @if (!isLoadingP()) {
+  <div class="flex-1 min-h-screen mt-16 overflow-y-auto lg:pt-0">
+    <div class="p-4 lg:p-6">
+      @if (selectedPlan().length) {
+      <!-- Action Buttons -->
+      <div
+        class="flex flex-col items-center justify-between gap-4 mt-16 mb-6 lg:mt-6 md:flex-row"
+      >
+        <div class="flex flex-col items-center gap-4 lg:flex-row">
+          @for (item of categories(); track $index) {
+          <div
+            class="flex items-center gap-2 px-2 py-1 font-semibold text-white rounded bg-logoColor1"
+          >
+            <span>درجة تحديد المستوي {{ item.name }}: </span>
+            <span>{{ item.percent }}%</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Plan Header -->
+      <div class="mb-6 text-center lg:mb-8">
+        <h1 class="px-4 mb-2 text-2xl font-bold text-gray-800 lg:text-3xl">
+          {{ planName }}
+        </h1>
+        <div
+          class="w-16 h-1 mx-auto rounded-full lg:w-24 bg-gradient-to-r from-blue-500 to-purple-500"
+        ></div>
+      </div>
+
+      <!-- Current Day Section -->
+      @if (getCurrentDay()) {
+      <div
+        class="p-4 mb-4 text-white rounded-lg lg:p-6 lg:mb-6 bg-gradient-to-r from-blue-500 to-purple-600 animate-fade-in"
+      >
+        <div class="mb-4 text-center">
+          <h2 class="mb-2 text-lg font-bold lg:text-xl">📅 اليوم الحالي</h2>
+          <h3 class="text-base font-semibold lg:text-lg">
+            {{ getCurrentDay()!.date | date : "dd-MM-yyyy" }}
+          </h3>
+        </div>
+
+        @if (!isTodayHoliday()) {
+        <div class="p-3 rounded-lg lg:p-4 bg-white/10 backdrop-blur-sm">
+          <h4 class="mb-3 text-sm font-semibold text-center lg:text-base">
+            المهام المطلوبة اليوم
+          </h4>
+          <div class="space-y-2">
+            @for (task of getSortedTasks(getCurrentDayTasks()); track task.id) {
+            <div
+              class="flex flex-col items-start justify-between gap-2 p-3 rounded-lg sm:flex-row sm:items-center bg-white/20"
+            >
+              <div class="flex items-center flex-1 gap-x-3">
+                <div
+                  class="flex items-center justify-center flex-shrink-0 w-5 h-5 rounded-full"
+                  [class]="task.isSuccess ? 'bg-green-400' : 'bg-white/30'"
+                >
+                  @if (task.isSuccess) {
+                  <svg
+                    class="w-3 h-3 text-white"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  }
+                </div>
+                <span
+                  class="text-sm break-words lg:text-base"
+                  [class]="task.isSuccess ? 'line-through' : ''"
+                  >({{ getTaskTutorialId(task.tutorialId) }})
+                  {{ task.examName }}</span
+                >
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        } @else {
+        <div class="p-4 text-center rounded-lg bg-white/10 backdrop-blur-sm">
+          <svg
+            class="w-6 h-6 mx-auto mb-2 text-blue-200 lg:w-8 lg:h-8"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+            />
+          </svg>
+          <p class="text-sm font-medium lg:text-base">🎉 يوم إجازة</p>
+          <p class="text-xs text-blue-200 lg:text-sm">استمتع بوقتك!</p>
+        </div>
+        }
+      </div>
+      }
+
+      <!-- Overdue Days Section -->
+      @if (getOverdueDaysDetails().length > 0) {
+      <div
+        class="mb-4 border border-red-200 rounded-lg lg:mb-6 bg-red-50 animate-pulse"
+      >
+        <div class="p-3 bg-red-100 border-b border-red-200 lg:p-4">
+          <div class="flex items-center justify-center">
+            <svg
+              class="w-5 h-5 ml-2 text-red-500 lg:w-6 lg:h-6"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            <h3 class="text-base font-bold text-red-800 lg:text-lg">
+              ⚠️ أيام متأخرة ({{ getOverdueDaysDetails().length }})
+            </h3>
+          </div>
+        </div>
+
+        <div class="p-3 overflow-y-auto lg:p-4 max-h-60 lg:max-h-80">
+          <div class="space-y-3">
+            @for (day of getOverdueDaysDetails(); track day.date) {
+            <div
+              class="p-3 transition-all duration-200 bg-white border border-red-200 rounded-lg lg:p-4 hover:shadow-md"
+            >
+              <div
+                class="flex flex-col items-start justify-between gap-2 mb-3 sm:flex-row sm:items-center"
+              >
+                <div class="text-right">
+                  <p class="text-sm text-red-600">
+                    {{ day.date | date : "dd-MM-yyyy" }}
+                  </p>
+                </div>
+                <span
+                  class="px-3 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-full lg:text-sm"
+                >
+                  {{ getIncompleteTasks(day).length }} مهمة متبقية
+                </span>
+              </div>
+
+              <div class="space-y-2">
+                @for (task of getIncompleteTasks(day); track task.id) {
+                <div
+                  class="flex flex-col items-start justify-between gap-2 p-3 border border-red-100 rounded-lg sm:flex-row sm:items-center bg-red-50"
+                >
+                  <div class="flex items-center flex-1 gap-x-3">
+                    <div
+                      class="flex items-center justify-center flex-shrink-0 w-5 h-5 bg-red-200 rounded-full"
+                    ></div>
+                    <span
+                      class="text-sm font-medium text-red-700 break-words lg:text-base"
+                      >({{ getTaskTutorialId(task.tutorialId) }})
+                      {{ task.examName }}</span
+                    >
+                  </div>
+                </div>
+                }
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-2 gap-3 mb-6 lg:grid-cols-4 lg:gap-4 lg:mb-8">
+        <div class="p-3 bg-green-100 border border-green-200 rounded-lg lg:p-4">
+          <div class="text-center">
+            <div class="text-xl font-bold text-green-600 lg:text-2xl">
+              {{ getCompletedDays() }}
+            </div>
+            <div class="text-xs text-green-700 lg:text-sm">أيام مكتملة</div>
+          </div>
+        </div>
+        <div class="p-3 bg-blue-100 border border-blue-200 rounded-lg lg:p-4">
+          <div class="text-center">
+            <div class="text-xl font-bold text-blue-600 lg:text-2xl">
+              {{ getHolidayDays() }}
+            </div>
+            <div class="text-xs text-blue-700 lg:text-sm">أيام إجازة</div>
+          </div>
+        </div>
+        <div class="p-3 bg-red-100 border border-red-200 rounded-lg lg:p-4">
+          <div class="text-center">
+            <div class="text-xl font-bold text-red-600 lg:text-2xl">
+              {{ getOverdueDays() }}
+            </div>
+            <div class="text-xs text-red-700 lg:text-sm">أيام متأخرة</div>
+          </div>
+        </div>
+        <div class="p-3 bg-gray-100 border border-gray-200 rounded-lg lg:p-4">
+          <div class="text-center">
+            <div class="text-xl font-bold text-gray-600 lg:text-2xl">
+              {{ selectedPlan().length }}
+            </div>
+            <div class="text-xs text-gray-700 lg:text-sm">إجمالي الأيام</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overdue Days Alert -->
+      @if (getOverdueDays() > 0) {
+      <div
+        class="p-3 mb-4 border border-orange-200 rounded-lg lg:p-4 lg:mb-6 bg-orange-50"
+      >
+        <div class="flex items-center justify-center">
+          <div class="flex-shrink-0">
+            <svg
+              class="w-4 h-4 text-orange-400 lg:w-5 lg:h-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                clip-rule="evenodd"
+              />
+            </svg>
+          </div>
+          <div class="mr-3 text-center">
+            <p class="text-xs font-medium text-orange-800 lg:text-sm">
+              تحقق من الأيام المتأخرة أعلاه لإكمال المهام
+            </p>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Days Grid -->
+      <div class="space-y-4">
+        @for (day of getSortedDaysWithHolidays(); track day.date) {
+        <div
+          class="transition-all duration-300 border rounded-lg hover:shadow-lg"
+          [class]="getDayCardClass(day)"
+        >
+          <!-- Day Header -->
+          <div
+            class="p-3 border-b rounded-t-md lg:p-4"
+            [class]="getDayHeaderClass(day)"
+          >
+            <div
+              class="flex flex-col items-center justify-center gap-2 sm:justify-between sm:flex-row"
+            >
+              <div class="order-2 font-semibold sm:order-1">
+                <p class="self-center text-lg opacity-80">
+                  {{ day.date | date : "dd-MM-yyyy" }}
+                </p>
+              </div>
+              <div class="flex items-center order-1 gap-x-2 sm:order-2">
+                @if (isDayCompleted(day)) {
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full lg:px-3 lg:text-sm"
+                >
+                  <svg
+                    class="w-3 h-3 ml-1 lg:w-4 lg:h-4"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  مكتمل
+                </span>
+                } @else if (day.isHoliday || day.tasks.length === 0) {
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-blue-800 bg-blue-100 rounded-full lg:px-3 lg:text-sm"
+                >
+                  إجازة
+                </span>
+                } @else if (isDayOverdue(day)) {
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-red-800 bg-red-100 rounded-full lg:px-3 lg:text-sm animate-pulse"
+                >
+                  متأخر
+                </span>
+                } @else {
+                <span
+                  class="inline-flex items-center px-2 py-1 text-xs font-medium text-yellow-800 bg-yellow-100 rounded-full lg:px-3 lg:text-sm"
+                >
+                  في التقدم
+                </span>
+                }
+              </div>
+            </div>
+          </div>
+
+          <!-- Tasks -->
+          @if (day.tasks.length > 0) {
+          <div class="p-3 lg:p-4">
+            <div class="space-y-3">
+              @for (task of getSortedTasks(day.tasks); track task.id) {
+              <div
+                class="flex flex-col items-start justify-between gap-2 p-3 transition-all duration-200 rounded-lg sm:flex-row sm:items-center"
+                [class]="getTaskClass(task)"
+              >
+                <div class="flex items-center flex-1 gap-x-3">
+                  <div
+                    class="flex items-center justify-center flex-shrink-0 w-5 h-5 transition-all duration-200 rounded-full lg:w-6 lg:h-6"
+                    [class]="task.isSuccess ? 'bg-green-500' : 'bg-gray-300'"
+                  >
+                    @if (task.isSuccess) {
+                    <svg
+                      class="w-3 h-3 text-white lg:w-4 lg:h-4"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    }
+                  </div>
+
+                  <div class="flex-1 text-right">
+                    <p
+                      class="text-sm font-medium break-words transition-all duration-200 lg:text-base"
+                      [class]="
+                        task.isSuccess
+                          ? 'text-green-700 line-through'
+                          : 'text-gray-800'
+                      "
+                    >
+                      <span class="font-semibold text-secondaryAdmin"
+                        >({{ getTaskTutorialId(task.tutorialId) }}) -
+                      </span>
+                      {{ task.examName }}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  class="flex-shrink-0 w-full px-3 py-2 text-sm font-medium transition-all duration-200 rounded-lg lg:px-4 hover:scale-105 sm:w-auto"
+                  [class]="
+                    task.isSuccess
+                      ? 'bg-green-100 text-green-700 cursor-default'
+                      : 'bg-blue-500 text-white hover:bg-blue-600'
+                  "
+                  [disabled]="task.isSuccess"
+                  (click)="toggleTask(task)"
+                >
+                  {{ task.isSuccess ? "مكتمل" : "غير مكتمل" }}
+                </button>
+              </div>
+              }
+            </div>
+          </div>
+          } @else {
+          <div class="p-4 text-center text-gray-500">
+            <svg
+              class="w-8 h-8 mx-auto mb-2 text-blue-400 lg:w-12 lg:h-12"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            <p class="text-sm font-medium text-blue-600 lg:text-base">
+              يوم إجازة
+            </p>
+            <p class="text-xs lg:text-sm">استمتع بوقتك!</p>
+          </div>
+          }
+        </div>
+        }
+      </div>
+      } @else {
+      <!-- Empty State -->
+      <div class="flex items-center justify-center min-h-96">
+        <div class="px-4 text-center">
+          <svg
+            class="w-16 h-16 mx-auto mb-4 text-gray-400 lg:w-24 lg:h-24"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+            />
+          </svg>
+          <h3 class="mb-2 text-lg font-semibold text-gray-700 lg:text-xl">
+            اختر خطة دراسية
+          </h3>
+          <p class="text-sm text-gray-500 lg:text-base">
+            قم بتحديد خطة من القائمة الجانبية لعرض التفاصيل
+          </p>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  } @else {
+  <!-- Loading State -->
+  <div
+    class="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-60"
+  >
+    <div class="flex flex-col items-center justify-center gap-y-4">
+      <div
+        class="w-12 h-12 border-4 border-white rounded-full lg:w-16 lg:h-16 border-t-transparent animate-spin"
+      ></div>
+      <p class="text-base font-semibold text-white lg:text-lg">
+        جارٍ التحميل...
+      </p>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,51 @@
+<form
+  class="flex flex-col items-center justify-center gap-x-4 md:gap-y-4 md:flex-row"
+  [formGroup]="copyForm"
+  (ngSubmit)="onSubmit()"
+>
+  <input
+    type="text"
+    id="examName"
+    name="examName"
+    formControlName="examName"
+    placeholder="أدخل اسم الامتحان"
+    autocomplete="off"
+    class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+  />
+  <ng-select
+    [items]="allTeacherExamToChoose"
+    [closeOnSelect]="true"
+    bindLabel="name"
+    bindValue="id"
+    [hideSelected]="true"
+    [searchable]="true"
+    placeholder=" أختر اختبار"
+    (change)="getExamId($event)"
+    class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+  >
+  </ng-select>
+  <ng-select
+    [items]="examsTutorials"
+    [closeOnSelect]="true"
+    bindLabel="name"
+    bindValue="id"
+    [hideSelected]="true"
+    [searchable]="true"
+    placeholder=" أختر الدورة"
+    (change)="getTutorialId($event)"
+    class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+  >
+  </ng-select>
+  <button
+    type="submit"
+    class="flex items-center justify-center px-12 py-2.5 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-2 focus:ring-offset-2"
+  >
+    @if (isLoading) {
+      <div
+        class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+      ></div>
+    } @else {
+      حفظ
+    }
+  </button>
+</form>

@@ -1,0 +1,342 @@
+<div
+  class="flex items-center justify-between w-full px-2 py-2 mx-auto mt-2 border rounded-lg lg:px-8 bg-secondaryAdmin lg:w-11/12"
+>
+  <p class="text-base">
+    السؤال
+    <span class="font-bold text-logoColor1">{{ currentPage + 1 }}</span>
+    من
+    {{ reviewExamInfo.questions.length }}
+  </p>
+</div>
+<div class="px-2 py-4 bg-white rounded-lg lg:px-8">
+  @for (question of reviewExamInfo.questions; track question; let i = $index) {
+    @if (i === currentPage) {
+      <div class="flex justify-end w-full">
+        <button
+          (click)="addtofavouriteQuestions(question)"
+          type="button"
+          class="px-6 py-2 text-sm font-semibold text-white rounded-md md:text-base gap-x-3 w-fit bg-logoColor1"
+          [class.bg-secondaryAdmin]="question.isFavourite"
+        >
+          @if (!isLoadingF()) {
+            <span>
+              {{
+                question.isFavourite ? "مُميز ⭐" : "إضافة إلي المفضلة"
+              }}</span
+            >
+          } @else {
+            <div class="flex items-center">
+              <div
+                class="w-6 h-6 border-4 border-dashed rounded-full border-primaryAdmin animate-spin"
+              ></div>
+            </div>
+          }
+        </button>
+      </div>
+      <div class="flex flex-col items-center justify-center w-full mt-2">
+        @if (question.image2Url !== null) {
+          <div class="w-full px-1 border-2 rounded-md lg:px-8 md:w-9/12">
+            <img
+              [src]="question.image2Url"
+              class="object-contain object-center w-full h-full"
+              alt="Question Image"
+              loading="lazy"
+            />
+          </div>
+        }
+        <div
+          class="w-full h-auto px-1 mt-2 border-2 rounded-md lg:px-8 md:w-9/12"
+        >
+          <img
+            [src]="question.image1Url"
+            class="object-contain object-center w-full h-full py-2"
+            alt="Question Image"
+            loading="lazy"
+          />
+        </div>
+
+        <div
+          class="flex items-center justify-between w-full pl-4 font-bold lg:px-8 mt-14 md:w-2/3 gap-x-6"
+        >
+          @if (reviewExamInfo.choicesCount === 4) {
+            @if (reviewExamInfo.isEnglish) {
+              @for (n of ["A", "B", "C", "D"]; track j; let j = $index) {
+                <label class="flex gap-2 text-xl cursor-pointer">
+                  {{ n }}
+                  @if (
+                    question.choice === question.correctChoice &&
+                    question.correctChoice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (
+                    question.choice !== question.correctChoice &&
+                    question.choice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (question.correctChoice === j + 1) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else {
+                    <div
+                      class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                    ></div>
+                  }
+                </label>
+              }
+            } @else {
+              @for (n of ["أ", "ب", "ج", "د"]; track j; let j = $index) {
+                <label class="flex gap-2 text-xl cursor-pointer">
+                  {{ n }}
+                  @if (
+                    question.choice === question.correctChoice &&
+                    question.correctChoice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (
+                    question.choice !== question.correctChoice &&
+                    question.choice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (question.correctChoice === j + 1) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else {
+                    <div
+                      class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                    ></div>
+                  }
+                </label>
+              }
+            }
+          } @else {
+            @if (reviewExamInfo.isEnglish) {
+              @for (n of ["A", "B", "C", "D", "E"]; track j; let j = $index) {
+                <label class="flex gap-2 text-xl cursor-pointer">
+                  {{ n }}
+                  @if (
+                    question.choice === question.correctChoice &&
+                    question.correctChoice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (
+                    question.choice !== question.correctChoice &&
+                    question.choice === j + 1
+                  ) {
+                    <div
+                      class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else if (question.correctChoice === j + 1) {
+                    <div
+                      class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                    ></div>
+                  } @else {
+                    <div
+                      class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                    ></div>
+                  }
+                </label>
+              }
+            }
+          }
+        </div>
+        <div
+          class="flex items-center justify-between w-full px-2 mt-8 lg:px-8 md:w-2/3"
+        >
+          <button
+            (click)="prevQuestion()"
+            [disabled]="currentPage === 0"
+            type="button"
+            class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 rounded-l-md disabled:cursor-not-allowed disabled:bg-slate-500 hover:bg-gray-800 hover:text-white"
+          >
+            <div class="flex flex-row align-middle">
+              <svg
+                class="w-5 ml-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+              <p class="ml-2">السابق</p>
+            </div>
+          </button>
+          <button
+            (click)="nextQuestion()"
+            [disabled]="currentPage === reviewExamInfo.questions.length - 1"
+            type="button"
+            class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 disabled:cursor-not-allowed disabled:bg-slate-500 rounded-l-md hover:bg-gray-800 hover:text-white"
+          >
+            <div class="flex flex-row align-middle">
+              <span class="mr-2">التالي</span>
+              <svg
+                class="w-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                  clip-rule="evenodd"
+                ></path>
+              </svg>
+            </div>
+          </button>
+        </div>
+        @if (question.answerUrl !== "link" && question.answerUrl === "") {
+        } @else {
+          <button
+            (click)="openVideoSection(question.answerUrl)"
+            type="button"
+            class="block px-8 py-2 text-white border border-gray-200 rounded-full hover:animate-pop bg-primaryAdmin hover:bg-secondaryAdmin"
+          >
+            شرح السؤال
+          </button>
+        }
+        <div class="flex flex-wrap items-center justify-center gap-4 px-8 mt-4">
+          @for (pageNum of getPageRange(); track pageNum) {
+            <button
+              class="px-3 py-2 border rounded-md"
+              (click)="gotoPage(pageNum)"
+              [class.active]="pageNum === currentPage + 1"
+            >
+              {{ pageNum }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  }
+</div>
+
+@if (openVideo) {
+  <div #videoSection class="grid pb-8 place-items-center mt-8">
+    <div class="w-full md:px-0 md:w-3/4 xl:w-11/12">
+      <div
+        class="flex flex-col md:flex-row justify-between items-center gap-4 mb-4"
+      >
+        <h2 class="font-bold md:text-xl">شرح السؤال</h2>
+        @if (isYoutube()) {
+          <button
+            (click)="togglePlayer()"
+            class="group flex items-center gap-2 px-6 py-2 bg-white border-2 border-primaryAdmin text-primaryAdmin font-bold rounded-full hover:bg-primaryAdmin hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+          >
+            <svg
+              class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              />
+            </svg>
+            {{ useRawYoutube() ? "العودة للمشغل العادي" : "مشغل إضافي" }}
+          </button>
+        }
+      </div>
+
+      <div
+        #videoContainer
+        class="relative w-full overflow-hidden bg-black aspect-video rounded-xl group"
+      >
+        <div
+          class="w-full h-full"
+          [id]="!useRawYoutube() && isYoutube() ? 'plyr-player' : ''"
+        >
+          <iframe
+            [src]="getDecodedUrl() | safeUrl"
+            allowfullscreen
+            allowtransparency
+            allow="autoplay"
+            class="w-full h-full"
+          ></iframe>
+        </div>
+
+        <!-- BRANDING OVERLAYS (Only for YouTube) -->
+        @if (isYoutube()) {
+          <!-- TOP OVERLAY -->
+          <div
+            class="absolute top-0 right-0 left-0 h-[75px] bg-transparent z-[15] cursor-default"
+          ></div>
+
+          <!-- BOTTOM RIGHT OVERLAY -->
+          <div
+            class="absolute bottom-12 right-0 w-[120px] h-[60px] bg-transparent z-[15] cursor-default"
+          ></div>
+        }
+
+        <!-- Custom Fullscreen Button (Visible on Hover) -->
+        <button
+          (click)="toggleFullscreen(videoContainer)"
+          class="absolute bottom-4 left-4 z-[20] p-2 bg-black/50 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#36b290]"
+          title="تكبير الشاشة"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+            />
+          </svg>
+        </button>
+
+        <!-- END SCREEN OVERLAY -->
+        @if (isYoutube() && videoEnded()) {
+          <div
+            class="absolute inset-0 bg-black/95 z-20 flex flex-col items-center justify-center p-6 text-center animate-fade-in"
+          >
+            <div class="mb-4 p-4 bg-white/10 rounded-full">
+              <svg
+                class="w-12 h-12 text-[#36b290]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-bold text-white mb-2">انتهى شرح السؤال</h3>
+            <p class="text-gray-400 mb-6">
+              يمكنك إعادة مشاهدة الشرح إذا لزم الأمر
+            </p>
+            <button
+              (click)="togglePlayer(); togglePlayer()"
+              class="px-8 py-3 bg-[#36b290] text-white font-bold rounded-full hover:bg-[#2d9478] transition-all"
+            >
+              إعادة المشاهدة
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

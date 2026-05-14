@@ -1,0 +1,136 @@
+<div class="min-h-screen pt-6 pb-16">
+  <h2
+    class="flex flex-col items-center justify-center gap-4 mb-6 text-xl font-bold text-center sm:flex-row md:text-3xl text-primaryAdmin"
+  >
+    جميع الدورات
+  </h2>
+  <div
+    class="flex flex-col gap-6 p-6 mb-6 bg-white rounded-lg shadow-lg md:flex-row md:items-center md:justify-between"
+  >
+    <div class="relative w-full md:w-5/12">
+      <input
+        type="text"
+        [(ngModel)]="keyword"
+        placeholder="ابحث عن دورة..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        type="button"
+        [routerLink]="['/admin/tutorial/', 0]"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+        إضافة
+      </button>
+    </div>
+  </div>
+
+  <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-white bg-primaryAdmin">
+          <th class="p-3.5 border">اسم الدورة</th>
+          <th class="p-3.5 border">اسم المعلم</th>
+          <th class="p-3.5 border">التصنيف</th>
+          <th class="p-3.5 border">سعر الدورة</th>
+          <th class="p-3.5 border">مقفولة؟</th>
+          <th class="p-3.5 border">تعديل</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading) { @for (tutorial of filteredTutorials; track
+        tutorial.id; let studentIndex = $index) {
+
+        <tr class="font-medium" [class]="$even ? 'bg-gray-100' : 'bg-white'">
+          <td class="p-3.5 text-center border">
+            {{ tutorial.name }}
+          </td>
+          <td class="p-3.5 text-center border">
+            {{ tutorial.teacherName }}
+          </td>
+          <td class="p-3.5 text-center border">
+            {{ tutorial.categoryName }}
+          </td>
+          <td class="p-3.5 text-center border">
+            {{ tutorial.price | currency : " " }}
+            <span class="text-secondaryAdmin">ر.س</span>
+          </td>
+          <td class="p-3.5 text-center border">
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input
+                id="switch-3"
+                name="toggle"
+                [checked]="tutorial.isEnabled"
+                id="toggle"
+                type="checkbox"
+                class="sr-only peer"
+                disabled
+              />
+              <label for="switch-3" class="hidden"></label>
+              <div
+                class="peer h-4 w-11 rounded border bg-slate-600 after:absolute after:-top-1 after:-left-1 after:h-6 after:w-6 after:rounded-full after:border after:border-gray-300 after:bg-gray-200 after:transition-all after:content-[''] peer-checked:bg-primaryAdmin peer-checked:after:translate-x-full peer-focus:ring-green-300"
+              ></div>
+            </label>
+          </td>
+          <td class="flex items-center justify-center p-3.5 border">
+            <svg
+              [routerLink]="['/admin/tutorial/', tutorial.id]"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 text-green-600 cursor-pointer hover:text-green-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+              />
+            </svg>
+          </td>
+        </tr>
+
+        } }@else {
+        <tr>
+          <td colspan="6" class="py-8 cell">
+            <div
+              class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+            ></div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<section class="py-16 bg-gradient-to-b from-gray-50 to-white overflow-hidden">
+  <div class="w-full mx-auto px-4">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-gray-900 mb-4">
+        {{ "home.successPartners" | translate }}
+      </h2>
+      <p class="text-gray-600 text-lg">
+        {{ "home.partnersDescription" | translate }}
+      </p>
+    </div>
+
+    <div class="relative w-full max-w-7xl m-auto my-6 md:mb-6">
+      @if (isMain()) {
+        <!-- Navigation Buttons -->
+        <swiper-container
+          class="mySwiper2 pb-12"
+          space-between="30"
+          centered-slides="false"
+          autoplay-delay="2500"
+          autoplay-disable-on-interaction="false"
+          grab-cursor="true"
+          loop="true"
+        >
+          @for (partner of partners(); track partner.id) {
+            <swiper-slide
+              class="grid grid-cols-1 pt-8 pb-16 md:grid-cols-3 place-items-center"
+            >
+              <div
+                class="w-full md:w-[26rem] md:h-40 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 p-4 md:p-6 flex items-center justify-center group"
+                [class]="
+                  partner.id === 8 || partner.id === 4
+                    ? 'bg-primaryAdmin'
+                    : 'bg-white'
+                "
+              >
+                <img
+                  [ngSrc]="partner.logo"
+                  [alt]="partner.name"
+                  [width]="partner.width || 400"
+                  [height]="partner.height || 160"
+                  class="w-auto h-auto max-w-full max-h-full object-contain transition-all duration-300"
+                />
+              </div>
+            </swiper-slide>
+          }
+        </swiper-container>
+      } @else {
+        <swiper-container
+          class="mySwiper3 w-full flex justify-center items-center pb-8"
+          space-between="30"
+          centered-slides="false"
+          autoplay-delay="2500"
+          autoplay-disable-on-interaction="false"
+          grab-cursor="true"
+          loop="true"
+        >
+          @for (partner of partnerSchools(); track partner) {
+            <swiper-slide class="flex items-center justify-center py-8">
+              <div
+                class="w-full md:w-[30rem] md:h-52 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-2 p-4 md:p-6 flex items-center justify-center group"
+              >
+                <img
+                  [src]="'assets/' + partner"
+                  alt="logo"
+                  class="max-w-full max-h-full object-contain transition-all duration-300"
+                />
+              </div>
+            </swiper-slide>
+          }
+        </swiper-container>
+      }
+      <!-- Pagination Dots -->
+      <!-- <div class="swiper-pagination-custom"></div> -->
+    </div>
+  </div>
+</section>

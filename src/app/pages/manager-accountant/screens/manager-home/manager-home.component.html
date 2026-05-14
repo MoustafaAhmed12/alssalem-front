@@ -1,0 +1,220 @@
+<div class="min-h-screen p-6 bg-gray-50">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="mb-2 text-3xl font-bold text-gray-900">لوحة التحكم - الإدارة</h1>
+    <p class="text-gray-600">نظرة عامة على إحصائيات المنصة والدورات</p>
+  </div>
+  @if (!isLoading()) {
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+    <div class="p-6 bg-white border-r-4 border-blue-500 rounded-lg shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-600">إجمالي الطلاب</p>
+          <p class="text-3xl font-bold text-blue-600">
+            {{ data().studentCount | number }}
+          </p>
+        </div>
+        <div class="p-3 bg-blue-100 rounded-full">
+          <svg
+            class="w-6 h-6 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-.5a4 4 0 110 5.292M21 21H3v-1a6 6 0 0118 0v1z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 bg-white border-r-4 border-green-500 rounded-lg shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-600">إجمالي الاشتراكات</p>
+          <p class="text-3xl font-bold text-green-600">
+            {{ data().subscribeCount | number }}
+          </p>
+        </div>
+        <div class="p-3 bg-green-100 rounded-full">
+          <svg
+            class="w-6 h-6 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 bg-white border-r-4 border-purple-500 rounded-lg shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-600">إجمالي العمليات</p>
+          <p class="text-3xl font-bold text-purple-600">
+            {{ data().totalProcess | number }}
+          </p>
+        </div>
+        <div class="p-3 bg-purple-100 rounded-full">
+          <svg
+            class="w-6 h-6 text-purple-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-6 bg-white border-r-4 border-yellow-500 rounded-lg shadow-md">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="mb-1 text-sm text-gray-600">إجمالي الأرباح</p>
+          <p class="text-2xl font-bold text-yellow-600">
+            {{ data().totalProfit | number : "1.1-1" }}ر.س
+          </p>
+        </div>
+        <div class="p-3 bg-yellow-100 rounded-full">
+          <svg
+            class="w-6 h-6 text-yellow-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- 
+  <div class="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-2">
+    <div class="p-6 bg-white rounded-lg shadow-md">
+      <h3 class="mb-4 text-xl font-semibold text-gray-800">
+        توزيع الاشتراكات حسب الدورة
+      </h3>
+      <canvas #subscriptionsChart width="400" height="300"></canvas>
+    </div>
+
+    <div class="p-6 bg-white rounded-lg shadow-md">
+      <h3 class="mb-4 text-xl font-semibold text-gray-800">
+        أعلى الدورات اشتراكاً
+      </h3>
+      <canvas #topCoursesChart width="400" height="300"></canvas>
+    </div>
+  </div> -->
+
+  <!-- Courses Table -->
+  <div class="overflow-hidden bg-white rounded-lg shadow-md">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <h3 class="text-xl font-semibold text-gray-800">جميع الدورات</h3>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              الرقم
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              اسم الدورة
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              عدد الاشتراكات
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              النسبة المئوية
+            </th>
+            <th
+              class="px-6 py-3 text-xs font-medium tracking-wider text-right text-gray-500 uppercase"
+            >
+              الحالة
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          @for (course of sortedCourses(); track course.id) {
+          <tr class="hover:bg-gray-50">
+            <td
+              class="px-6 py-4 text-sm font-medium text-gray-900 whitespace-nowrap"
+            >
+              {{ course.id }}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+              {{ course.name }}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+              {{ course.subscribeCount | number }}
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+              {{ getPercentage(course.subscribeCount) }}%
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap">
+              @if (course.subscribeCount > 500) {
+              <span
+                class="inline-flex px-2 py-1 text-xs font-semibold text-green-800 bg-green-100 rounded-full"
+              >
+                مرتفع
+              </span>
+              } @else if (course.subscribeCount > 100) {
+              <span
+                class="inline-flex px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full"
+              >
+                متوسط
+              </span>
+              } @else {
+              <span
+                class="inline-flex px-2 py-1 text-xs font-semibold text-red-800 bg-red-100 rounded-full"
+              >
+                منخفض
+              </span>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  } @else {
+  <div class="fixed z-50 top-[40%] left-[40%] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</div>

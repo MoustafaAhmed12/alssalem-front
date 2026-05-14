@@ -1,0 +1,828 @@
+@if (isLoading()) {
+  <div
+    id="overlay"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    aria-hidden="true"
+  >
+    <div class="flex flex-col items-center gap-4">
+      <!-- spinner -->
+      <div
+        class="border-4 border-transparent rounded-full w-14 h-14 border-t-white animate-spin"
+        role="status"
+        aria-label="جارٍ التحميل"
+      >
+        <span class="sr-only">Loading...</span>
+      </div>
+      <!-- رسالة اختيارية -->
+      <div class="text-sm text-white">جاري التحميل... الرجاء الانتظار</div>
+    </div>
+  </div>
+}
+
+<div class="container min-h-screen py-6 mx-auto">
+  @if (alertMsg()) {
+    <div
+      [class]="
+        alertType() === 'success'
+          ? 'bg-green-100 border-green-500 text-green-800'
+          : 'bg-red-100 border-red-500 text-red-800'
+      "
+      class="flex items-center justify-between p-4 mb-6 border-l-4 rounded-lg shadow-sm animate-in fade-in slide-in-from-top-4 duration-300"
+    >
+      <div class="flex items-center gap-3">
+        @if (alertType() === "success") {
+          <svg
+            class="w-5 h-5 text-green-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M5 13l4 4L19 7"
+            ></path>
+          </svg>
+        } @else {
+          <svg
+            class="w-5 h-5 text-red-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            ></path>
+          </svg>
+        }
+        <span class="font-medium text-lg">{{ alertMsg() }}</span>
+      </div>
+      <button
+        (click)="alertMsg.set('')"
+        class="text-gray-500 transition-colors hover:text-gray-700"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          ></path>
+        </svg>
+      </button>
+    </div>
+  }
+
+  @if (!isLoadingAll()) {
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div
+        class="p-6 bg-white border-l-4 border-blue-500 shadow-md rounded-t-xl"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="mb-1 text-sm text-gray-600">إجمالي الطلاب</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ totalStudents }}
+            </p>
+          </div>
+          <div class="p-3 bg-blue-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <div
+        class="p-6 bg-white border-l-4 border-yellow-500 shadow-md rounded-t-xl"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="mb-1 text-sm text-gray-600">عدد المدارس</p>
+            <p class="text-2xl font-bold text-gray-800">
+              {{ uniqueSchools.length }}
+            </p>
+          </div>
+          <div class="p-3 bg-yellow-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-yellow-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H7m2 0v-4a2 2 0 012-2h2a2 2 0 012 2v4"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="flex flex-col gap-6 p-6 bg-white shadow-md md:flex-row md:items-center md:justify-between"
+    >
+      <div class="relative w-full md:w-5/12">
+        <input
+          type="text"
+          [(ngModel)]="keywork"
+          (ngModelChange)="searchName()"
+          (keyup.enter)="searchName()"
+          placeholder="ابحث عن طالب او مدرسة او إيميل..."
+          class="w-full p-3 pl-10 border rounded-lg border-secondaryAdmin focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
+      </div>
+
+      <!-- الأزرار -->
+      <div class="flex flex-wrap justify-center gap-4">
+        @if (this.role === "أدمن") {
+          <button
+            type="button"
+            (click)="openEmail()"
+            class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-orange-600 rounded-lg hover:bg-orange-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
+            إرسال إيميل
+          </button>
+        }
+        <button
+          (click)="openAddSubModal()"
+          class="flex items-center p-2 text-sm text-white transition-colors bg-secondaryAdmin border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-primaryAdmin"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+            />
+          </svg>
+          <span>اشتراك</span>
+        </button>
+        @if (selectedCount > 0) {
+          <button
+            (click)="removeSelected()"
+            class="flex items-center p-2 text-sm text-white transition-colors bg-red-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-red-700"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+              />
+            </svg>
+            <span>حذف المحدد</span>
+          </button>
+        }
+        <button
+          (click)="exportTable()"
+          class="flex items-center p-2 text-sm text-white transition-colors bg-green-600 border rounded-lg gap-x-2 md:text-lg md:px-4 md:py-2 hover:bg-green-700"
+        >
+          <span>Export</span>
+          <svg
+            class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            class="size-6"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="p-6 mb-8 bg-white shadow-md rounded-b-xl">
+      <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >من تاريخ</label
+          >
+          <input
+            type="date"
+            [(ngModel)]="dateFrom"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >إلى تاريخ</label
+          >
+          <input
+            type="date"
+            [(ngModel)]="dateTo"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <div>
+          <label class="block mb-2 text-sm font-medium text-gray-700"
+            >المدرسة</label
+          >
+          <select
+            [(ngModel)]="selectedSchool"
+            (change)="applyFilters()"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">جميع المدارس</option>
+            @for (school of uniqueSchools; track school) {
+              <option [value]="school">{{ school }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="flex justify-end mt-4">
+        <button
+          (click)="clearFilters()"
+          class="px-4 py-2 text-sm font-medium text-gray-600 transition-colors bg-gray-100 rounded-lg hover:bg-gray-200"
+        >
+          مسح الفلاتر
+        </button>
+      </div>
+    </div>
+
+    <!-- Table Section -->
+    <div class="overflow-hidden bg-white shadow-md rounded-xl">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr class="text-sm font-medium text-center text-gray-500">
+              <th class="px-6 py-3">
+                <input
+                  type="checkbox"
+                  [checked]="isAllSelected"
+                  [indeterminate]="isIndeterminate"
+                  (change)="toggleSelectAll($event)"
+                  class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                />
+              </th>
+
+              <th class="px-6 py-3">الاسم</th>
+              <th class="px-6 py-3">البريد الإلكتروني</th>
+              <th class="px-6 py-3">رقم الهاتف</th>
+              <th class="px-6 py-3">المدرسة</th>
+              <th class="px-6 py-3">تاريخ الإنشاء</th>
+              <th class="px-6 py-3">حذف</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            @for (student of paginatedStudents; track student.userId) {
+              <tr
+                class="text-center transition-colors hover:bg-gray-50"
+                [class]="$odd ? 'bg-white' : 'bg-blue-50'"
+              >
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="student.selected"
+                    (change)="onStudentSelect()"
+                    class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                </td>
+
+                <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                  <a
+                    href="/supervisor/{{ student.userId }}"
+                    target="_blank"
+                  ></a>
+                  {{ student.firstName + " " + student.lastName || "-" }}
+                </td>
+                <td
+                  class="px-6 py-4 text-sm text-gray-900 border-gray-200 border-x whitespace-nowrap"
+                >
+                  <div class="flex items-center justify-center w-full gap-x-3">
+                    <span>{{ student.email }}</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                  {{ student.phoneNumber || "-" }}
+                </td>
+                <td
+                  class="px-6 py-4 text-sm text-gray-900 border-gray-200 border-x w-48"
+                >
+                  <div class="relative group flex justify-center">
+                    <span
+                      class="max-w-[180px] truncate block"
+                      [title]="student.schoolName || ''"
+                    >
+                      {{ student.schoolName || "-" }}
+                    </span>
+                    @if (student.schoolName && student.schoolName.length > 20) {
+                      <div
+                        class="absolute z-30 hidden group-hover:block bg-gray-900 text-white text-xs rounded-lg px-3 py-2 -top-12 left-1/2 -translate-x-1/2 whitespace-nowrap shadow-2xl border border-gray-700 animate-in fade-in zoom-in duration-200"
+                      >
+                        {{ student.schoolName }}
+                        <!-- Tooltip Arrow -->
+                        <div
+                          class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 bg-gray-900 rotate-45 border-r border-b border-gray-700"
+                        ></div>
+                      </div>
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                  {{ student.creationDate }}
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900 whitespace-nowrap">
+                  <svg
+                    (click)="remove(student.userId)"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 text-red-600 cursor-pointer hover:text-red-700"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="px-6 py-12 text-center text-gray-500">
+                  <div class="flex flex-col items-center">
+                    <svg
+                      class="w-12 h-12 mb-4 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                      ></path>
+                    </svg>
+                    <p class="text-lg font-medium">لا توجد بيانات متاحة</p>
+                    <p class="text-sm">
+                      جرب تغيير الفلاتر أو إضافة بيانات جديدة
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination and Subscribe Button -->
+      <div class="px-6 py-3 border-t border-gray-200 bg-gray-50">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center text-sm text-gray-700">
+            <span
+              >عرض {{ startIndex + 1 }} إلى {{ endIndex }} من
+              {{ filteredStudents.length }} نتيجة</span
+            >
+            <select
+              [(ngModel)]="pageSize"
+              (change)="onPageSizeChange()"
+              class="px-2 py-1 mx-4 text-xs border border-gray-300 rounded"
+            >
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            <span>لكل صفحة</span>
+          </div>
+          <div class="flex items-center space-x-2 space-x-reverse">
+            <button
+              [disabled]="currentPage === 1"
+              (click)="goToPage(currentPage - 1)"
+              [class]="
+                currentPage === 1
+                  ? 'px-3 py-1 text-gray-400 cursor-not-allowed'
+                  : 'px-3 py-1 text-gray-600 hover:text-blue-600 transition-colors'
+              "
+            >
+              السابق
+            </button>
+
+            @for (page of getVisiblePages(); track page) {
+              <button
+                (click)="goToPage(page)"
+                [class]="
+                  page === currentPage
+                    ? 'px-3 py-1 bg-blue-600 text-white rounded'
+                    : 'px-3 py-1 text-gray-600 hover:text-blue-600 transition-colors'
+                "
+              >
+                {{ page }}
+              </button>
+            }
+
+            <button
+              [disabled]="currentPage === totalPages"
+              (click)="goToPage(currentPage + 1)"
+              [class]="
+                currentPage === totalPages
+                  ? 'px-3 py-1 text-gray-400 cursor-not-allowed'
+                  : 'px-3 py-1 text-gray-600 hover:text-blue-600 transition-colors'
+              "
+            >
+              التالي
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="flex items-center justify-center h-96">
+      <div
+        class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+      ></div>
+    </div>
+  }
+</div>
+
+<div
+  dir="rtl"
+  [ngClass]="{
+    'opacity-100 visible': isOpen,
+    'opacity-0 invisible pointer-events-none': !isOpen,
+  }"
+  class="fixed inset-0 z-[110] flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+>
+  <div
+    [ngClass]="{
+      'scale-100 opacity-100': isOpen,
+      'scale-95 opacity-0': !isOpen,
+    }"
+    class="relative w-full max-w-2xl transition-all duration-300 bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-100">
+      <h2 class="text-2xl font-bold text-primaryAdmin">اضافة اشتراك</h2>
+      <button
+        (click)="isOpen = false"
+        class="p-2 text-gray-400 transition-colors rounded-full hover:bg-gray-100 hover:text-red-500"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body (Scrollable) -->
+    <div class="flex-1 p-6 overflow-y-auto">
+      <div class="space-y-6">
+        <!-- Selected Students Summary -->
+        <div
+          class="p-4 bg-primaryAdmin/10 rounded-xl border border-primaryAdmin/20"
+        >
+          <div class="flex items-center gap-3">
+            <div class="p-2 bg-primaryAdmin text-white rounded-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
+                />
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm text-gray-600">عدد الطلاب المحددين</p>
+              <p class="text-xl font-bold text-primaryAdmin">
+                {{ emailsToSubscribe.length }} طالب
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tutorials Select -->
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700"
+            >اختر الدورات</label
+          >
+          <ng-select
+            [items]="allTutorials"
+            [multiple]="true"
+            [closeOnSelect]="false"
+            [hideSelected]="true"
+            bindLabel="name"
+            bindValue="id"
+            [searchable]="true"
+            [(ngModel)]="tutorialIds"
+            placeholder="أختر الدورات"
+            class="w-full text-lg text-gray-900"
+          >
+          </ng-select>
+        </div>
+
+        <!-- Dates Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label
+              for="startDate"
+              class="block text-sm font-semibold text-gray-700"
+              >بداية الاشتراك</label
+            >
+            <input
+              type="date"
+              name="startDate"
+              [(ngModel)]="startSub"
+              id="startDate"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin/20 focus:border-primaryAdmin transition-all outline-none text-right"
+              dir="rtl"
+            />
+          </div>
+          <div class="space-y-2">
+            <label
+              for="endDate"
+              class="block text-sm font-semibold text-gray-700"
+              >نهاية الاشتراك</label
+            >
+            <input
+              type="date"
+              name="endDate"
+              [(ngModel)]="endSub"
+              id="endDate"
+              class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin/20 focus:border-primaryAdmin transition-all outline-none text-right"
+              dir="rtl"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t border-gray-100 bg-gray-50/50">
+      <button
+        type="button"
+        (click)="addSub()"
+        [disabled]="isLoadingSub"
+        class="w-full flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all rounded-xl bg-secondaryAdmin hover:bg-primaryAdmin active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-secondaryAdmin/20"
+      >
+        @if (isLoadingSub) {
+          <div class="flex items-center gap-2">
+            <div
+              class="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"
+            ></div>
+            <span>جاري الحفظ...</span>
+          </div>
+        } @else {
+          <span>حفظ البيانات</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>
+
+@if (isOpenOk()) {
+  <div
+    class="fixed inset-0 z-[150] flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+    (click)="this.isOpenOk.set(false); userId.set(0)"
+  >
+    <div
+      class="relative w-full max-w-md p-8 transition-all duration-300 bg-white shadow-2xl rounded-2xl flex flex-col items-center text-center"
+      (click)="$event.stopPropagation()"
+    >
+      <div
+        class="w-16 h-16 mb-4 flex items-center justify-center bg-red-50 text-red-500 rounded-full"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-10 h-10"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+          />
+        </svg>
+      </div>
+
+      <h3 class="mb-2 text-2xl font-bold text-gray-900">
+        {{ userId() === -1 ? "حذف الطلاب المحددين" : "حذف الطالب" }}
+      </h3>
+      <p class="mb-8 text-gray-500">
+        {{
+          userId() === -1
+            ? "هل أنت متأكد من رغبتك في حذف " + selectedCount + " طلاب؟"
+            : "هل أنت متأكد من رغبتك في حذف هذا الطالب؟"
+        }}
+        لا يمكن التراجع عن هذا الإجراء.
+      </p>
+
+      <div class="flex items-center gap-4 w-full">
+        <button
+          (click)="removeStudent()"
+          class="flex-1 px-6 py-3 text-lg font-bold text-white transition-all bg-red-500 rounded-xl hover:bg-red-600 active:scale-95 shadow-lg shadow-red-200"
+        >
+          نعم، حذف
+        </button>
+        <button
+          (click)="isOpenOk.set(false)"
+          class="flex-1 px-6 py-3 text-lg font-bold text-gray-600 transition-all bg-gray-100 rounded-xl hover:bg-gray-200 active:scale-95"
+        >
+          إلغاء
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+<div
+  dir="rtl"
+  [ngClass]="{
+    'opacity-100 visible': isOpenEmail,
+    'opacity-0 invisible pointer-events-none': !isOpenEmail,
+  }"
+  class="fixed inset-0 z-[110] flex items-center justify-center p-4 transition-all duration-300 bg-black/40 backdrop-blur-sm"
+>
+  <div
+    [ngClass]="{
+      'scale-100 opacity-100': isOpenEmail,
+      'scale-95 opacity-0': !isOpenEmail,
+    }"
+    class="relative w-full max-w-2xl transition-all duration-300 bg-white shadow-2xl rounded-2xl overflow-hidden flex flex-col max-h-[90vh]"
+  >
+    <!-- Header -->
+    <div class="flex items-center justify-between p-6 border-b border-gray-100">
+      <h2 class="text-2xl font-bold text-primaryAdmin">إرسال إيميل</h2>
+      <button
+        (click)="hideEmail()"
+        class="p-2 text-gray-400 transition-colors rounded-full hover:bg-gray-100 hover:text-red-500"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body (Scrollable) -->
+    <div class="flex-1 p-6 overflow-y-auto">
+      <form [formGroup]="emailForm" class="space-y-6">
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700"
+            >عنوان الإيميل</label
+          >
+          <input
+            type="text"
+            formControlName="subject"
+            placeholder="أدخل عنوان الإيميل"
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin/20 focus:border-primaryAdmin transition-all outline-none"
+          />
+        </div>
+        <div class="space-y-2">
+          <label class="block text-sm font-semibold text-gray-700"
+            >نص الإيميل</label
+          >
+          <textarea
+            formControlName="content"
+            placeholder="أدخل نص الإيميل هنا..."
+            class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primaryAdmin/20 focus:border-primaryAdmin transition-all outline-none min-h-[200px]"
+            rows="6"
+          ></textarea>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 border-t border-gray-100 bg-gray-50/50">
+      <button
+        type="button"
+        (click)="sendEmail()"
+        [disabled]="isLoadingEmail"
+        class="w-full flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all rounded-xl bg-secondaryAdmin hover:bg-primaryAdmin active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed shadow-lg shadow-secondaryAdmin/20"
+      >
+        @if (isLoadingEmail) {
+          <div class="flex items-center gap-2">
+            <div
+              class="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"
+            ></div>
+            <span>جاري الإرسال...</span>
+          </div>
+        } @else {
+          <div class="flex items-center gap-2">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+              />
+            </svg>
+            <span>إرسال الإيميل</span>
+          </div>
+        }
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,58 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoading() }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'جميع التعليقات'" />
+    <form class="container mx-auto my-6">
+      <input
+        dir="rtl"
+        id="globalSearch"
+        (input)="onChange($event)"
+        class="w-full px-8 text-xl border rounded shadow-sm h-14 focus:border-2 focus:border-sky-600 focus:outline-none focus:shadow-outline"
+        type="search"
+        placeholder="إبحث ..."
+      />
+    </form>
+    <ngx-table
+      [data]="data"
+      [configuration]="configuration"
+      #table
+      [columns]="columns"
+      [noResultsTemplate]="noResultsTemplate"
+      [summaryTemplate]="summaryTemplateRef"
+    >
+    </ngx-table>
+    <ng-template #summaryTemplateRef let-total="total">
+      <th colspan="6">
+        <span class="mb-2 text-logoColor1">عدد التعليقات: {{ total }} </span>
+      </th>
+    </ng-template>
+    <ng-template #noResultsTemplate>
+      <td [attr.colspan]="columns.length" class="no-results">
+        .لا يوجد تعليقات بعد.
+      </td>
+    </ng-template>
+  </div>
+  <ng-template #comment let-row>
+    <div class="text-wrap w-[38rem]">
+      {{ row.comment }}
+    </div>
+  </ng-template>
+  <ng-template #actionTpl let-row>
+    <div class="flex items-center justify-center gap-x-4">
+      <button (click)="IsActive(row.id)" class="text-green-600">ظهور</button
+      ><button (click)="IsHide(row.id)" class="text-red-600">اخفاء</button>
+    </div>
+  </ng-template>
+  @if(isLoading()) {
+  <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</div>

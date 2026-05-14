@@ -1,0 +1,40 @@
+@if (!isSuccess()) {
+<app-navbar />
+}
+<div class="flex items-center justify-center w-full h-screen">
+  @if (isLoading()) {
+  <div class="flex items-center justify-center w-full bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="border-8 border-blue-600 border-dashed rounded-full w-14 h-14 animate-spin"
+      ></div>
+    </div>
+  </div>
+  } @if (isLoading() === false && isSuccess() ) {
+  <div class="flex flex-col items-center justify-center gap-y-6">
+    <iframe
+      src="https://lottie.host/embed/accdcd19-ac6b-4930-8ae4-2680caf3dfb9/VVCj1go9LC.json"
+      class="w-80 h-80 md:w-[750px] md:h-[250px]"
+    ></iframe>
+    <h1
+      class="px-4 text-3xl font-bold leading-relaxed text-center text-primaryAdmin"
+    >
+      ستيم تحويلك مباشرةً الي الاختبار
+    </h1>
+  </div>
+  } @if (isLoading() === false && isSuccess() === false ) {
+  <div class="flex flex-col items-center justify-center gap-y-6">
+    <iframe
+      src="https://lottie.host/embed/c2215a9a-636b-4445-a44c-42b3b315db4c/FzWzZTkP0I.json"
+      class="w-80 h-80 md:w-[750px] md:h-[250px]"
+    ></iframe>
+    <button
+      (click)="goToTestYourself()"
+      type="button"
+      class="mt-4 w-fit px-6 flex justify-center items-center py-3.5 text-base bg-primaryAdmin text-white rounded-md hover:bg-secondaryAdmin transition-colors tracking-wide"
+    >
+      يُرجي إعادة المحاولة
+    </button>
+  </div>
+  }
+</div>

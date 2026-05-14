@@ -1,0 +1,443 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoading() }"
+  ></div>
+  <div class="pt-4">
+    <div class="flex items-center gap-x-2">
+      <span class="mt-2 text-base font-semibold md:text-3xl text-textNav"
+        >إسم الدورة:</span
+      >
+      <app-title-screen [title]="tutorialDetails?.name" />
+    </div>
+  </div>
+  <div class="flex items-center justify-center min-h-full px-4 mx-auto my-8">
+    <div class="bg-white border rounded-lg shadow-sm basis-full">
+      <form
+        [formGroup]="tutorialForm"
+        (ngSubmit)="onSubmit()"
+        class="space-y-6 rounded-lg"
+        autocomplete="off"
+      >
+        <div class="px-8 py-6 bg-white rounded-lg">
+          <div class="flex items-center w-full my-4 rounded-full">
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+            <span
+              class="px-8 py-3 text-xl font-bold leading-8 text-primaryAdmin"
+            >
+              اضافة الوحدات
+            </span>
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+          </div>
+          <div class="w-full mt-4 rounded-lg" formArrayName="units">
+            <div
+              class="w-full px-8 mb-6 border rounded-lg"
+              *ngFor="let unit of getUnits.controls; let unitIndex = index"
+              [formGroupName]="unitIndex"
+              [ngClass]="
+                unit.get('isDeleted')?.value === true ? 'hidden' : 'block'
+              "
+            >
+              <!-- isDeleted Unit -->
+              <div class="mt-3 w-fit">
+                <button type="button" (click)="removeUnit(unitIndex)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M6 18 18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <!-- name and sortNumber -->
+              <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+                <div class="col-span-1 py-4 bg-white rounded-lg">
+                  <div class="relative bg-inherit">
+                    <input
+                      type="text"
+                      [id]="'name' + unitIndex"
+                      name="name"
+                      formControlName="name"
+                      placeholder="أدخل اسم الوحدة"
+                      [ngClass]="
+                        tutorialForm.controls.units.controls[0].controls['name']
+                          .errors && submitted
+                          ? 'ring-rose-600 '
+                          : 'border-gray-300 focus:ring-sky-600'
+                      "
+                      class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                    /><label
+                      [for]="'name' + unitIndex"
+                      class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                      >أدخل اسم الوحدة</label
+                    >
+                  </div>
+                  @if (
+                    submitted &&
+                    tutorialForm.controls.units.controls[0].controls["name"]
+                  ) {
+                    <div>
+                      @if (
+                        tutorialForm.controls.units.controls[0].controls["name"]
+                          .errors
+                      ) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                      }
+                    </div>
+                  }
+                </div>
+                <div class="col-span-1 py-4 bg-white rounded-lg">
+                  <div class="relative bg-inherit">
+                    <input
+                      type="number"
+                      [id]="'sortNumber' + unitIndex"
+                      name="sortNumber"
+                      formControlName="sortNumber"
+                      placeholder="أدخل رقم الوحدة"
+                      [ngClass]="
+                        tutorialForm.controls.units.controls[0].controls[
+                          'sortNumber'
+                        ].errors && submitted
+                          ? 'ring-rose-600 '
+                          : 'border-gray-300 focus:ring-sky-600'
+                      "
+                      class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                    /><label
+                      [for]="'sortNumber' + unitIndex"
+                      class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                      >أدخل رقم الوحدة</label
+                    >
+                  </div>
+                  @if (
+                    submitted &&
+                    tutorialForm.controls.units.controls[0].controls[
+                      "sortNumber"
+                    ]
+                  ) {
+                    <div>
+                      @if (
+                        tutorialForm.controls.units.controls[0].controls[
+                          "sortNumber"
+                        ].errors
+                      ) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                      }
+                    </div>
+                  }
+                </div>
+              </div>
+              <div
+                class="w-full px-6 py-2 my-6 bg-white border rounded-lg"
+                formArrayName="detailsRequests"
+              >
+                <div
+                  *ngFor="
+                    let itemContent of tutorialForm.controls.units.controls.at(
+                      unitIndex
+                    )?.controls?.detailsRequests?.controls;
+                    let contentIndex = index
+                  "
+                  [formGroupName]="contentIndex"
+                  [ngClass]="
+                    itemContent.get('isDeleted')?.value === true
+                      ? 'hidden'
+                      : 'block'
+                  "
+                >
+                  <!-- isDeleted -->
+                  <div class="flex items-center gap-x-2">
+                    <div class="mt-3 w-fit">
+                      <button
+                        type="button"
+                        (click)="removeUnitContent(unitIndex, contentIndex)"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M6 18 18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    <h3 class="text-lg text-primaryAdmin">محتوي الوحدة</h3>
+                  </div>
+                  <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <input
+                          type="text"
+                          [id]="'name2' + contentIndex + unitIndex"
+                          name="name"
+                          formControlName="name"
+                          placeholder="أدخل اسم الدرس"
+                          class="w-full px-4 py-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        /><label
+                          [for]="'name2' + contentIndex + unitIndex"
+                          class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                          >أدخل اسم الدرس</label
+                        >
+                      </div>
+                    </div>
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <input
+                          type="number"
+                          [id]="'order' + contentIndex + unitIndex"
+                          name="order"
+                          formControlName="order"
+                          placeholder="أدخل رقم الدرس"
+                          class="w-full px-4 py-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        /><label
+                          [for]="'order' + contentIndex + unitIndex"
+                          class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                          >أدخل رقم الدرس</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <!-- video -->
+                  <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <!-- <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <ng-select
+                          [items]="allVideos"
+                          [closeOnSelect]="true"
+                          [hideSelected]="true"
+                          formControlName="videoId"
+                          bindLabel="name"
+                          bindValue="id"
+                          [searchable]="true"
+                          placeholder="أختر الفيديو"
+                          (change)="
+                            onSelectVideo($event, unitIndex, contentIndex)
+                          "
+                          class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        >
+                        </ng-select>
+                      </div>
+                    </div> -->
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <ng-select
+                          [items]="examsTutorials"
+                          [closeOnSelect]="true"
+                          bindLabel="name"
+                          bindValue="id"
+                          [hideSelected]="true"
+                          formControlName="examId"
+                          [searchable]="true"
+                          placeholder=" أختر اختبار"
+                          class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        >
+                        </ng-select>
+                      </div>
+                    </div>
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <input
+                          type="text"
+                          [id]="'videoUrl' + contentIndex + unitIndex"
+                          name="videoUrl"
+                          formControlName="videoUrl"
+                          placeholder="أدخل رابط الفيديو"
+                          class="w-full px-4 py-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        /><label
+                          [for]="'videoUrl' + contentIndex + unitIndex"
+                          class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                          >أدخل رابط الفيديو</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <!-- exam & pdf -->
+                  <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <input
+                          type="text"
+                          [id]="'attachmentName' + contentIndex + unitIndex"
+                          name="attachmentName"
+                          formControlName="attachmentName"
+                          placeholder="أدخل "
+                          class="w-full px-4 py-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        /><label
+                          [for]="'attachmentName' + contentIndex + unitIndex"
+                          class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                          >أدخل اسم الملف</label
+                        >
+                      </div>
+                    </div>
+                    <div class="col-span-1 py-4 bg-white rounded-lg">
+                      <div class="relative bg-inherit">
+                        <input
+                          type="text"
+                          [id]="'attachmentLink' + contentIndex + unitIndex"
+                          name="attachmentLink"
+                          formControlName="attachmentLink"
+                          placeholder="أدخل "
+                          class="w-full px-4 py-3 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                        /><label
+                          [for]="'attachmentLink' + contentIndex + unitIndex"
+                          class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                          >أدخل لينك الملف</label
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- add Content -->
+              </div>
+              <!-- addUnitContent -->
+              <div class="flex justify-end my-4 basis-4/12">
+                <button
+                  (click)="addUnitContent(unitIndex)"
+                  type="button"
+                  class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-primaryAdmin hover:bg-opacity-95"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                  إضافة
+                </button>
+              </div>
+            </div>
+          </div>
+          <!-- add Unit -->
+          <div class="flex justify-end my-4 basis-4/12">
+            <button
+              (click)="addUnit()"
+              type="button"
+              class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 4.5v15m7.5-7.5h-15"
+                />
+              </svg>
+              إضافة وحدة
+            </button>
+          </div>
+          <!-- total units -->
+          <div class="py-4 my-4 bg-white rounded-lg">
+            <div
+              class="relative flex items-center justify-end font-semibold bg-inherit gap-x-4"
+            >
+              <h4 class="text-lg">مجموع الوحدات:</h4>
+              <p class="text-lg text-logoColor1">
+                {{ totalUnits }}
+              </p>
+            </div>
+          </div>
+          <!-- pdfs for tutorial -->
+          <div class="flex items-center w-full my-4 rounded-full">
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+            <span
+              class="px-8 py-3 text-xl font-bold leading-8 text-primaryAdmin"
+            >
+              اضافة الملفات للدورة
+            </span>
+            <div class="flex-1 border-b-2 border-gray-300"></div>
+          </div>
+          <div formArrayName="attachments">
+            <div
+              *ngFor="let row of attachments.controls; let i = index"
+              [formGroupName]="i"
+              class="flex items-center w-full gap-4 mb-4"
+            >
+              <input
+                type="text"
+                [id]="'nameAtt' + i"
+                name="name"
+                formControlName="name"
+                placeholder="أدخل اسم الملف"
+                class="w-1/3 px-4 py-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              />
+              <input
+                type="text"
+                [id]="'link' + i"
+                name="link"
+                formControlName="link"
+                placeholder="أدخل لينك الملف"
+                class="w-1/2 px-4 py-3 my-2 text-lg text-gray-900 rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              />
+              <button
+                type="button"
+                class="px-4 py-2 text-white bg-red-500 rounded w-fit"
+                (click)="removeRow(i)"
+              >
+                حذف ملف
+              </button>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="px-4 py-2 text-white bg-green-500 rounded"
+            (click)="addRow()"
+          >
+            اضافة ملف
+          </button>
+        </div>
+        <!-- btn submit -->
+        <div class="flex items-center justify-center w-full mt-3">
+          <button
+            type="submit"
+            class="flex items-center justify-center px-12 py-4 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-2 focus:ring-offset-2"
+          >
+            @if (isLoading()) {
+              <div
+                class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+              ></div>
+            } @else {
+              حفظ
+            }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  @if (isLoading()) {
+    <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+      <div class="flex items-center">
+        <div
+          class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+      </div>
+    </div>
+  }
+</div>

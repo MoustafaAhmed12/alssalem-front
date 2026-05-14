@@ -1,0 +1,168 @@
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out forwards;
+}
+
+/* Custom scrollbar for messages */
+.overflow-y-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+}
+
+/* Support simple bounces for loading */
+.delay-100 {
+  animation-delay: 100ms;
+}
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+/* Markdown Styles for Chat */
+:host ::ng-deep .markdown-content {
+  line-height: 1.6;
+  font-size: 0.95rem;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    color: #1e293b;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+  h2 {
+    font-size: 1.3em;
+  }
+  h3 {
+    font-size: 1.1em;
+  }
+
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  /* Code Blocks */
+  pre {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    font-family: "Consolas", "Monaco", "Courier New", monospace;
+    font-size: 0.85em;
+    direction: ltr; /* Always LTR for code */
+    text-align: left;
+
+    code {
+      background-color: transparent;
+      padding: 0;
+      color: inherit;
+    }
+  }
+
+  /* Inline Code */
+  :not(pre) > code {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #d63384;
+  }
+
+  /* Lists */
+  ul,
+  ol {
+    padding-right: 1.5rem; /* RTL support */
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Links */
+  a {
+    color: #2563eb;
+    text-decoration: underline;
+    &:hover {
+      color: #1d4ed8;
+    }
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-right: 4px solid #cbd5e1; /* RTL border */
+    padding-right: 1rem;
+    margin: 0.75rem 0;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+/* Specific overrides for user messages vs bot messages if needed */
+.msg-user .markdown-content {
+  h1,
+  h2,
+  h3,
+  h4,
+  a {
+    color: white;
+  }
+
+  pre {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  :not(pre) > code {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+  }
+
+  blockquote {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}

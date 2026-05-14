@@ -1,0 +1,309 @@
+<nav
+  class="fixed z-10 flex items-center justify-between w-full h-16 px-4 bg-transparent bg-white border-b gap-x-4 lg:px-12"
+>
+  @if (roleName() === 'طالب') {
+  <div class="lg:ms-64 ms-[4.5rem] transition-all duration-500">
+    <ul
+      class="flex flex-col p-4 text-sm text-black gap-x-2 md:flex-row md:font-medium"
+    >
+      <li
+        routerLink="/"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="block px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>الرئيسية</span>
+      </li>
+      <li
+        routerLink="/level-test"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="hidden px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer md:block border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>حدد مستواك</span>
+      </li>
+      <li
+        routerLink="/cateogry/qodrat"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="hidden px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer md:block border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>قدرات</span>
+      </li>
+      <li
+        routerLink="/cateogry/tahsili"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="hidden px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer md:block border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>تحصيلي</span>
+      </li>
+    </ul>
+  </div>
+  <div class="flex">
+    <div
+      (mouseenter)="menu_Profile()"
+      (mouseleave)="menu_Profile_close()"
+      class="relative z-50 flex items-center p-4 cursor-pointer text-primary"
+    >
+      <p class="text-lg font-semibold truncate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+      </p>
+      <span class="mx-2 inlin-block">
+        <svg
+          [ngClass]="menu_show_Profile ? 'rotate-180 transition-transform' : ''"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+      <ul
+        [ngClass]="{
+          'scale-100 border-t-2 bg-primary border-secondary':
+            menu_show_Profile
+        }"
+        class="absolute left-0 z-[100] flex flex-col items-center px-4 justify-center w-56 scale-0 overflow-hidden text-base text-white transition-all duration-500 rounded-bl-lg rounded-br-lg shadow-lg top-12"
+      >
+        <li
+          (click)="authService.logout()"
+          class="px-2 py-2 transition-all cursor-pointer hover:text-secondary"
+        >
+          <span class="font-mont text-f6">تسجيل خروج </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  } @else if (roleName() === 'مشرف مدرسة') {
+  <div class="lg:ms-64 ms-[4.5rem] transition-all duration-500">
+    <ul
+      class="flex flex-col p-4 text-sm text-black gap-x-2 md:flex-row md:font-medium"
+    >
+      <li
+        routerLink="/"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="block px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>الرئيسية</span>
+      </li>
+      <li
+        routerLink="/super/students"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="block px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>متابعة الطلاب</span>
+      </li>
+    </ul>
+  </div>
+  <div class="flex">
+    <div
+      (mouseenter)="menu_Profile()"
+      (mouseleave)="menu_Profile_close()"
+      class="relative z-50 flex items-center p-4 cursor-pointer text-primary"
+    >
+      <p class="text-lg font-semibold truncate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+      </p>
+      <span class="mx-2 inlin-block">
+        <svg
+          [ngClass]="menu_show_Profile ? 'rotate-180 transition-transform' : ''"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+      <ul
+        [ngClass]="{
+          'scale-100 border-t-2 bg-primary border-secondary':
+            menu_show_Profile
+        }"
+        class="absolute left-0 z-[100] flex flex-col items-center px-4 justify-center w-56 scale-0 overflow-hidden text-base text-white transition-all duration-500 rounded-bl-lg rounded-br-lg shadow-lg top-12"
+      >
+        <li
+          (click)="authService.logout()"
+          class="px-2 py-2 transition-all cursor-pointer hover:text-secondary"
+        >
+          <span class="font-mont text-f6">تسجيل خروج </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  } @else if (roleName() === 'ولي أمر') {
+  <div class="lg:ms-64 ms-[4.5rem] transition-all duration-500">
+    <ul
+      class="flex flex-col p-4 text-sm text-black gap-x-2 md:flex-row md:font-medium"
+    >
+      <li
+        routerLink="/"
+        routerLinkActive="activeLink"
+        ariaCurrentWhenActive="page"
+        class="block px-4 py-2 font-semibold transition-all rounded-lg cursor-pointer border-secondary hover:bg-primary hover:text-white"
+      >
+        <span>الرئيسية</span>
+      </li>
+    </ul>
+  </div>
+  <div class="flex">
+    <div
+      (mouseenter)="menu_Profile()"
+      (mouseleave)="menu_Profile_close()"
+      class="relative z-50 flex items-center p-4 cursor-pointer text-primary"
+    >
+      <p class="text-lg font-semibold truncate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+      </p>
+      <span class="mx-2 inlin-block">
+        <svg
+          [ngClass]="menu_show_Profile ? 'rotate-180 transition-transform' : ''"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+      <ul
+        [ngClass]="{
+          'scale-100 border-t-2 bg-primary border-secondary':
+            menu_show_Profile
+        }"
+        class="absolute left-0 z-[100] flex flex-col items-center px-4 justify-center w-56 scale-0 overflow-hidden text-base text-white transition-all duration-500 rounded-bl-lg rounded-br-lg shadow-lg top-12"
+      >
+        <li
+          (click)="authService.logout()"
+          class="px-2 py-2 transition-all cursor-pointer hover:text-secondary"
+        >
+          <span class="font-mont text-f6">تسجيل خروج </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  } @else {
+  <div class="lg:ms-72 ms-[4.5rem] transition-all duration-500">
+    <a routerLink="/">
+      <img src="assets/imgs/logo2.webp" class="size-12" alt=" logo image" />
+    </a>
+  </div>
+  <div class="flex">
+    <div
+      (mouseenter)="menu_Profile()"
+      (mouseleave)="menu_Profile_close()"
+      class="relative z-50 flex items-center p-4 cursor-pointer text-primary"
+    >
+      <p class="text-lg font-semibold truncate">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+      </p>
+      <span class="mx-2 inlin-block">
+        <svg
+          [ngClass]="menu_show_Profile ? 'rotate-180 transition-transform' : ''"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </span>
+      <ul
+        [ngClass]="{
+          'scale-100 border-t-2 bg-primary border-secondary':
+            menu_show_Profile
+        }"
+        class="absolute left-0 z-[100] flex flex-col items-center px-4 justify-center w-56 scale-0 overflow-hidden text-base text-white transition-all duration-500 rounded-bl-lg rounded-br-lg shadow-lg top-12"
+      >
+        <li
+          (click)="authService.logout()"
+          class="px-2 py-2 transition-all cursor-pointer hover:text-secondary"
+        >
+          <span class="font-mont text-f6">تسجيل خروج </span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  }
+</nav>

@@ -1,0 +1,314 @@
+<div class="min-h-screen py-6 bg-gradient-to-br">
+  <div class="mx-auto max-w-7xl">
+    <!-- Header -->
+    <div class="mb-8 text-center">
+      <h1 class="mb-3 text-xl font-bold sm:text-3xl text-primary">الدورات</h1>
+      <p class="text-slate-600">نظرة شاملة على جميع الدورات والإحصائيات</p>
+    </div>
+    @if (!isLoading()) {
+      <!-- Statistics Cards -->
+      <div class="grid grid-cols-1 gap-6 mb-8 md:grid-cols-2 lg:grid-cols-3">
+        <div
+          class="p-6 transition-shadow bg-white shadow-lg border-secondary border-s-4 rounded-xl hover:shadow-xl"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-slate-600">إجمالي الدورات</p>
+              <p class="text-3xl font-bold text-purple-600">
+                {{ totalCourses }}
+              </p>
+            </div>
+            <div class="p-3 bg-purple-100 rounded-full">
+              <svg
+                class="w-6 h-6 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div
+          class="p-6 transition-shadow bg-white border-green-500 shadow-lg border-s-4 rounded-xl hover:shadow-xl"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-slate-600">الدورات المكتملة</p>
+              <p class="text-3xl font-bold text-green-600">
+                {{ completedCourses }}
+              </p>
+            </div>
+            <div class="p-3 bg-green-100 rounded-full">
+              <svg
+                class="w-6 h-6 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-6 transition-shadow bg-white border-blue-500 shadow-lg border-s-4 rounded-xl hover:shadow-xl"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-slate-600">الدورات الجارية</p>
+              <p class="text-3xl font-bold text-blue-600">
+                {{ ongoingCourses }}
+              </p>
+            </div>
+            <div class="p-3 bg-blue-100 rounded-full">
+              <svg
+                class="w-6 h-6 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <!-- 
+      <div
+        class="p-6 transition-shadow bg-white shadow-lg border-s-4 border-logoColor1 rounded-xl hover:shadow-xl"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-slate-600">متوسط التقدم</p>
+            <p class="text-3xl font-bold text-orange-600">
+              {{ averageProgress || 0 }}%
+            </p>
+          </div>
+          <div class="p-3 bg-orange-100 rounded-full">
+            <svg
+              class="w-6 h-6 text-orange-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              ></path>
+            </svg>
+          </div>
+        </div>
+      </div> -->
+      </div>
+
+      <!-- Data Table -->
+      <div class="overflow-hidden bg-white shadow-lg rounded-xl">
+        <div
+          class="px-6 py-4 text-center border-b bg-slate-50 border-slate-200"
+        >
+          <h2 class="text-lg font-semibold text-primary">تفاصيل الدورات</h2>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-secondary">
+              <tr class="text-[15px] text-center font-semibold text-slate-100">
+                <th class="p-4 tracking-wider">اسم الدورة</th>
+                <th class="p-4 tracking-wider">تاريخ البداية</th>
+                <th class="p-4 tracking-wider">تاريخ النهاية</th>
+                <th class="p-4 tracking-wider">الحالة</th>
+                <th class="p-4 tracking-wider">نسبة الإنجاز</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-slate-200">
+              @for (course of courses(); track course.id) {
+                <tr
+                  class="text-center transition-colors hover:bg-slate-50"
+                  [class]="$odd ? 'bg-blue-50' : ''"
+                >
+                  <td
+                    [routerLink]="['/tutorial/' + course.id]"
+                    class="p-4 whitespace-nowrap"
+                  >
+                    <div class="text-sm font-medium text-slate-900">
+                      {{ course.name }}
+                    </div>
+                  </td>
+                  <td
+                    class="p-4 text-sm border-gray-300 border-x whitespace-nowrap text-slate-500"
+                  >
+                    {{ formatDate(course.startDate) }}
+                  </td>
+                  <td class="p-4 text-sm whitespace-nowrap text-slate-500">
+                    {{ formatDate(course.endDate) }}
+                  </td>
+                  <td class="p-4 border-gray-300 border-x whitespace-nowrap">
+                    @if (course.advancePercentage === 100) {
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
+                      >
+                        مكتملة
+                      </span>
+                    } @else {
+                      <span
+                        class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+                      >
+                        جارية
+                      </span>
+                    }
+                  </td>
+                  <td
+                    (click)="openAchievementPopup(course)"
+                    class="p-4 cursor-pointer whitespace-nowrap hover:bg-slate-100"
+                  >
+                    <span
+                      class="min-w-0 text-sm font-medium"
+                      [class]="
+                        getProgressBarColor(
+                          (course.successPercentage *
+                            course.advancePercentage) /
+                            100
+                        )
+                      "
+                    >
+                      {{
+                        round(
+                          (course.successPercentage *
+                            course.advancePercentage) /
+                            100
+                        )
+                      }}%
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Summary Footer -->
+      <div class="p-6 mt-8 bg-white shadow-lg rounded-xl">
+        <div class="grid grid-cols-1 gap-6 text-center md:grid-cols-2">
+          <div>
+            <p class="text-2xl font-bold text-green-600">
+              {{ completionRate || 0 }}%
+            </p>
+            <p class="text-sm text-slate-600">معدل الإنجاز العام</p>
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-purple-600">
+              {{ activeCourses }}
+            </p>
+            <p class="text-sm text-slate-600">الدورات النشطة حالياً</p>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="flex items-center justify-center space-x-2 bg-white min-h-80">
+        <div
+          class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+        ></div>
+      </div>
+    }
+  </div>
+
+  <!-- Popup: نسبة الإنجاز -->
+  <div
+    dir="rtl"
+    [ngClass]="{
+      'scale-100 opacity-100': isOpenAchievement,
+      'scale-0 opacity-0': !isOpenAchievement,
+    }"
+    class="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all duration-300"
+    (click)="closeAchievementPopup()"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-2xl w-72 overflow-hidden border-2 border-gray-200 transform transition-transform duration-300"
+      (click)="$event.stopPropagation()"
+    >
+      @if (achievementData) {
+        <!-- الجزء العلوي: نسبة الإنجاز -->
+        <div
+          class="relative flex flex-col items-center justify-center py-7 px-4 border-b-4"
+          [class]="
+            achievementData.result >= 50
+              ? 'border-b-green-500'
+              : 'border-b-red-500'
+          "
+        >
+          <!-- زر الإغلاق -->
+          <button
+            (click)="closeAchievementPopup()"
+            class="absolute top-3 left-3 text-gray-400 hover:text-red-600 transition-colors"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+              stroke="currentColor"
+              class="w-5 h-5"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+
+          <p class="text-sm font-semibold text-gray-400 mb-2">نسبة الإنجاز</p>
+          <span
+            class="text-5xl font-black"
+            [class]="
+              achievementData.result >= 50 ? 'text-green-600' : 'text-red-600'
+            "
+            >{{ achievementData.result }}%</span
+          >
+        </div>
+
+        <!-- الجزء السفلي: خليتان -->
+        <div class="grid grid-cols-2 divide-x divide-x-reverse divide-gray-200">
+          <!-- التقدم -->
+          <div class="flex flex-col items-center justify-center py-6 px-4">
+            <p class="text-xs font-semibold text-gray-400 mb-2 tracking-wide">
+              التقدم
+            </p>
+            <span class="text-3xl font-black text-blue-600"
+              >{{ achievementData.advance }}%</span
+            >
+          </div>
+          <!-- النجاح -->
+          <div class="flex flex-col items-center justify-center py-6 px-4">
+            <p class="text-xs font-semibold text-gray-400 mb-2 tracking-wide">
+              النجاح
+            </p>
+            <span class="text-3xl font-black text-purple-600"
+              >{{ achievementData.success }}%</span
+            >
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

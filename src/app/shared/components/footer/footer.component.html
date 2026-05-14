@@ -1,0 +1,377 @@
+@if (showFooter()) {
+  <footer
+    class="px-4"
+    [class]="
+      isLogoWhite()
+        ? ' bg-primary pt-12  border-t-2 border-white'
+        : 'pt-12  border-t-2 border-primary'
+    "
+    [class]="isMain() ? 'footer' : 'pt-12 bg-primary border-t-2 border-primary'"
+  >
+    <div
+      class="container flex flex-col justify-between mx-auto space-y-8 lg:flex-row lg:space-y-0"
+    >
+      @if (isMain()) {
+        <div class="lg:w-5/12 lg:ps-12">
+          <a
+            rel="noopener noreferrer"
+            routerLink="/"
+            class="flex justify-center space-x-3 lg:justify-start"
+          >
+            <div class="flex items-center justify-center w-72">
+              <img
+                ngSrc="assets/imgs/index000 -20.png"
+                width="576"
+                height="576"
+                alt="logo"
+                class="h-auto"
+              />
+            </div>
+          </a>
+          <p class="md:text-lg pt-6 text-primary ms-12">
+            {{ "footer.slogan" | translate }}
+          </p>
+        </div>
+      } @else {
+        <div
+          class="lg:w-5/12 flex flex-col justify-center items-center lg:items-start lg:justify-start"
+        >
+          <a
+            rel=" noopener noreferrer"
+            routerLink="/"
+            class="flex justify-center lg:justify-start w-72 space-x-3"
+          >
+            <img
+              [src]="'assets/' + appConfigService.config()?.['logo']"
+              alt="logo"
+            />
+          </a>
+          <p
+            class="md:text-lg w-8/12 pt-6 ms-12"
+            [class]="isLogoWhite() ? 'text-white' : 'text-primary'"
+          >
+            {{ appConfigService.config()?.["description"] }}
+          </p>
+        </div>
+      }
+      <div
+        class="grid grid-cols-1 pt-12 text-lg gap-x-3 gap-y-8 lg:w-2/3 sm:grid-cols-2"
+      >
+        <div
+          class="space-y-3 w-fit"
+          [class]="isMain() ? 'text-white' : 'text-gray-900'"
+          [class]="isLogoWhite() ? 'text-white' : 'text-gray-900'"
+        >
+          <h3
+            class="p-1 px-4 mb-4 text-xl text-white rounded-md font-semibold bg-secondary"
+          >
+            {{ "footer.fastLinks" | translate }}
+          </h3>
+          <ul class="space-y-2">
+            <li
+              class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                />
+              </svg>
+              <a rel="noopener noreferrer" routerLink="/">{{
+                "footer.home" | translate
+              }}</a>
+            </li>
+            <li
+              class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                />
+              </svg>
+              <a rel="noopener noreferrer" routerLink="cateogry/qodrat">
+                {{ "footer.qodrat" | translate }}</a
+              >
+            </li>
+            <li
+              class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                />
+              </svg>
+              <a rel="noopener noreferrer" routerLink="cateogry/tahsili">{{
+                "footer.tahsili" | translate
+              }}</a>
+            </li>
+            <!-- <li
+            class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"
+              />
+            </svg>
+            <a rel="noopener noreferrer" routerLink="cateogry/mohba"> موهبة</a>
+          </li>
+          <li
+            class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-4"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15.75 19.5 8.25 12l7.5-7.5"
+              />
+            </svg>
+            <a rel="noopener noreferrer" routerLink="cateogry/qodrat-anglyzy">
+              قدرات بالأنجليزية</a
+            >
+          </li> -->
+            <li
+              class="flex items-center font-semibold transition-colors cursor-pointer hover:text-secondary gap-x-2"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-4"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M15.75 19.5 8.25 12l7.5-7.5"
+                />
+              </svg>
+              <a rel="noopener noreferrer" routerLink="best-tutorials">
+                {{ "footer.featuredCourses" | translate }}</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div class="space-y-3 text-white w-fit">
+          <h3
+            class="p-1 px-4 mb-6 text-xl rounded-md font-semibold bg-secondary w-fit"
+          >
+            {{ "footer.contactUs" | translate }}
+          </h3>
+          <div class="flex items-center mb-3 gap-x-1">
+            @if (isLoading === false) {
+              @for (item of socialMedia; track item.id) {
+                @if (isMain()) {
+                  @if (item.name === "تيك توك") {
+                    <a
+                      [href]="item.link"
+                      target="_blank"
+                      id="tik tok"
+                      class="flex items-center justify-center w-12 h-12 text-2xl text-gray-400 duration-500 transform bg-white border-2 border-gray-900 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-gray-900 hover:text-white"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 fill-green-500 group-hover:fill-white"
+                        class="w-8 h-8 fill-black group-hover:fill-white"
+                        viewBox="0 0 32 32"
+                      >
+                        <path
+                          d="M24.562,7.613c-1.508-.983-2.597-2.557-2.936-4.391-.073-.396-.114-.804-.114-1.221h-4.814l-.008,19.292c-.081,2.16-1.859,3.894-4.039,3.894-.677,0-1.315-.169-1.877-.465-1.288-.678-2.169-2.028-2.169-3.582,0-2.231,1.815-4.047,4.046-4.047,.417,0,.816,.069,1.194,.187v-4.914c-.391-.053-.788-.087-1.194-.087-4.886,0-8.86,3.975-8.86,8.86,0,2.998,1.498,5.65,3.783,7.254,1.439,1.01,3.19,1.606,5.078,1.606,4.886,0,8.86-3.975,8.86-8.86V11.357c1.888,1.355,4.201,2.154,6.697,2.154v-4.814c-1.345,0-2.597-.4-3.647-1.085Z"
+                        ></path>
+                      </svg>
+                    </a>
+                  }
+                  @if (item.name === "انستجرام") {
+                    <a
+                      [href]="item.link"
+                      target="_blank"
+                      id="instegram"
+                      class="flex items-center cursor-pointer justify-center w-12 h-12 text-2xl group duration-500 transform bg-white border-2 border-[#bc2a8d] rounded-full hover:-translate-y-3 hover:bg-[#bc2a8d]"
+                    >
+                      <svg
+                        class="w-8 h-8 fill-[#bc2a8d] group-hover:fill-white"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </a>
+                  }
+                  @if (item.name === "سناب شات") {
+                    <a
+                      [href]="item.link"
+                      target="_blank"
+                      id="snap"
+                      class="flex items-center justify-center w-12 h-12 text-2xl text-yellow-500 duration-500 transform bg-white border-2 border-yellow-600 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-yellow-600 hover:text-white"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-8 h-8 fill-yellow-500 group-hover:fill-white"
+                        viewBox="0 0 32 32"
+                      >
+                        <path
+                          d="M30.893,22.837c-.208-.567-.606-.871-1.058-1.122-.085-.05-.163-.09-.23-.12-.135-.07-.273-.137-.41-.208-1.41-.747-2.51-1.69-3.274-2.808-.217-.315-.405-.648-.562-.996-.065-.186-.062-.292-.015-.389,.046-.074,.108-.138,.18-.188,.242-.16,.492-.323,.661-.432,.302-.195,.541-.35,.695-.46,.579-.405,.983-.835,1.236-1.315,.357-.672,.404-1.466,.13-2.175-.383-1.009-1.336-1.635-2.49-1.635-.243,0-.486,.025-.724,.077-.064,.014-.127,.028-.189,.044,.011-.69-.005-1.418-.066-2.135-.218-2.519-1.1-3.84-2.02-4.893-.589-.66-1.283-1.218-2.053-1.653-1.396-.797-2.979-1.202-4.704-1.202s-3.301,.405-4.698,1.202c-.773,.434-1.468,.994-2.057,1.656-.92,1.053-1.802,2.376-2.02,4.893-.061,.717-.077,1.449-.067,2.135-.062-.016-.125-.031-.189-.044-.238-.051-.481-.077-.724-.077-1.155,0-2.109,.626-2.491,1.635-.276,.71-.23,1.505,.126,2.178,.254,.481,.658,.911,1.237,1.315,.153,.107,.393,.262,.695,.46,.163,.106,.402,.261,.635,.415,.082,.053,.151,.123,.204,.205,.049,.1,.051,.208-.022,.408-.155,.341-.34,.668-.553,.976-.747,1.092-1.815,2.018-3.179,2.759-.723,.383-1.474,.639-1.791,1.502-.239,.651-.083,1.391,.525,2.015h0c.223,.233,.482,.429,.766,.58,.592,.326,1.222,.578,1.876,.75,.135,.035,.263,.092,.379,.169,.222,.194,.19,.486,.485,.914,.148,.221,.336,.412,.555,.564,.619,.428,1.315,.455,2.053,.483,.666,.025,1.421,.054,2.283,.339,.357,.118,.728,.346,1.158,.613,1.032,.635,2.446,1.503,4.811,1.503s3.789-.873,4.829-1.51c.427-.262,.796-.488,1.143-.603,.862-.285,1.617-.313,2.283-.339,.737-.028,1.433-.055,2.053-.483,.259-.181,.475-.416,.632-.69,.212-.361,.207-.613,.406-.789,.109-.074,.229-.129,.356-.162,.662-.173,1.301-.428,1.901-.757,.302-.162,.575-.375,.805-.63l.008-.009c.57-.61,.714-1.329,.48-1.964Zm-2.102,1.13c-1.282,.708-2.135,.632-2.798,1.059-.563,.363-.23,1.144-.639,1.426-.503,.347-1.989-.025-3.909,.609-1.584,.524-2.594,2.029-5.442,2.029s-3.835-1.502-5.444-2.033c-1.916-.634-3.406-.262-3.909-.609-.409-.282-.077-1.064-.639-1.426-.664-.427-1.516-.351-2.798-1.055-.816-.451-.353-.73-.081-.862,4.645-2.249,5.386-5.721,5.419-5.979,.04-.312,.084-.557-.259-.875-.332-.307-1.804-1.218-2.213-1.503-.676-.472-.973-.944-.754-1.523,.153-.401,.527-.552,.92-.552,.124,0,.248,.014,.369,.041,.742,.161,1.462,.533,1.879,.633,.05,.013,.102,.02,.153,.021,.222,0,.3-.112,.285-.366-.048-.812-.162-2.394-.034-3.872,.176-2.034,.831-3.042,1.61-3.934,.374-.428,2.132-2.286,5.493-2.286s5.123,1.85,5.497,2.276c.78,.891,1.436,1.899,1.61,3.934,.128,1.479,.018,3.061-.034,3.872-.018,.268,.063,.366,.285,.366,.052,0,.103-.008,.153-.021,.417-.1,1.137-.472,1.879-.633,.121-.027,.245-.041,.369-.041,.395,0,.766,.153,.92,.552,.219,.579-.077,1.051-.753,1.523-.409,.285-1.881,1.196-2.213,1.503-.344,.317-.299,.563-.259,.875,.033,.261,.773,3.734,5.419,5.979,.274,.137,.737,.416-.079,.871Z"
+                        ></path>
+                      </svg>
+                    </a>
+                  }
+                  @if (item.name === "تويتر") {
+                    <a
+                      [href]="item.link"
+                      target="_blank"
+                      id="twitter"
+                      class="flex items-center justify-center w-12 h-12 text-2xl text-gray-400 duration-500 transform bg-white border-2 border-gray-900 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-gray-900 hover:text-white"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-7 h-7 fill-black group-hover:fill-white"
+                        viewBox="0 0 32 32"
+                      >
+                        <path
+                          d="M18.42,14.009L27.891,3h-2.244l-8.224,9.559L10.855,3H3.28l9.932,14.455L3.28,29h2.244l8.684-10.095,6.936,10.095h7.576l-10.301-14.991h0Zm-3.074,3.573l-1.006-1.439L6.333,4.69h3.447l6.462,9.243,1.006,1.439,8.4,12.015h-3.447l-6.854-9.804h0Z"
+                        ></path>
+                      </svg>
+                    </a>
+                  }
+                  @if (item.name === "فيس") {
+                    <a
+                      [href]="item.link"
+                      target="_blank"
+                      id="facebook"
+                      class="flex items-center justify-center w-12 h-12 text-2xl text-blue-600 duration-500 transform bg-white border-2 border-blue-600 rounded-full hover:-translate-y-3 hover:bg-blue-600 hover:text-white"
+                    >
+                      <svg
+                        class="w-10 h-10"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </a>
+                  }
+                }
+                @if (item.name === "واتس") {
+                  <a
+                    [href]="item.link"
+                    target="_blank"
+                    id="whatsapp"
+                    class="flex items-center justify-center w-12 h-12 text-2xl text-green-500 duration-500 transform bg-white border-2 border-green-600 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-green-600 hover:text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-8 h-8 fill-green-500 group-hover:fill-white"
+                      viewBox="0 0 32 32"
+                    >
+                      <path
+                        d="M25.873,6.069c-2.619-2.623-6.103-4.067-9.814-4.069C8.411,2,2.186,8.224,2.184,15.874c-.001,2.446,.638,4.833,1.852,6.936l-1.969,7.19,7.355-1.929c2.026,1.106,4.308,1.688,6.63,1.689h.006c7.647,0,13.872-6.224,13.874-13.874,.001-3.708-1.44-7.193-4.06-9.815h0Zm-9.814,21.347h-.005c-2.069,0-4.099-.557-5.87-1.607l-.421-.25-4.365,1.145,1.165-4.256-.274-.436c-1.154-1.836-1.764-3.958-1.763-6.137,.003-6.358,5.176-11.531,11.537-11.531,3.08,.001,5.975,1.202,8.153,3.382,2.177,2.179,3.376,5.077,3.374,8.158-.003,6.359-5.176,11.532-11.532,11.532h0Zm6.325-8.636c-.347-.174-2.051-1.012-2.369-1.128-.318-.116-.549-.174-.78,.174-.231,.347-.895,1.128-1.098,1.359-.202,.232-.405,.26-.751,.086-.347-.174-1.464-.54-2.788-1.72-1.03-.919-1.726-2.054-1.929-2.402-.202-.347-.021-.535,.152-.707,.156-.156,.347-.405,.52-.607,.174-.202,.231-.347,.347-.578,.116-.232,.058-.434-.029-.607-.087-.174-.78-1.88-1.069-2.574-.281-.676-.567-.584-.78-.595-.202-.01-.433-.012-.665-.012s-.607,.086-.925,.434c-.318,.347-1.213,1.186-1.213,2.892s1.242,3.355,1.416,3.587c.174,.232,2.445,3.733,5.922,5.235,.827,.357,1.473,.571,1.977,.73,.83,.264,1.586,.227,2.183,.138,.666-.1,2.051-.839,2.34-1.649,.289-.81,.289-1.504,.202-1.649s-.318-.232-.665-.405h0Z"
+                        fill-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </a>
+                }
+                @if (item.name === "تيليجرام") {
+                  <a
+                    [href]="item.link"
+                    target="_blank"
+                    id="telegram"
+                    class="flex items-center justify-center w-12 h-12 text-2xl text-blue-400 duration-500 transform bg-white border-2 border-blue-400 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-blue-400 hover:text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      x="0px"
+                      y="0px"
+                      class="w-8 h-8 fill-blue-400 group-hover:fill-white"
+                      viewBox="0 0 32 32"
+                    >
+                      <path
+                        d="M 26.070313 3.996094 C 25.734375 4.011719 25.417969 4.109375 25.136719 4.21875 L 25.132813 4.21875 C 24.847656 4.332031 23.492188 4.902344 21.433594 5.765625 C 19.375 6.632813 16.703125 7.757813 14.050781 8.875 C 8.753906 11.105469 3.546875 13.300781 3.546875 13.300781 L 3.609375 13.277344 C 3.609375 13.277344 3.25 13.394531 2.875 13.652344 C 2.683594 13.777344 2.472656 13.949219 2.289063 14.21875 C 2.105469 14.488281 1.957031 14.902344 2.011719 15.328125 C 2.101563 16.050781 2.570313 16.484375 2.90625 16.722656 C 3.246094 16.964844 3.570313 17.078125 3.570313 17.078125 L 3.578125 17.078125 L 8.460938 18.722656 C 8.679688 19.425781 9.949219 23.597656 10.253906 24.558594 C 10.433594 25.132813 10.609375 25.492188 10.828125 25.765625 C 10.933594 25.90625 11.058594 26.023438 11.207031 26.117188 C 11.265625 26.152344 11.328125 26.179688 11.390625 26.203125 C 11.410156 26.214844 11.429688 26.21875 11.453125 26.222656 L 11.402344 26.210938 C 11.417969 26.214844 11.429688 26.226563 11.441406 26.230469 C 11.480469 26.242188 11.507813 26.246094 11.558594 26.253906 C 12.332031 26.488281 12.953125 26.007813 12.953125 26.007813 L 12.988281 25.980469 L 15.871094 23.355469 L 20.703125 27.0625 L 20.8125 27.109375 C 21.820313 27.550781 22.839844 27.304688 23.378906 26.871094 C 23.921875 26.433594 24.132813 25.875 24.132813 25.875 L 24.167969 25.785156 L 27.902344 6.65625 C 28.007813 6.183594 28.035156 5.742188 27.917969 5.3125 C 27.800781 4.882813 27.5 4.480469 27.136719 4.265625 C 26.769531 4.046875 26.40625 3.980469 26.070313 3.996094 Z M 25.96875 6.046875 C 25.964844 6.109375 25.976563 6.101563 25.949219 6.222656 L 25.949219 6.234375 L 22.25 25.164063 C 22.234375 25.191406 22.207031 25.25 22.132813 25.308594 C 22.054688 25.371094 21.992188 25.410156 21.667969 25.28125 L 15.757813 20.75 L 12.1875 24.003906 L 12.9375 19.214844 C 12.9375 19.214844 22.195313 10.585938 22.59375 10.214844 C 22.992188 9.84375 22.859375 9.765625 22.859375 9.765625 C 22.886719 9.3125 22.257813 9.632813 22.257813 9.632813 L 10.082031 17.175781 L 10.078125 17.15625 L 4.242188 15.191406 L 4.242188 15.1875 C 4.238281 15.1875 4.230469 15.183594 4.226563 15.183594 C 4.230469 15.183594 4.257813 15.171875 4.257813 15.171875 L 4.289063 15.15625 L 4.320313 15.144531 C 4.320313 15.144531 9.53125 12.949219 14.828125 10.71875 C 17.480469 9.601563 20.152344 8.476563 22.207031 7.609375 C 24.261719 6.746094 25.78125 6.113281 25.867188 6.078125 C 25.949219 6.046875 25.910156 6.046875 25.96875 6.046875 Z"
+                      ></path>
+                    </svg>
+                  </a>
+                }
+                @if (item.name === "يوتيوب") {
+                  <a
+                    [href]="item.link"
+                    target="_blank"
+                    id="youtube"
+                    class="flex items-center justify-center w-12 h-12 text-2xl text-red-500 duration-500 transform bg-white border-2 border-red-500 rounded-full cursor-pointer group hover:-translate-y-3 hover:bg-red-500 hover:text-white"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-7 h-7 fill-red-500 group-hover:fill-white"
+                      viewBox="0 0 32 32"
+                    >
+                      <path
+                        d="M31.331,8.248c-.368-1.386-1.452-2.477-2.829-2.848-2.496-.673-12.502-.673-12.502-.673,0,0-10.007,0-12.502,.673-1.377,.37-2.461,1.462-2.829,2.848-.669,2.512-.669,7.752-.669,7.752,0,0,0,5.241,.669,7.752,.368,1.386,1.452,2.477,2.829,2.847,2.496,.673,12.502,.673,12.502,.673,0,0,10.007,0,12.502-.673,1.377-.37,2.461-1.462,2.829-2.847,.669-2.512,.669-7.752,.669-7.752,0,0,0-5.24-.669-7.752ZM12.727,20.758V11.242l8.364,4.758-8.364,4.758Z"
+                      ></path>
+                    </svg>
+                  </a>
+                }
+              }
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-col justify-center cursor-pointer text-sm md:text-base underline border-t-2 w-full p-4 mt-6 font-semibold text-center md:flex-row gap-y-2 md:gap-y-0 border-gray-400 text-slate-950"
+    >
+      <a href="https://alssalem.com/">
+        {{ "footer.rights" | translate: { year: 2026 } }}
+      </a>
+    </div>
+  </footer>
+}

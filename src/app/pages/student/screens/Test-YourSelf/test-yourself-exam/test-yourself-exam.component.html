@@ -1,0 +1,326 @@
+<app-navbar />
+<section
+  [ngClass]="isLoading() ? 'h-screen' : ''"
+  [@tabAnimation]="selectedTab"
+  class="relative"
+>
+  @if (isLoading() === false) {
+    @if (selectedTab === 0) {
+      <div class="w-full pt-32">
+        <div class="flex flex-col items-center justify-center gap-y-8">
+          <h2 class="font-semibold text-center">
+            <span class="text-3xl leading-loose text-logoColor1">
+              {{ examDetails.examName }}</span
+            >
+          </h2>
+          <div
+            class="flex flex-col items-center justify-center gap-6 md:flex-row"
+          >
+            <div class="flex items-center justify-center text-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 text-secondaryAdmin"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"
+                />
+              </svg>
+              <span class="mx-2 text-base">عدد الأسئلة:</span>
+              <span class="font-semibold text-green-600">{{
+                totalQuestions
+              }}</span>
+            </div>
+            <div class="flex items-center justify-center text-lg">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 text-secondaryAdmin"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M14.25 6.087c0-.355.186-.676.401-.959.221-.29.349-.634.349-1.003 0-1.036-1.007-1.875-2.25-1.875s-2.25.84-2.25 1.875c0 .369.128.713.349 1.003.215.283.401.604.401.959v0a.64.64 0 0 1-.657.643 48.39 48.39 0 0 1-4.163-.3c.186 1.613.293 3.25.315 4.907a.656.656 0 0 1-.658.663v0c-.355 0-.676-.186-.959-.401a1.647 1.647 0 0 0-1.003-.349c-1.036 0-1.875 1.007-1.875 2.25s.84 2.25 1.875 2.25c.369 0 .713-.128 1.003-.349.283-.215.604-.401.959-.401v0c.31 0 .555.26.532.57a48.039 48.039 0 0 1-.642 5.056c1.518.19 3.058.309 4.616.354a.64.64 0 0 0 .657-.643v0c0-.355-.186-.676-.401-.959a1.647 1.647 0 0 1-.349-1.003c0-1.035 1.008-1.875 2.25-1.875 1.243 0 2.25.84 2.25 1.875 0 .369-.128.713-.349 1.003-.215.283-.4.604-.4.959v0c0 .333.277.599.61.58a48.1 48.1 0 0 0 5.427-.63 48.05 48.05 0 0 0 .582-4.717.532.532 0 0 0-.533-.57v0c-.355 0-.676.186-.959.401-.29.221-.634.349-1.003.349-1.035 0-1.875-1.007-1.875-2.25s.84-2.25 1.875-2.25c.37 0 .713.128 1.003.349.283.215.604.401.96.401v0a.656.656 0 0 0 .658-.663 48.422 48.422 0 0 0-.37-5.36c-1.886.342-3.81.574-5.766.689a.578.578 0 0 1-.61-.58v0Z"
+                />
+              </svg>
+              <span class="mx-2 text-base">نسبة النجاح:</span>
+              <span class="font-semibold text-green-600"
+                >{{ examDetails?.passingPrecent }}%</span
+              >
+            </div>
+          </div>
+          <button
+            (click)="selectTab(1)"
+            class="px-12 py-3 text-xl transition-colors border-2 rounded-full hover:bg-green-600 hover:text-white"
+          >
+            ابدأ الاختبار
+          </button>
+        </div>
+      </div>
+    }
+    @if (selectedTab === 1) {
+      <!-- header -->
+      <div
+        class="flex items-center justify-between w-full px-2 py-2 mx-auto mt-[5.5rem] border rounded-lg lg:px-8 bg-secondaryAdmin lg:w-11/12"
+      >
+        <p class="text-base">
+          السؤال
+          <span class="font-bold text-logoColor1">{{ currentPage + 1 }}</span>
+          من
+          {{ totalQuestions }}
+        </p>
+        <div class="text-lg text-logoColor1">
+          <cd-timer
+            #basicTimer
+            format="hms"
+            [startTime]="startTime"
+            [countdown]="isCountdown"
+            (onComplete)="onComplete()"
+          ></cd-timer>
+        </div>
+        <button
+          (click)="selectTab(2)"
+          class="px-4 py-2 text-black transition-colors bg-white border-2 rounded-lg md:px-12 hover:bg-red-700 hover:text-white"
+        >
+          إنهاء الاختبار
+        </button>
+      </div>
+      <form [formGroup]="correctionForm" (ngSubmit)="onSubmit()">
+        <div class="px-2 py-4 bg-white rounded-lg lg:px-8">
+          <div formArrayName="answers">
+            <div
+              *ngFor="let question of getQuestions.controls; let i = index"
+              [formGroupName]="i"
+            >
+              <div
+                class="flex flex-col items-center justify-center w-full mt-2"
+                *ngIf="i === currentPage"
+              >
+                <input type="text" hidden formControlName="questionId" />
+                @if (
+                  question.get("text")?.value !== null &&
+                  question.get("text")?.value !== ""
+                ) {
+                  <p class="mb-2 text-lg">{{ question.get("text")?.value }}</p>
+                }
+                @if (question.get("image2Url")?.value !== null) {
+                  <div
+                    class="w-full px-1 border-2 rounded-md lg:px-8 md:w-9/12"
+                  >
+                    <img
+                      [src]="question.get('image2Url')?.value"
+                      class="object-contain object-center w-full h-full"
+                      alt="Question Image"
+                      loading="lazy"
+                    />
+                  </div>
+                }
+                @if (question.get("image1Url")?.value !== null) {
+                  <div
+                    class="w-full h-auto px-1 mt-2 border-2 rounded-md lg:px-8 md:w-9/12"
+                  >
+                    <img
+                      [src]="question.get('image1Url')?.value"
+                      class="object-contain object-center w-full h-full py-2"
+                      alt="Question Image"
+                      loading="lazy"
+                    />
+                  </div>
+                }
+                <div
+                  class="flex items-center justify-between w-full pl-4 font-bold lg:px-8 mt-14 md:w-2/3 gap-x-6"
+                >
+                  @if (examDetails.choicesCount === 4) {
+                    @if (examDetails.isEnglish) {
+                      @for (
+                        n of ["A", "B", "C", "D"];
+                        track j;
+                        let j = $index
+                      ) {
+                        <input
+                          [id]="'isRight' + j"
+                          type="radio"
+                          name="studentChoice"
+                          formControlName="studentChoice"
+                          (change)="onAnswerSelected(i, j + 1)"
+                          class="hidden"
+                          [value]="j + 1"
+                        />
+                        <label
+                          [for]="'isRight' + j"
+                          class="flex items-center text-xl cursor-pointer"
+                        >
+                          <span
+                            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+                          ></span>
+                          {{ n }}
+                        </label>
+                      }
+                    } @else {
+                      @for (
+                        n of ["أ", "ب", "ج", "د"];
+                        track j;
+                        let j = $index
+                      ) {
+                        <input
+                          [id]="'isRight' + j"
+                          type="radio"
+                          name="studentChoice"
+                          formControlName="studentChoice"
+                          (change)="onAnswerSelected(i, j + 1)"
+                          class="hidden"
+                          [value]="j + 1"
+                        />
+                        <label
+                          [for]="'isRight' + j"
+                          class="flex items-center text-xl cursor-pointer"
+                        >
+                          <span
+                            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+                          ></span>
+                          {{ n }}
+                        </label>
+                      }
+                    }
+                  } @else {
+                    @if (examDetails.isEnglish) {
+                      @for (
+                        n of ["A", "B", "C", "D", "E"];
+                        track j;
+                        let j = $index
+                      ) {
+                        <input
+                          [id]="'isRight' + j"
+                          type="radio"
+                          name="studentChoice"
+                          formControlName="studentChoice"
+                          (change)="onAnswerSelected(i, j + 1)"
+                          class="hidden"
+                          [value]="j + 1"
+                        />
+                        <label
+                          [for]="'isRight' + j"
+                          class="flex items-center text-xl cursor-pointer"
+                        >
+                          <span
+                            class="inline-block w-8 h-8 ml-2 border-2 border-black rounded-full flex-no-shrink"
+                          ></span>
+                          {{ n }}
+                        </label>
+                      }
+                    }
+                  }
+                </div>
+                <div
+                  class="flex items-center justify-between w-full px-2 mt-8 lg:px-8 md:w-2/3"
+                >
+                  <button
+                    (click)="prevQuestion()"
+                    [disabled]="currentPage === 0"
+                    type="button"
+                    class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 rounded-l-md disabled:cursor-not-allowed disabled:bg-slate-500 hover:bg-gray-800 hover:text-white"
+                  >
+                    <div class="flex flex-row align-middle">
+                      <svg
+                        class="w-5 ml-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                      <p class="ml-2">السابق</p>
+                    </div>
+                  </button>
+                  <button
+                    (click)="nextQuestion()"
+                    [disabled]="currentPage === totalQuestions - 1"
+                    type="button"
+                    class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 disabled:cursor-not-allowed disabled:bg-slate-500 rounded-l-md hover:bg-gray-800 hover:text-white"
+                  >
+                    <div class="flex flex-row align-middle">
+                      <span class="mr-2">التالي</span>
+                      <svg
+                        class="w-5 mr-2"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                          clip-rule="evenodd"
+                        ></path>
+                      </svg>
+                    </div>
+                  </button>
+                </div>
+                <div class="flex items-center justify-center mt-4 gap-x-4">
+                  <button
+                    *ngFor="let pageNum of getPageRange()"
+                    class="px-3 py-2 border rounded-md"
+                    (click)="gotoPage(pageNum)"
+                    [class.active]="pageNum === currentPage + 1"
+                  >
+                    {{ pageNum }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    }
+    @if (selectedTab === 2) {
+      @if (correctionLoading() === false) {
+        <div class="pt-4 mt-20 lg:flex lg:justify-center lg:items-center">
+          <div class="text-center gap-y-8">
+            <h2 class="mb-2 text-2xl font-semibold leading-loose">
+              {{ examDetails.examName }}
+            </h2>
+            <app-correction-exam-test-yourself
+              [correctionExamDetails]="correctionExamDetails"
+              [totalQuestions]="totalQuestions"
+            />
+            <button
+              (click)="selectTab(1)"
+              class="px-12 py-3 mt-6 mb-16 text-xl transition-colors border-2 border-black rounded-full hover:border-secondaryAdmin hover:bg-green-600 hover:text-white"
+            >
+              إعادة الاختبار
+            </button>
+          </div>
+        </div>
+      }
+    }
+    @if (correctionLoading()) {
+      <div class="fixed z-50 top-[40%] lg:left-[50%] bg-opacity-60">
+        <div class="flex items-center">
+          <div
+            class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+          ></div>
+        </div>
+      </div>
+    }
+  }
+  @if (isLoading()) {
+    <div class="fixed z-50 top-[40%] lg:left-[50%] bg-opacity-60">
+      <div class="flex items-center">
+        <div
+          class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+        ></div>
+      </div>
+    </div>
+  }
+</section>

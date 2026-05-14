@@ -1,0 +1,124 @@
+<div
+  (click)="goToEditTutorial(tutorial.id)"
+  class="col-span-1 mb-16 transition-all duration-500 bg-white border-2 rounded-lg cursor-pointer hover:scale-105 lg:mb-0"
+>
+  <div class="flex flex-col w-full px-4 pt-4">
+    <div
+      class="relative flex items-center justify-center w-full overflow-hidden rounded-md shadow min-h-64 bg-slate-200 aspect-w-1 aspect-h-1 group-hover:opacity-75"
+    >
+      @if (tutorial.img) {
+      <img
+        class="object-cover object-center w-full h-full"
+        [src]="tutorial.img"
+        [alt]="tutorial.name"
+      />
+      }@else {
+      <span
+        class="flex flex-col items-center justify-center w-full h-full text-gray-400"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-16 h-16"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+          ></path>
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+          ></path>
+        </svg>
+        <span class="mt-2 text-lg font-bold uppercase">No Image</span>
+      </span>
+      }
+    </div>
+    <div class="flex flex-col self-start w-full px-2 my-6 text-right gap-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-semibold truncate text-primaryAdmin">
+          {{ tutorial.name }}
+        </h2>
+      </div>
+      <div>
+        <div class="flex text-lg gap-x-2">
+          <p class="line-through text-textNav">
+            {{ tutorial.priceBeforeDiscount | currency : " " }} ر.س
+          </p>
+          <p class="text-secondaryAdmin">
+            {{ tutorial.price | currency : " " }} ر.س
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex items-center justify-between w-full gap-x-6 text-textNav"
+      >
+        <div class="flex items-center">
+          <span class="text-lg">{{ tutorial.durationInWeeks }}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 mx-2 fill-slate-100"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+            />
+          </svg>
+          <span class="text-lg">اسبوع</span>
+        </div>
+        <h3 class="text-lg truncate text-textNav">
+          {{ tutorial.categoryName }}
+        </h3>
+      </div>
+    </div>
+    <div class="flex justify-between py-6 border-t-2 basis-full">
+      <div class="flex items-center text-lg text-textNav gap-x-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-7"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"
+          ></path>
+        </svg>
+        <span> أ. {{ tutorial.teacherName }} </span>
+      </div>
+      <button
+        (click)="goToEditTutorial(tutorial.id)"
+        class="flex items-center text-lg text-green-600 transition-colors cursor-pointer hover:text-green-700 gap-x-2"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+          />
+        </svg>
+        <span class="text-lg">تحرير</span>
+      </button>
+    </div>
+  </div>
+</div>

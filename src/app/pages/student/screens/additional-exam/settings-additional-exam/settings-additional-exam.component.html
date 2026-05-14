@@ -1,0 +1,434 @@
+<div class="flex items-center justify-center mx-auto w-full">
+  @if (activeTab === 0) {
+    <div class="h-full overflow-y-auto basis-full">
+      <div class="w-full border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+        <button
+          (click)="hideModal()"
+          class="flex items-center justify-center px-8 py-3 text-lg font-bold transition-all duration-300 border-2 rounded-2xl bg-white border-gray-200 text-primaryAdmin hover:bg-primaryAdmin hover:text-white hover:border-primaryAdmin gap-x-3 group shadow-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="3"
+            stroke="currentColor"
+            class="w-6 h-6 transition-transform group-hover:translate-x-1"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
+          <span>خروج</span>
+        </button>
+      </div>
+      <div
+        class="flex items-center justify-between px-6 pt-8 text-center md:text-right"
+      >
+        <h1 class="text-xl font-bold lg:text-3xl text-primaryAdmin">
+          اختبار إضافي
+        </h1>
+        <div class="flex items-center gap-3">
+          <button
+            type="button"
+            (click)="getRandomExam()"
+            class="hidden md:flex items-center justify-center px-10 py-3 font-bold text-white transition-all duration-300 rounded-xl shadow-lg shadow-secondaryAdmin/30 bg-secondaryAdmin hover:bg-primaryAdmin hover:-translate-y-1 active:translate-y-0"
+          >
+            <span>إنشاء الاختبار</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-5 h-5 mr-2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 4.5v15m7.5-7.5h-15"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+      <!-- Mobile Create Button -->
+      <div class="px-6 mt-4 md:hidden">
+        <button
+          type="button"
+          (click)="getRandomExam()"
+          class="flex items-center justify-center w-full px-8 py-3 font-bold text-white transition-all bg-secondaryAdmin rounded-xl shadow-lg"
+        >
+          إنشاء الاختبار
+        </button>
+      </div>
+      <div class="w-full px-6 mt-4">
+        <h3 class="text-base md:text-lg">تحضير:</h3>
+        <div
+          class="flex flex-col mt-2 text-sm text-textNav md:text-base gap-y-4"
+        >
+          <p>
+            توفر لك منصة السالم ميزة مبتكرة تتيح لك اختبر نفسك في أي مهارة من
+            خلال اختبار إضافي يعتمد على الذكاء الاصطناعي. ما عليك سوى الضغط على
+            زر "اختبار إضافي"، وستقوم المنصة بإنشاء اختبار مخصص يناسب مستواك
+            باستخدام تقنيات الذكاء الاصطناعي.
+          </p>
+          <p class="text-secondaryAdmin font-semibold">
+            ويمكنك اختبار نفسك في المهارات اللتي لم تتجاوزها فقط
+          </p>
+        </div>
+      </div>
+      @if (!isLoadingSkills()) {
+        <div class="flex flex-col gap-y-6 mt-6 px-6">
+          <div
+            class="flex flex-col md:flex-row md:items-end justify-between p-5 bg-gray-50 rounded-xl border border-gray-100 gap-6"
+          >
+            <!-- Toggle Section -->
+            <div class="flex flex-col gap-y-3">
+              <span class="text-sm font-semibold text-gray-700"
+                >تخصيص الأسئلة</span
+              >
+              <label class="inline-flex items-center cursor-pointer gap-x-3">
+                <input
+                  type="checkbox"
+                  class="sr-only peer"
+                  (change)="toggleFailedSkills($event)"
+                  [checked]="isFailedSkillsOnly()"
+                />
+                <div
+                  class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-sky-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primaryAdmin"
+                ></div>
+                <span class="text-sm font-medium text-gray-600">
+                  المهارات التي لم تتقنها فقط
+                </span>
+              </label>
+            </div>
+
+            <!-- Question Count Section -->
+            <div class="flex flex-col gap-y-2 w-full md:w-auto">
+              <label class="text-sm font-semibold text-gray-700">
+                عدد الأسئلة
+              </label>
+              <div class="relative w-full md:w-40">
+                <input
+                  type="number"
+                  [(ngModel)]="questionCount"
+                  min="1"
+                  max="100"
+                  class="w-full pl-3 pr-10 py-2.5 text-center bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-primaryAdmin/20 focus:border-primaryAdmin outline-none transition-all font-bold text-lg text-primaryAdmin"
+                  placeholder="20"
+                />
+                <div
+                  class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-400"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-5"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          @if (
+            allSkills.length <= 6 &&
+            (tutorialId === 1 || tutorialId === 2 || tutorialId === 3)
+          ) {
+            <div
+              (click)="toggleSelectAll()"
+              class="flex items-center cursor-pointer gap-x-4"
+            >
+              <div
+                [class.bg-primaryAdmin]="selectAll"
+                [class.text-white]="selectAll"
+                class="text-gray-900 transition-colors border rounded-sm shadow-md size-6 hover:text-white hover:border-secondaryAdmin hover:bg-primaryAdmin md:text-base"
+              ></div>
+              <span> تحديد الكل </span>
+            </div>
+            <div
+              class="flex flex-wrap items-center w-full px-8 mt-6 gap-x-6 gap-y-2"
+            >
+              @if (!isLoadingSkills()) {
+                @for (s of allSkills; track s.id) {
+                  <div
+                    (click)="toggleActiveSkill(s.id)"
+                    [class.bg-primaryAdmin]="activeSkillIds.includes(s.id)"
+                    [class.text-white]="activeSkillIds.includes(s.id)"
+                    class="p-5 text-sm text-gray-900 transition-colors border rounded-lg shadow-md cursor-pointer hover:border-secondaryAdmin md:text-base"
+                  >
+                    {{ s.name }}
+                  </div>
+                }
+              } @else {
+                <div class="flex justify-center w-full">
+                  <img
+                    class="w-16 h-16 animate-spin"
+                    src="https://www.svgrepo.com/show/70469/loading.svg"
+                    alt="Loading icon"
+                  />
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="w-full px-8 mt-4">
+              <ng-select
+                [items]="allSkills"
+                [multiple]="true"
+                [closeOnSelect]="false"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                [searchable]="true"
+                [(ngModel)]="activeSkillIds"
+                placeholder="أختر إسم المهارة"
+                class="w-full px-3 py-2 my-2 text-base text-gray-900 rounded-lg ring-1 focus:ring-sky-600"
+              >
+              </ng-select>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="flex items-center justify-center w-full mt-6 gap-x-6">
+          <img
+            class="w-16 h-16 animate-spin"
+            src="https://www.svgrepo.com/show/70469/loading.svg"
+            alt="Loading icon"
+          />
+        </div>
+      }
+
+      <h3 class="px-8 mt-6 text-base md:text-lg text-secondaryAdmin">
+        حدد مستوى الصعوبة
+      </h3>
+      <div class="max-w-lg p-6 mx-auto bg-white rounded-lg shadow-lg">
+        <!-- سهــل -->
+        <div class="mb-4">
+          <label class="block mb-2 font-medium text-green-600">
+            سهل: {{ easy }}%
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            [value]="easy"
+            (input)="updateRange('easy', $event)"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-500"
+          />
+        </div>
+
+        <!-- متوســط -->
+        <div class="mb-4">
+          <label class="block mb-2 font-medium text-yellow-600">
+            متوسط: {{ medium }}%
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            [value]="medium"
+            (input)="updateRange('medium', $event)"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-yellow-500"
+          />
+        </div>
+
+        <!-- صعــب -->
+        <div class="md:mb-4">
+          <label class="block mb-2 font-medium text-red-600">
+            صعب: {{ hard }}%
+          </label>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            [value]="hard"
+            (input)="updateRange('hard', $event)"
+            class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-red-500"
+          />
+        </div>
+      </div>
+      <div class="flex items-center justify-center w-full mt-10 px-8 pb-10">
+        <button
+          type="button"
+          (click)="getRandomExam()"
+          class="flex items-center justify-center w-full md:w-fit px-12 py-4 font-bold text-xl text-white transition-all duration-300 rounded-2xl shadow-xl shadow-secondaryAdmin/40 bg-secondaryAdmin hover:bg-primaryAdmin hover:scale-105 active:scale-95"
+        >
+          إنشاء الاختبار
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-6 h-6 mr-2"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+        </button>
+      </div>
+    </div>
+  } @else if (activeTab === 1) {
+    @if (!isLoading()) {
+      <div
+        class="h-full overflow-y-auto bg-white rounded-lg shadow-md border basis-full"
+      >
+        <div class="w-full border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+          <button
+            (click)="activeTab = 0"
+            class="flex items-center justify-center px-8 py-3 text-lg font-bold transition-all duration-300 border-2 rounded-2xl bg-white border-gray-200 text-primaryAdmin hover:bg-primaryAdmin hover:text-white hover:border-primaryAdmin gap-x-3 group shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="3"
+              stroke="currentColor"
+              class="w-6 h-6 transition-transform group-hover:translate-x-1"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+              />
+            </svg>
+            <span>رجوع للاعدادات</span>
+          </button>
+        </div>
+        <div class="pt-4">
+          <app-additional-exam
+            [exam]="exam"
+            [tutorialId]="tutorialId"
+            (sendTab)="changeTab($event)"
+            (sentResultExam)="getTheResultExam($event)"
+            (sentResultInfo)="getTheExamInfo($event)"
+          />
+        </div>
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center w-full gap-y-6">
+        <img
+          class="w-16 h-16 animate-spin"
+          src="https://www.svgrepo.com/show/70469/loading.svg"
+          alt="Loading icon"
+        />
+        <span class="text-lg font-medium text-primaryAdmin"
+          >جاري تجهيز الاختبار</span
+        >
+      </div>
+    }
+  } @else if (activeTab === 2) {
+    <div
+      class="h-full overflow-y-auto bg-white rounded-lg shadow-md border basis-full"
+    >
+      <div class="w-full border-b border-gray-100 bg-gray-50/50 px-6 py-4">
+        <button
+          (click)="activeTab = 0"
+          class="flex items-center justify-center px-8 py-3 text-lg font-bold transition-all duration-300 border-2 rounded-2xl bg-white border-gray-200 text-primaryAdmin hover:bg-primaryAdmin hover:text-white hover:border-primaryAdmin gap-x-3 group shadow-md"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="3"
+            stroke="currentColor"
+            class="w-6 h-6 transition-transform group-hover:translate-x-1"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+            />
+          </svg>
+          <span>رجوع</span>
+        </button>
+      </div>
+      <div class="flex justify-between items-center px-6 pt-6">
+        <h2 class="text-xl font-bold lg:text-2xl text-primaryAdmin">
+          عرض تفصيلي للنتيجة
+        </h2>
+      </div>
+      <app-result-additional-exam
+        [correctionExamDetails]="correctionExamDetails"
+      />
+      <div class="flex items-center justify-center mt-4 mb-10 gap-x-6">
+        <button
+          (click)="activeTab = 1"
+          class="px-8 py-2 transition-colors border-2 border-black rounded-full hover:border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+        >
+          إعادة الاختبار
+        </button>
+        <button
+          (click)="reviewQuickExam()"
+          class="px-8 py-2 transition-colors border-2 border-black rounded-full hover:border-secondaryAdmin hover:bg-primaryAdmin hover:text-white"
+        >
+          مراجعة الاجابات
+        </button>
+      </div>
+    </div>
+  } @else {
+    @if (!isLoadingReview()) {
+      <div
+        class="h-full overflow-y-auto bg-white rounded-lg shadow-md border basis-full"
+      >
+        <div
+          class="w-full border-b border-gray-100 bg-gray-50/50 px-6 py-4 flex justify-between items-center"
+        >
+          <button
+            (click)="activeTab = 2"
+            class="flex items-center justify-center px-8 py-3 text-lg font-bold transition-all duration-300 border-2 rounded-2xl bg-white border-gray-200 text-primaryAdmin hover:bg-primaryAdmin hover:text-white hover:border-primaryAdmin gap-x-3 group shadow-md"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="3"
+              stroke="currentColor"
+              class="w-6 h-6 transition-transform group-hover:translate-x-1"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+              />
+            </svg>
+            <span>رجوع للنتيجة</span>
+          </button>
+          <button
+            (click)="activeTab = 0"
+            class="flex items-center justify-center px-8 py-3 text-lg font-bold transition-all duration-300 border-2 rounded-2xl bg-white border-gray-200 text-primaryAdmin hover:bg-primaryAdmin hover:text-white hover:border-primaryAdmin gap-x-3 group shadow-md"
+          >
+            <span>خروج</span>
+          </button>
+        </div>
+        <app-review-additional-exam
+          [tutorialId]="tutorialId"
+          [reviewExamInfo]="reviewExamInfo"
+        />
+      </div>
+    } @else {
+      <div class="flex flex-col items-center justify-center w-full gap-y-6">
+        <img
+          class="w-16 h-16 animate-spin"
+          src="https://www.svgrepo.com/show/70469/loading.svg"
+          alt="Loading icon"
+        />
+        <span class="text-lg font-medium text-primaryAdmin"
+          >جاري تجهيز المراجعة</span
+        >
+      </div>
+    }
+  }
+</div>

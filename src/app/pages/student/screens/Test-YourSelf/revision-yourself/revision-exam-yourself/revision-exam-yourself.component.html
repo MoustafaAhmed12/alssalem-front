@@ -1,0 +1,219 @@
+@if (isLoading()) {
+  <div class="fixed z-50 top-[40%] left-[50%] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+} @else {
+  <div class="flex flex-col items-center justify-center w-full mt-2">
+    <div class="flex flex-col items-center justify-center w-full mt-2">
+      @if (examAnswers.questionImage2 !== null) {
+        <div class="w-full h-auto px-1 border-2 rounded-md lg:px-8 md:w-9/12">
+          <img
+            [src]="examAnswers.questionImage2"
+            class="object-contain object-center w-full h-full"
+            alt="Question Image"
+            loading="lazy"
+          />
+        </div>
+      }
+      <div
+        class="w-full h-auto px-1 mt-2 border-2 rounded-md lg:px-8 md:w-9/12"
+      >
+        <img
+          [src]="examAnswers.questionImage"
+          class="object-contain object-center w-full h-full py-2"
+          alt="Question Image"
+          loading="lazy"
+        />
+      </div>
+      <div
+        class="flex items-center justify-between w-full pl-4 font-bold lg:px-8 mt-14 md:w-2/3 gap-x-6"
+      >
+        @if (choicesCount === 4) {
+          @if (isEnglish) {
+            @for (n of ["A", "B", "C", "D"]; track j; let j = $index) {
+              <label class="flex gap-2 text-xl cursor-pointer">
+                {{ n }}
+                @if (
+                  allData.chosenAnswer === examAnswers.answer &&
+                  examAnswers.answer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (
+                  allData.chosenAnswer !== examAnswers.answer &&
+                  allData.chosenAnswer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (examAnswers.answer === j + 1) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else {
+                  <div
+                    class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                  ></div>
+                }
+              </label>
+            }
+          } @else {
+            @for (n of ["أ", "ب", "ج", "د"]; track j; let j = $index) {
+              <label class="flex gap-2 text-xl cursor-pointer">
+                {{ n }}
+                @if (
+                  allData.chosenAnswer === examAnswers.answer &&
+                  examAnswers.answer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (
+                  allData.chosenAnswer !== examAnswers.answer &&
+                  allData.chosenAnswer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (examAnswers.answer === j + 1) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else {
+                  <div
+                    class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                  ></div>
+                }
+              </label>
+            }
+          }
+        } @else {
+          @if (isEnglish) {
+            @for (n of ["A", "B", "C", "D", "E"]; track j; let j = $index) {
+              <label class="flex gap-2 text-xl cursor-pointer">
+                {{ n }}
+                @if (
+                  allData.chosenAnswer === examAnswers.answer &&
+                  examAnswers.answer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (
+                  allData.chosenAnswer !== examAnswers.answer &&
+                  allData.chosenAnswer === j + 1
+                ) {
+                  <div
+                    class="w-8 h-8 bg-red-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else if (examAnswers.answer === j + 1) {
+                  <div
+                    class="w-8 h-8 bg-green-500 border-2 border-gray-600 rounded-full"
+                  ></div>
+                } @else {
+                  <div
+                    class="w-8 h-8 bg-transparent border-2 border-gray-600 rounded-full"
+                  ></div>
+                }
+              </label>
+            }
+          }
+        }
+      </div>
+      <div
+        class="flex items-center justify-between w-full px-2 mt-8 mb-2 lg:px-8 md:w-2/3"
+      >
+        <button
+          (click)="gotoPage(allData.pageNumber - 1)"
+          [disabled]="!allData.hasPreviousPage"
+          type="button"
+          class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 rounded-l-md disabled:cursor-not-allowed disabled:bg-slate-500 hover:bg-gray-800 hover:text-white"
+        >
+          <div class="flex flex-row align-middle">
+            <svg
+              class="w-5 ml-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M12.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-2.293-2.293a1 1 0 010-1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+            <p class="ml-2">السابق</p>
+          </div>
+        </button>
+        @if (
+          examAnswers?.answerUrl !== "link" && examAnswers?.answerUrl === ""
+        ) {
+        } @else {
+          <button
+            (click)="openVideoSection()"
+            type="button"
+            class="block px-8 py-2 text-white border border-gray-200 rounded-full hover:animate-pop bg-primaryAdmin hover:bg-secondaryAdmin"
+          >
+            شرح السؤال
+          </button>
+        }
+        <button
+          (click)="gotoPage(allData.pageNumber + 1)"
+          [disabled]="!allData.hasNextPage"
+          type="button"
+          class="px-3 py-2 text-white bg-gray-700 border-r border-gray-200 disabled:cursor-not-allowed disabled:bg-slate-500 rounded-l-md hover:bg-gray-800 hover:text-white"
+        >
+          <div class="flex flex-row align-middle">
+            <span class="mr-2">التالي</span>
+            <svg
+              class="w-5 mr-2"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z"
+                clip-rule="evenodd"
+              ></path>
+            </svg>
+          </div>
+        </button>
+      </div>
+      <div class="flex items-center justify-center mt-4 gap-x-4">
+        @for (pageNum of getPageRange(); track pageNum) {
+          <button
+            class="px-3 py-2 border rounded-md"
+            (click)="gotoPage(pageNum)"
+            [class.active]="allData.pageNumber === pageNum"
+          >
+            {{ pageNum }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+  @if (openVideo) {
+    <div class="grid pb-8 place-items-center">
+      <div class="w-full md:px-0 md:w-3/4 xl:w-11/12">
+        <h2 class="my-4 font-bold md:text-xl">شرح السؤال</h2>
+        <div class="relative flex items-center justify-center w-full">
+          <iframe
+            class="w-11/12 h-96"
+            [src]="getDecodedUrl() | safeUrl"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+          <div
+            class="absolute inset-0 flex items-center justify-center text-xl font-bold text-white bg-black bg-opacity-50 opacity-0 cursor-pointer right-6 lg:right-8 xl:right-14 overlay hover:opacity-100"
+          ></div>
+        </div>
+      </div>
+    </div>
+  }
+}

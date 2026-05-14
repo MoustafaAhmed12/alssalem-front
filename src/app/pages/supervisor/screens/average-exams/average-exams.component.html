@@ -1,0 +1,574 @@
+<div class="py-8 mx-auto max-w-7xl">
+  <!-- Welcome Message -->
+  <div class="p-4 bg-white rounded-t-lg shadow-lg md:p-6">
+    <h1 class="mb-2 text-xl font-bold text-gray-800 md:text-2xl">
+      متابعة اختبار تحديد المستوي
+    </h1>
+  </div>
+
+  <!-- Filters Section -->
+  <div [@fadeInUpDelay] class="p-4 bg-white shadow-lg md:p-6">
+    <div
+      class="grid grid-cols-1 gap-4 md:grid-cols-2"
+      [class]="activeTab() !== 3 ? 'xl:grid-cols-4' : 'xl:grid-cols-3'"
+    >
+      <!-- School Select -->
+      @if (activeTab() !== 3) {
+        <div class="col-span-1">
+          <ng-select
+            [items]="mainSections"
+            [multiple]="true"
+            [closeOnSelect]="true"
+            bindLabel="name"
+            bindValue="id"
+            (change)="filterCate($event)"
+            placeholder="حدد القسم"
+            class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+          >
+          </ng-select>
+        </div>
+      }
+      <div class="col-span-1">
+        <ng-select
+          [items]="allSchools"
+          [multiple]="true"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterSchool($event)"
+          placeholder="حدد المدرسة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+
+      <!-- Grade Select -->
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          [searchable]="true"
+          placeholder="حدد الصف"
+          (change)="fliterState($event)"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <ng-option [value]="'الصف الأول الثانوي'"
+            >الصف الأول الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثاني الثانوي'"
+            >الصف الثاني الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث الثانوي'"
+            >الصف الثالث الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث المتوسط'"
+            >الصف الثالث المتوسط</ng-option
+          >
+        </ng-select>
+      </div>
+
+      <!-- Class Select -->
+      <div class="col-span-1">
+        <ng-select
+          [items]="classNumbers"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          (change)="filterClassNo($event)"
+          placeholder="حدد الفصل"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+  <div [@fadeInUpDelay] class="p-4 mb-6 bg-white rounded-b-lg shadow-lg md:p-6">
+    <ul
+      class="flex flex-col md:flex-row justify-center items-center gap-4 text-white"
+    >
+      @for (tab of tabs(); track tab.id) {
+        <li
+          (click)="setActive(tab.id)"
+          class="px-6 py-3 rounded-md hover:animate-pop cursor-pointer"
+          [class]="
+            activeTab() === tab.id ? 'bg-primary font-semibold' : 'bg-secondary'
+          "
+        >
+          {{ tab.name }}
+        </li>
+      }
+      @if (activeTab() !== 1) {
+        <li
+          (click)="exportTable()"
+          class="px-6 py-3 rounded-md flex items-center gap-x-2 bg-logoColor1 font-semibold hover:animate-pop cursor-pointer"
+        >
+          <svg
+            class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            class="size-6"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+              clip-rule="evenodd"
+            ></path>
+          </svg>
+          تصدير البيانات
+        </li>
+      }
+    </ul>
+  </div>
+
+  <!-- Cards Section -->
+  @if (!isLoading()) {
+    @if (activeTab() === 1) {
+      <div [@fadeInUpDelay] class="grid grid-cols-1 gap-6 mb-12 md:grid-cols-2">
+        <div
+          class="p-6 transition-all duration-300 bg-white border border-gray-100 shadow-lg rounded-2xl hover:shadow-xl"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">إجمالي الفئات</p>
+              <p class="text-3xl font-bold text-blue-600">
+                {{ avageExam.length }}
+              </p>
+            </div>
+            <div class="p-3 bg-blue-100 rounded-full">
+              <svg
+                class="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-6 transition-all duration-300 bg-white border border-gray-100 shadow-lg rounded-2xl hover:shadow-xl"
+        >
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-medium text-gray-500">
+                متوسط جميع الدرجات
+              </p>
+              <p
+                class="text-3xl font-bold"
+                [class]="
+                  getOverallAverage() >= 50 ? 'text-primary' : 'text-red-600'
+                "
+              >
+                {{ getOverallAverage() }}%
+              </p>
+            </div>
+            <div class="p-3 bg-purple-100 rounded-full">
+              <svg
+                class="w-8 h-8"
+                [class]="
+                  getOverallAverage() >= 50 ? 'text-primary' : 'text-red-600'
+                "
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+                ></path>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Cards -->
+      <div class="space-y-8">
+        @for (category of avageExam; track category.categoryId) {
+          <div
+            class="overflow-hidden transition-all duration-500 transform bg-white border border-gray-100 rounded-lg shadow-xl hover:shadow-2xl hover:-translate-y-1"
+          >
+            <!-- Category Header -->
+            <div class="px-8 py-2 bg-gradient-to-r from-secondary to-primary">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4 space-x-reverse">
+                  <div class="p-2 bg-white rounded-full bg-opacity-20">
+                    <svg
+                      class="text-white size-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h2 class="text-lg font-bold text-white">
+                      {{ category.categoryName }}
+                    </h2>
+                  </div>
+                </div>
+                <div class="text-center">
+                  <p class="text-sm text-blue-100">عدد المدارس</p>
+                  <p class="text-xl font-bold text-white">
+                    {{ category.schoolsResults.length }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schools Results -->
+            <div class="p-4">
+              @if (category.schoolsResults.length > 0) {
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                  @for (
+                    school of category.schoolsResults;
+                    track school.schoolId
+                  ) {
+                    <div
+                      class="p-6 transition-all duration-300 border border-gray-300 bg-gradient-to-br from-gray-50 to-blue-50 rounded-2xl hover:border-blue-400 group hover:shadow-lg"
+                    >
+                      <div
+                        class="flex items-center p-2 mb-3 transition-colors duration-300 rounded-md gap-x-2 group-hover:bg-blue-200"
+                      >
+                        <svg
+                          class="w-5 h-5 text-blue-600"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+                          ></path>
+                        </svg>
+                        <h3
+                          class="text-base font-bold leading-relaxed text-gray-800"
+                        >
+                          {{ school.schoolName }}
+                        </h3>
+                      </div>
+
+                      <!-- Progress Bar -->
+                      <div class="w-full h-2 mb-3 bg-gray-200 rounded-full">
+                        <div
+                          class="h-2 transition-all duration-1000 ease-out rounded-full"
+                          [class]="getProgressBarClass(school.average)"
+                          [style.width.%]="
+                            school.average > 100 ? 100 : school.average
+                          "
+                        ></div>
+                      </div>
+
+                      <div class="flex items-center justify-between text-sm">
+                        <span class="text-gray-600">المتوسط</span>
+                        <span class="font-bold text-gray-800"
+                          >{{ round(school.average) }}%</span
+                        >
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="py-12 text-center">
+                  <div
+                    class="flex items-center justify-center w-20 h-20 mx-auto mb-4 bg-gray-100 rounded-full"
+                  >
+                    <svg
+                      class="w-10 h-10 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M9.172 16.172a4 4 0 015.656 0M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.291-1.1-5.5-2.709"
+                      ></path>
+                    </svg>
+                  </div>
+                  <p class="text-lg text-gray-500">
+                    لا توجد نتائج متاحة لهذه الفئة
+                  </p>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (avageExam.length === 0) {
+        <div class="py-20 text-center">
+          <div
+            class="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full"
+          >
+            <svg
+              class="w-12 h-12 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.291-1.1-5.5-2.709"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="mb-2 text-2xl font-bold text-gray-700">لا توجد بيانات</h3>
+          <p class="text-gray-500">لم يتم العثور على أي فئات أو نتائج لعرضها</p>
+        </div>
+      }
+    } @else if (activeTab() === 2) {
+      <div class="mb-4 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-green-100 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-gray-500">إجمالي الطلاب الذين أكملوا الاختبار</h3>
+            <p class="text-xl font-bold text-green-600">{{ allData.totalCount || 0 }} طالب</p>
+          </div>
+        </div>
+      </div>
+      <div class="overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table class="w-full border border-collapse border-gray-300">
+          <thead>
+            <tr class="text-center text-white bg-primary">
+              <th class="p-3 border">اسم الطالب</th>
+              <th class="p-3 border">اسم المدرسة</th>
+              <th class="p-3 border">الصف</th>
+              <th class="p-3 border">رقم الفصل</th>
+              <th class="p-3 border">اسم القسم</th>
+              <th class="p-3 border">الدرجة</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (
+              student of allStudentJoin;
+              track studentIndex;
+              let studentIndex = $index
+            ) {
+              @if (studentIndex > 0) {
+                <tr>
+                  <td colspan="8" class="border-b-4 border-gray-400"></td>
+                </tr>
+              }
+              @for (
+                tutorial of student.detecLevelExams;
+                track i;
+                let i = $index;
+                let even = $even
+              ) {
+                <tr
+                  [class]="even ? 'bg-gray-100' : 'bg-white'"
+                  [ngClass]="even ? 'odd:bg-gray-50' : 'even:bg-gray-200'"
+                >
+                  @if (i === 0) {
+                    <td
+                      class="p-3 font-medium text-center border cursor-pointer whitespace-nowrap"
+                      [attr.rowspan]="student.detecLevelExams.length"
+                    >
+                      <a
+                        target="_blank"
+                        [routerLink]="['/supervisor/', student.id]"
+                      >
+                        {{ student.name }}
+                      </a>
+                    </td>
+                    <td
+                      class="p-3 text-center border whitespace-nowrap"
+                      [attr.rowspan]="student.detecLevelExams.length"
+                    >
+                      {{ student.schoolName }}
+                    </td>
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.detecLevelExams.length"
+                    >
+                      {{ student.state }}
+                    </td>
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.detecLevelExams.length"
+                    >
+                      {{ student.classNumber }}
+                    </td>
+                  }
+                  <!-- بيانات الدورات -->
+                  <td class="p-3 text-center border whitespace-nowrap">
+                    {{ tutorial.categoryName }}
+                  </td>
+                  <td
+                    class="p-3 font-medium text-center border whitespace-nowrap"
+                    [class]="
+                      round(tutorial.result) > 50
+                        ? 'text-primary'
+                        : 'text-red-500'
+                    "
+                  >
+                    {{ round(tutorial.result) }}%
+                  </td>
+                </tr>
+              }
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="mb-4 flex items-center justify-between bg-white p-4 rounded-lg shadow-sm">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-orange-100 rounded-lg">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-bold text-gray-500">إجمالي الطلاب الذين لم يتموا الاختبار</h3>
+            <p class="text-xl font-bold text-orange-600">{{ allData.totalCount || 0 }} طالب</p>
+          </div>
+        </div>
+      </div>
+      <div class="p-6 overflow-x-auto bg-white rounded-lg shadow-lg">
+        <table class="w-full border border-collapse border-gray-300">
+          <thead>
+            <tr class="text-center text-white bg-primary">
+              <th class="p-3.5 border">اسم الطالب</th>
+              <!-- <th class="p-3.5 border">الإيميل</th> -->
+              <th class="p-3.5 border">رقم الجوال</th>
+              <th class="p-3.5 border">اسم المدرسة</th>
+              <th class="p-3.5 border">الصف</th>
+              <th class="p-3.5 border">الفصل</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (!isLoading()) {
+              @for (
+                student of allStudentNotJoin;
+                track student.id;
+                let studentIndex = $index
+              ) {
+                <tr
+                  class="font-medium"
+                  [class]="$even ? 'bg-gray-100' : 'bg-white'"
+                >
+                  <td class="p-3.5 text-center border">
+                    <a
+                      target="_blank"
+                      [routerLink]="['/supervisor/', student.id]"
+                    >
+                      {{ student.name }}
+                    </a>
+                  </td>
+                  <td class="p-3.5 text-center border">
+                    {{ student.phoneNumber }}
+                  </td>
+                  <td class="p-3.5 text-center border">
+                    {{ student.schoolName }}
+                  </td>
+                  <td class="p-3.5 text-center border">
+                    {{ student.state }}
+                  </td>
+                  <td class="p-3.5 text-center border">
+                    {{ student.classNumber }}
+                  </td>
+                </tr>
+              }
+            } @else {
+              <tr>
+                <td colspan="6" class="py-8 cell">
+                  <div
+                    class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+                  ></div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+    @if (activeTab() === 2 || activeTab() === 3) {
+      <div class="flex items-center justify-center mt-4 gap-y-2 gap-x-6">
+        <button
+          class="px-4 py-2 transition-all border rounded-md"
+          [class.bg-gray-300]="allData.hasNextPage"
+          [disabled]="allData.hasNextPage"
+          (click)="changePage(dataFilter.pageNumber - 1)"
+        >
+          ❮ السابق
+        </button>
+        @for (page of getPageRange(); track page) {
+          <button
+            class="px-4 py-2 transition-all border rounded-md"
+            [class.bg-blue-500]="page === dataFilter.pageNumber"
+            [class.text-white]="page === dataFilter.pageNumber"
+            (click)="changePage(page)"
+          >
+            {{ page }}
+          </button>
+        }
+        <button
+          class="px-4 py-2 transition-all border rounded-md"
+          [class.bg-gray-300]="allData.hasPreviousPage"
+          [disabled]="allData.hasPreviousPage"
+          (click)="changePage(dataFilter.pageNumber + 1)"
+        >
+          التالي ❯
+        </button>
+      </div>
+
+      @if (allData.data.length === 0) {
+        <div class="py-20 text-center">
+          <div
+            class="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full"
+          >
+            <svg
+              class="w-12 h-12 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12h6m-6-4h6m2 5.291A7.962 7.962 0 0112 15c-2.34 0-4.291-1.1-5.5-2.709"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="mb-2 text-2xl font-bold text-gray-700">لا توجد بيانات</h3>
+          <p class="text-gray-500">لم يتم العثور على أي فئات أو نتائج لعرضها</p>
+        </div>
+      }
+    }
+    <!-- </div> -->
+  } @else {
+    <div class="flex items-center justify-center w-full h-64">
+      <div
+        class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+      ></div>
+    </div>
+  }
+</div>

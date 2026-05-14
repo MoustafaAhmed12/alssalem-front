@@ -1,0 +1,105 @@
+<section class="min-h-screen overflow-hidden" dir="rtl">
+  <div class="container">
+    <!-- Header Section -->
+    <div class="text-center my-12">
+      <h1 class="text-4xl font-bold text-[#203154] mb-4">التقارير</h1>
+      <div class="w-1/2 mx-auto h-[2px] bg-gray-200"></div>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Teacher Card -->
+      <div
+        class="bg-white rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.05)] md:p-6 p-4 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_15px_45px_rgba(0,0,0,0.1)] hover:-translate-y-2"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="text-2xl font-extrabold text-[#1B6DBE]">المعلم</h2>
+        </div>
+
+        <div
+          class="w-full h-56 flex justify-center items-center mb-8 rounded-3xl bg-blue-50/50 p-4"
+        >
+          <img
+            src="assets/imgs/reports/teacher.png"
+            alt="Teacher Illustration"
+            class="max-w-full max-h-full object-contain"
+          />
+        </div>
+
+        <p class="text-gray-600 leading-relaxed mb-10">
+          قم بإنشاء تقارير تفصيلية عن طلابك، وتابع سير مستوى التحصيل الأكاديمي،
+          بدقة لكل طالب فردياً أو مجموعة أو فصل دراسي.
+        </p>
+
+        <button
+          [routerLink]="['/super/teacher-reports']"
+          class="w-full py-4 bg-[#1B6DBE] text-white rounded-xl text-lg font-bold shadow-[0_5px_15px_rgba(27,109,190,0.3)] transition-all hover:bg-[#155a9e] active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
+        >
+          <span>عرض التقارير</span>
+        </button>
+      </div>
+
+      <!-- Principal Card -->
+      <div
+        class="bg-white rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.05)] md:p-6 p-4 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_15px_45px_rgba(0,0,0,0.1)] hover:-translate-y-2"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="text-2xl font-extrabold text-[#2D9455]">مدير المدرسة</h2>
+        </div>
+
+        <div
+          class="w-full h-56 flex justify-center items-center mb-8 rounded-3xl bg-green-50/50 p-4"
+        >
+          <img
+            src="assets/imgs/reports/principal.png"
+            alt="Principal Illustration"
+            class="max-w-full max-h-full object-contain"
+          />
+        </div>
+
+        <p class="text-gray-600 leading-relaxed mb-10">
+          تابع الأداء العام للمدرسة وقم بتحليل مستويات الطلاب في مختلف المراحل
+          الدراسية، وفصولها، لاتخاذ قرارات تطوير فعالة.
+        </p>
+
+        <button
+          [routerLink]="['/super/general-reports']"
+          class="w-full py-4 bg-[#2D9455] text-white rounded-xl text-lg font-bold shadow-[0_5px_15px_rgba(45,148,85,0.3)] transition-all hover:bg-[#257a46] active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
+        >
+          <span>عرض التقارير</span>
+        </button>
+      </div>
+
+      <!-- General Supervisor Card -->
+      <div
+        class="bg-white rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.05)] p-10 flex flex-col items-center text-center transition-all duration-300 hover:shadow-[0_15px_45px_rgba(0,0,0,0.1)] hover:-translate-y-2"
+      >
+        <div class="flex items-center gap-3 mb-6">
+          <h2 class="text-2xl font-extrabold text-[#F2841E]">المشرف العام</h2>
+        </div>
+
+        <div
+          class="w-full h-56 flex justify-center items-center mb-8 rounded-3xl bg-orange-50/50 p-4"
+        >
+          <img
+            src="assets/imgs/reports/supervisor.png"
+            alt="Supervisor Illustration"
+            class="max-w-full max-h-full object-contain"
+          />
+        </div>
+
+        <p class="text-gray-600 leading-relaxed mb-10">
+          راقب أداء المدارس وقم بتحليلات النتائج بالتفصيل لاتخاذ قرارات
+          استراتيجية واضحة.
+        </p>
+
+        <button
+          [routerLink]="['/super/principal-reports']"
+          class="w-full py-4 bg-[#F2841E] text-white rounded-xl text-lg font-bold shadow-[0_5px_15px_rgba(242,132,30,0.3)] transition-all hover:bg-[#d4741a] active:scale-95 flex items-center justify-center gap-3 cursor-pointer"
+        >
+          <span>عرض التقارير</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

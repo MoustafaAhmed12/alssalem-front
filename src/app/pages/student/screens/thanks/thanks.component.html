@@ -1,0 +1,502 @@
+<div
+  class="min-h-screen px-4 py-8 bg-gradient-to-br from-blue-50 via-white to-green-50"
+>
+  @if (isLoading()) {
+  <div class="flex flex-col items-center justify-center space-y-6">
+    <div class="relative">
+      <!-- Outer spinning ring -->
+      <div
+        class="w-20 h-20 border-4 rounded-full border-primaryAdmin border-opacity-20"
+      ></div>
+      <!-- Inner spinning ring -->
+      <div
+        class="absolute top-0 left-0 w-20 h-20 border-4 rounded-full border-primaryAdmin border-t-transparent animate-spin"
+      ></div>
+      <!-- Center logo/icon -->
+      <div
+        class="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+      >
+        <img
+          routerLink="/"
+          src="assets/imgs/logo2.webp"
+          alt="Logo"
+          class="w-16 cursor-pointer md:w-[75px]"
+          loading="lazy"
+        />
+      </div>
+    </div>
+
+    <div class="space-y-2 text-center">
+      <h2 class="text-xl font-semibold text-gray-700">جاري معالجة ...</h2>
+      <div class="flex justify-center space-x-1 rtl:space-x-reverse">
+        <div
+          class="w-2 h-2 rounded-full bg-primaryAdmin animate-bounce"
+          style="animation-delay: 0ms"
+        ></div>
+        <div
+          class="w-2 h-2 rounded-full bg-primaryAdmin animate-bounce"
+          style="animation-delay: 150ms"
+        ></div>
+        <div
+          class="w-2 h-2 rounded-full bg-primaryAdmin animate-bounce"
+          style="animation-delay: 300ms"
+        ></div>
+      </div>
+    </div>
+  </div>
+  }@else {
+  <div class="max-w-6xl mx-auto">
+    <!-- Welcome Header -->
+    <div class="mb-8 text-center">
+      <div
+        class="inline-flex items-center justify-center p-4 mb-6 rounded-full w-fit h-fit bg-gradient-to-r"
+      >
+        <img
+          routerLink="/"
+          src="assets/imgs/logo2.webp"
+          alt="Logo"
+          class="w-16 cursor-pointer md:w-[75px]"
+          loading="lazy"
+        />
+      </div>
+
+      <h1 class="mb-4 text-2xl font-bold md:text-3xl text-primaryAdmin">
+        أهلاً وسهلاً {{ studentData().studentName }} 🎉
+      </h1>
+      <p class="mb-2 text-xl text-gray-600">
+        نحن سعداء بانضمامك إلى منصة السالم التعليمية
+      </p>
+      <p class="text-lg text-gray-500">{{ studentData().schoolName || "" }}</p>
+    </div>
+
+    <section class="max-w-6xl px-4 py-10 mx-auto">
+      <h2 class="mb-6 text-2xl font-bold text-center">
+        ضروري تشوف هذه المقاطع لتستفيد من المنصة بشكل فعال
+      </h2>
+      <p class="mb-10 text-center text-gray-700">
+        أهم ٣ مقاطع ضروري تشاهدهم قبل ما تبدأ الدراسة في منصة السالم التعليمية
+        مهمة جدًا لأنها تشرح لك كل شيء عن المنصة خطوة بخطوة، عشان تبدأ دراستك
+        بثقة وفعالية 👇
+      </p>
+
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <!-- فيديو 1 -->
+        <div class="overflow-hidden bg-white rounded shadow-md">
+          <iframe
+            class="w-full h-64 md:h-48"
+            src="https://www.youtube.com/embed/k4pCqmps1UY"
+            title="طريقة التسجيل + عمل خطة دراسية منظمة"
+            allowfullscreen
+          >
+          </iframe>
+          <div class="p-4">
+            <h3 class="mb-2 font-semibold">
+              1️⃣ طريقة التسجيل + عمل خطة دراسية منظمة تنجزك بسرعة وذكاء
+            </h3>
+          </div>
+        </div>
+
+        <!-- فيديو 2 -->
+        <div class="overflow-hidden bg-white rounded shadow-md">
+          <iframe
+            class="w-full h-64 md:h-48"
+            src="https://www.youtube.com/embed/-th4XulBIH0"
+            title="كيف تذاكر دورة التأسيس بفاعلية"
+            allowfullscreen
+          >
+          </iframe>
+          <div class="p-4">
+            <h3 class="mb-2 font-semibold">
+              2️⃣ كيف تذاكر دورة التأسيس بفاعلية وتضمن إن الأساسيات عندك قوية ✨
+            </h3>
+          </div>
+        </div>
+
+        <!-- فيديو 3 -->
+        <div class="overflow-hidden bg-white rounded shadow-md">
+          <iframe
+            class="w-full h-64 md:h-48"
+            src="https://www.youtube.com/embed/8R3X0bm8B8k"
+            title="كيف تذاكر دورة التدريبات والنماذج"
+            allowfullscreen
+          >
+          </iframe>
+          <div class="p-4">
+            <h3 class="mb-2 font-semibold">
+              3️⃣ كيف تذاكر دورة التدريبات والنماذج وتوصل لأعلى درجة بالتدريب
+              الذكي 🚀
+            </h3>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Purchase Summary Card -->
+    <div class="p-6 mb-8 bg-white border border-gray-100 shadow-lg rounded-3xl">
+      <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-4">
+        <div class="p-4 bg-green-50 rounded-2xl">
+          <div class="mb-1 text-2xl font-bold text-green-600">
+            {{ studentData().details.length }}
+          </div>
+          <div class="text-sm text-green-700">دورة مشتراة</div>
+        </div>
+        <div class="p-4 bg-blue-50 rounded-2xl">
+          <div class="mb-1 text-2xl font-bold text-blue-600">
+            {{ studentData().totalAmount }}
+          </div>
+          <div class="text-sm text-blue-700">ر.س إجمالي</div>
+        </div>
+        <div class="p-4 bg-orange-50 rounded-2xl">
+          <div class="mb-1 text-2xl font-bold text-orange-600">
+            {{ studentData().paymentDate | date : "dd/MM/yyyy" }}
+          </div>
+          <div class="text-sm text-orange-700">تاريخ الاشتراك</div>
+        </div>
+        <div class="p-4 bg-purple-50 rounded-2xl">
+          <div class="mb-1 text-2xl font-bold text-purple-600">
+            {{ studentData().phone }}
+          </div>
+          <div class="text-sm text-purple-700">رقم الهاتف</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+      <!-- Courses Selection -->
+      <div class="lg:col-span-2">
+        <div
+          class="p-2 bg-white border border-gray-100 shadow-lg md:p-8 rounded-3xl"
+        >
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="flex items-center justify-center w-10 h-10 bg-primaryAdmin rounded-xl"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800">
+              اختر الدورة التي تريد البدء بها
+            </h2>
+          </div>
+
+          <p class="mb-8 text-lg text-gray-600">
+            لديك حالياً
+            <span class="font-bold text-primaryAdmin"
+              >{{ studentData().details.length }} دورات</span
+            >
+            متاحة للدراسة. اختر أي دورة تريد البدء بها الآن:
+          </p>
+
+          <!-- Courses Grid -->
+          <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            @for (course of studentData().details; track course.id) {
+            <div class="cursor-pointer group">
+              <div
+                routerLink="/tutorial/{{ course.tutorialId }}"
+                class="relative p-6 transition-all duration-300 transform border border-gray-200 bg-gradient-to-br from-gray-50 to-gray-100 hover:from-primaryAdmin hover:to-secondaryAdmin rounded-2xl hover:scale-105 hover:shadow-xl hover:border-transparent"
+              >
+                <!-- Course Icon -->
+                <div
+                  class="flex items-center justify-center w-12 h-12 mb-4 transition-all duration-300 bg-white group-hover:bg-opacity-20 rounded-xl"
+                >
+                  @if (course.tutorialName.includes('كمي')) {
+                  <svg
+                    class="w-6 h-6 transition-colors text-primaryAdmin group-hover:text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                    />
+                  </svg>
+                  } @else {
+                  <svg
+                    class="w-6 h-6 transition-colors text-primaryAdmin group-hover:text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                    />
+                  </svg>
+                  }
+                </div>
+
+                <!-- Course Details -->
+                <h3
+                  class="mb-2 text-lg font-bold leading-tight text-gray-800 transition-colors group-hover:text-white"
+                >
+                  {{ course.tutorialName }}
+                </h3>
+
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="text-sm text-gray-600 transition-colors group-hover:text-gray-200"
+                  >
+                    السعر: {{ course.amount }} ر.س
+                  </span>
+                  <div
+                    class="px-2 py-1 text-xs font-medium text-green-800 transition-colors bg-green-100 rounded-full group-hover:bg-green-200 group-hover:text-green-900"
+                  >
+                    مفعلة
+                  </div>
+                </div>
+
+                <!-- Start Button -->
+                <button
+                  routerLink="/tutorial/{{ course.tutorialId }}"
+                  class="flex items-center justify-center w-full gap-2 px-4 py-3 font-bold text-white transition-all duration-300 bg-primaryAdmin group-hover:bg-white group-hover:text-primaryAdmin rounded-xl hover:shadow-lg"
+                >
+                  <svg
+                    class="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.01M15 10h1.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  ابدأ الدورة الآن
+                </button>
+
+                <!-- Hover Effect Overlay -->
+                <div
+                  class="absolute inset-0 transition-opacity duration-300 opacity-0 bg-gradient-to-br from-primaryAdmin to-secondaryAdmin group-hover:opacity-10 rounded-2xl"
+                ></div>
+              </div>
+            </div>
+            }
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="pt-6 mt-8 border-t border-gray-200">
+            <h3 class="mb-4 text-lg font-semibold text-gray-800">
+              إجراءات سريعة
+            </h3>
+            <div class="flex flex-wrap gap-4">
+              <button
+                routerLink="/profile/plan/0"
+                class="flex items-center gap-2 px-4 py-2 text-blue-700 transition-colors bg-blue-50 hover:bg-blue-100 rounded-xl"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+                إضافة خطتك الدراسية
+              </button>
+              <button
+                routerLink="/level-test"
+                class="flex items-center gap-2 px-4 py-2 text-green-700 transition-colors bg-green-50 hover:bg-green-100 rounded-xl"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+                اختبار تحديد المستوى
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Progress Card
+        <div class="p-6 bg-white border border-gray-100 shadow-lg rounded-3xl">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="flex items-center justify-center w-8 h-8 bg-green-500 rounded-lg"
+            >
+              <svg
+                class="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">إحصائياتك</h3>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <span class="text-gray-600">الدورات المكتملة</span>
+              <span class="font-bold text-green-600"
+                >0 من {{ studentData().details.length }}</span
+              >
+            </div>
+            <div class="w-full h-2 bg-gray-200 rounded-full">
+              <div
+                class="h-2 bg-green-500 rounded-full"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="text-sm text-center text-gray-500">
+              ابدأ أول دورة لك لتحديث إحصائياتك!
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Support Card -->
+        <div
+          class="p-6 text-white shadow-lg bg-gradient-to-br from-primaryAdmin to-secondaryAdmin rounded-3xl"
+        >
+          <div class="text-center">
+            <div
+              class="flex items-center justify-center w-12 h-12 mx-auto mb-4 bg-white rounded-full bg-opacity-20"
+            >
+              <svg
+                class="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h3 class="mb-2 text-xl font-bold">هل تحتاج مساعدة؟</h3>
+            <p class="mb-4 text-sm opacity-90">
+              فريق الدعم متاح لمساعدتك في أي وقت
+            </p>
+            <button
+              class="px-6 py-2 font-semibold transition-colors bg-white text-primaryAdmin hover:bg-gray-100 rounded-xl"
+            >
+              تواصل معنا
+            </button>
+          </div>
+        </div>
+
+        <!-- Tips Card -->
+        <div class="p-6 bg-white border border-gray-100 shadow-lg rounded-3xl">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="flex items-center justify-center w-8 h-8 bg-yellow-500 rounded-lg"
+            >
+              <svg
+                class="w-4 h-4 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                />
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800">نصائح للنجاح</h3>
+          </div>
+
+          <div class="space-y-3 text-sm text-gray-600">
+            <div class="flex items-start gap-2">
+              <div
+                class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primaryAdmin"
+              ></div>
+              <span>خصص وقتاً يومياً ثابتاً للدراسة</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <div
+                class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primaryAdmin"
+              ></div>
+              <span>اطلب المساعدة عند الحاجة</span>
+            </div>
+            <div class="flex items-start gap-2">
+              <div
+                class="flex-shrink-0 w-2 h-2 mt-2 rounded-full bg-primaryAdmin"
+              ></div>
+              <span>راجع المحتوى بانتظام</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Welcome Message Footer -->
+    <div class="mt-12 text-center">
+      <div class="p-8 bg-white border border-gray-100 shadow-lg rounded-3xl">
+        <h2 class="mb-4 text-2xl font-bold text-primaryAdmin">
+          مرحباً بك في رحلة التعلم! 🚀
+        </h2>
+        <p class="max-w-3xl mx-auto text-lg leading-relaxed text-gray-600">
+          نحن متحمسون لمرافقتك في رحلة التعلم هذه. تذكر أن النجاح يحتاج إلى صبر
+          ومثابرة. ابدأ بأي دورة تشعر بالراحة معها، ولا تتردد في طلب المساعدة
+          عندما تحتاجها.
+        </p>
+        <div
+          class="flex items-center justify-center gap-2 mt-6 text-secondaryAdmin"
+        >
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            />
+          </svg>
+          <span class="font-medium">بالتوفيق في مسيرتك التعليمية</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

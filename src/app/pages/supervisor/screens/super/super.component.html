@@ -1,0 +1,510 @@
+<div class="mx-auto max-w-7xl">
+  <!-- Welcome Message -->
+
+  <div class="p-4 md:p-6 mb-4">
+    <!-- Dashboard Welcome Info -->
+    <div class="flex flex-col gap-2">
+      <h1 class="text-xl font-bold text-gray-800 md:text-2xl">لوحة التحكم</h1>
+      <p class="text-sm text-gray-600 md:text-base">
+        مرحباً بك في لوحة تحكم مشرف المدرسة. يمكنك من هنا إشراف ومتابعة جميع
+        الطلاب بالمدرسة.
+      </p>
+    </div>
+    <!-- Dashboard Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 mt-4 gap-4">
+      <!-- Total Students Card -->
+      <!-- (click)="navigateToStudents(null)" -->
+      <!-- (click)="navigateToStudents(null)" -->
+      <div
+        class="flex flex-col p-4 bg-gradient-to-br from-blue-50 to-blue-100 border border-blue-200 rounded-2xl shadow-sm hover:shadow-md transition-all group cursor-pointer"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-bold text-blue-700">إجمالي الطلاب</span>
+          <div
+            class="p-2 bg-blue-600 rounded-lg text-white group-hover:scale-110 transition-transform"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="text-2xl font-black text-blue-900">
+          {{ !isLoading() ? allDetails.totalStudentsCount : 0 }}
+        </div>
+        @if (!isLoading() && allDetails.totalStudentsCount > 0) {
+          <div class="flex items-center gap-3 mt-2">
+            <span
+              class="flex items-center gap-1 text-[11px] font-bold text-emerald-600"
+            >
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              مشترك:
+              {{
+                round(
+                  (allDetails.subscribedStudentCount /
+                    allDetails.totalStudentsCount) *
+                    100
+                )
+              }}%
+            </span>
+            <span
+              class="flex items-center gap-1 text-[11px] font-bold text-amber-600"
+            >
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              غير مشترك:
+              {{
+                round(
+                  ((allDetails.totalStudentsCount -
+                    allDetails.subscribedStudentCount) /
+                    allDetails.totalStudentsCount) *
+                    100
+                )
+              }}%
+            </span>
+          </div>
+        }
+      </div>
+
+      <!-- Active Students Card -->
+      <!-- Subscribed Students Card (Expanded) -->
+      <div
+        class="flex flex-col p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 border border-emerald-200 rounded-2xl shadow-sm hover:shadow-md transition-all"
+      >
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-sm font-bold text-emerald-700">المشتركين</span>
+          <div class="p-2 bg-emerald-600 rounded-lg text-white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="text-2xl font-black text-emerald-900 mb-3">
+          {{ !isLoading() ? allDetails.subscribedStudentCount : 0 }}
+        </div>
+
+        <!-- Active / Inactive Breakdown -->
+        <div class="grid grid-cols-2 gap-2 mt-1">
+          <!-- Active -->
+          <div
+            (click)="navigateToStudents(0)"
+            class="flex flex-col items-center p-2 bg-white/60 rounded-xl cursor-pointer hover:bg-white transition-colors"
+          >
+            <span class="text-[10px] font-semibold text-green-600 mb-1"
+              >نشط</span
+            >
+            <span class="text-lg font-black text-green-700">
+              {{
+                !isLoading()
+                  ? allDetails.subscribedStudentCount -
+                    allDetails.unActiveStudentCount
+                  : 0
+              }}
+            </span>
+            @if (!isLoading() && allDetails.subscribedStudentCount > 0) {
+              <span class="text-[10px] font-bold text-green-500">
+                {{
+                  round(
+                    ((allDetails.subscribedStudentCount -
+                      allDetails.unActiveStudentCount) /
+                      allDetails.subscribedStudentCount) *
+                      100
+                  )
+                }}%
+              </span>
+            }
+          </div>
+          <!-- Inactive -->
+          <div
+            (click)="navigateToStudents(2)"
+            class="flex flex-col items-center p-2 bg-white/60 rounded-xl cursor-pointer hover:bg-white transition-colors"
+          >
+            <span class="text-[10px] font-semibold text-red-500 mb-1"
+              >غير نشط</span
+            >
+            <span class="text-lg font-black text-red-600">
+              {{ !isLoading() ? allDetails.unActiveStudentCount : 0 }}
+            </span>
+            @if (!isLoading() && allDetails.subscribedStudentCount > 0) {
+              <span class="text-[10px] font-bold text-red-400">
+                {{
+                  round(
+                    (allDetails.unActiveStudentCount /
+                      allDetails.subscribedStudentCount) *
+                      100
+                  )
+                }}%
+              </span>
+            }
+          </div>
+        </div>
+        <p class="text-xs my-4 text-gray-600 md:text-sm">
+          اضغط هنا لعرض المشتركين
+        </p>
+      </div>
+
+      <div
+        (click)="navigateToStudents(1)"
+        class="flex flex-col p-4 bg-gradient-to-br from-amber-50 to-amber-100 border border-amber-200 rounded-2xl shadow-sm hover:shadow-md transition-all group cursor-pointer"
+      >
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-sm font-bold text-amber-700">غير المشتركين</span>
+          <div
+            class="p-2 bg-amber-600 rounded-lg text-white group-hover:scale-110 transition-transform"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+              />
+            </svg>
+          </div>
+        </div>
+        <div class="text-2xl font-black text-amber-900">
+          {{
+            !isLoading()
+              ? allDetails.totalStudentsCount -
+                allDetails.subscribedStudentCount
+              : 0
+          }}
+        </div>
+        <p class="text-xs text-gray-600 md:text-sm">
+          اضغط هنا لعرض غير المشتركين
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="p-4 mb-6 bg-white rounded-lg shadow-lg md:p-6">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <!-- School Select -->
+      <div class="col-span-full">
+        <ng-select
+          [items]="allSchools"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterSchool($event)"
+          placeholder="حدد المدرسة"
+          class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500 focus:ring-sky-600"
+        >
+        </ng-select>
+      </div>
+
+      <!-- Category Filter -->
+      <div class="col-span-1">
+        <ng-select
+          [items]="educationalCategories"
+          [multiple]="true"
+          [closeOnSelect]="false"
+          bindLabel="name"
+          placeholder="تصفية حسب التصنيف"
+          (change)="filterCategories($event)"
+          class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500 focus:ring-sky-600"
+        >
+        </ng-select>
+      </div>
+
+      <!-- Grade Select -->
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          [searchable]="true"
+          placeholder="حدد الصف"
+          (change)="fliterState($event)"
+          class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500 focus:ring-sky-600"
+        >
+          <ng-option [value]="'الصف الأول الثانوي'"
+            >الصف الأول الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثاني الثانوي'"
+            >الصف الثاني الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث الثانوي'"
+            >الصف الثالث الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث المتوسط'"
+            >الصف الثالث المتوسط</ng-option
+          >
+        </ng-select>
+      </div>
+
+      <!-- Class Select -->
+      <div class="col-span-1">
+        <ng-select
+          [items]="classNumbers"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          (change)="filterClassNo($event)"
+          placeholder="حدد الفصل"
+          class="w-full p-2 text-gray-900 bg-transparent rounded-lg ring-1 ring-gray-500 focus:ring-sky-600"
+        >
+        </ng-select>
+      </div>
+    </div>
+  </div>
+
+  <div
+    [@fadeInUpDelay]
+    class="p-4 mb-6 text-sm font-bold text-gray-800 md:text-xl md:p-6"
+  >
+    <div
+      class="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center"
+    >
+      <div>
+        <h2 class="mb-2">
+          <span>إحصائيات الدورات </span>
+          @if (schoolName) {
+            <span class="text-primary">لـ: ({{ schoolName }})</span>
+          } @else {
+            <span class="text-primary">لجميع المدارس</span>
+          }
+        </h2>
+        <p class="text-xs text-gray-600 md:text-sm">
+          هنا يمكنك رؤية إحصائيات الدورات المختلفة للطلاب في المدرسة. اختر
+          الفلاتر المناسبة للحصول على المعلومات التي تحتاجها.
+        </p>
+      </div>
+
+      <!-- Export Button -->
+      <button
+        (click)="exportToExcel()"
+        [disabled]="isExporting()"
+        class="group flex items-center gap-2 px-6 py-3 text-white transition-all duration-300 rounded-lg shadow-md bg-gradient-to-r from-primary to-secondary hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100"
+      >
+        @if (isExporting()) {
+          <svg
+            class="w-5 h-5 animate-spin"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <span class="text-sm font-semibold md:text-base"
+            >جاري التصدير...</span
+          >
+        } @else {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            class="w-5 h-5 transition-transform group-hover:scale-110"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"
+            />
+          </svg>
+          <span class="text-sm font-semibold md:text-base">تصدير Excel</span>
+        }
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Table Section -->
+  @if (!isLoading()) {
+    <div [@fadeInUpDelay] class="space-y-8">
+      @for (group of groupedData; track group.category; let i = $index) {
+        <div
+          class="overflow-hidden bg-white border shadow-xl rounded-xl"
+          [class]="getCategoryTheme(i).border"
+        >
+          <!-- Category Header -->
+          <div
+            class="flex items-center justify-between p-4 border-b"
+            [class]="getCategoryTheme(i).bg"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="flex items-center justify-center w-10 h-10 text-white rounded-lg shadow-sm"
+                [class]="'bg-gradient-to-br ' + getCategoryTheme(i).gradient"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="2"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M2.25 12.75V12A2.25 2.25 0 0 1 4.5 9.75h15A2.25 2.25 0 0 1 21.75 12v.75m-19.5 0A2.25 2.25 0 0 0 2.25 15v4.5a2.25 2.25 0 0 0 2.25 2.25h15a2.25 2.25 0 0 0 2.25-2.25V15a2.25 2.25 0 0 0-2.25-2.25m-19.5 0h19.5"
+                  />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold" [class]="getCategoryTheme(i).text">
+                {{ group.category }}
+              </h3>
+              <span
+                class="px-3 py-1 text-xs font-semibold rounded-full"
+                [class]="
+                  getCategoryTheme(i).bg + ' ' + getCategoryTheme(i).text
+                "
+              >
+                {{ group.items.length }} دورة
+              </span>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-right border-collapse">
+              <thead>
+                <tr class="bg-gray-50/50">
+                  <th
+                    class="px-6 py-4 text-xs font-bold tracking-wider text-gray-500 uppercase"
+                  >
+                    #
+                  </th>
+                  <th
+                    class="px-6 py-4 text-xs font-bold tracking-wider text-gray-500 uppercase"
+                  >
+                    اسم الدورة
+                  </th>
+                  <th
+                    class="px-6 py-4 text-xs font-bold tracking-wider text-gray-500 uppercase text-center"
+                  >
+                    نسبة الإنجاز
+                  </th>
+                  <th
+                    class="px-6 py-4 text-xs font-bold tracking-wider text-gray-500 uppercase text-center"
+                  >
+                    التفاصيل
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                @for (item of group.items; track item.id) {
+                  <tr class="transition-colors hover:bg-gray-50 group">
+                    <td class="px-6 py-4 text-sm text-gray-500 w-12">
+                      {{ $index + 1 }}
+                    </td>
+                    <td class="px-6 py-4">
+                      <span class="text-sm font-semibold text-gray-800">{{
+                        item.tutorialName
+                      }}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                      <div class="flex flex-col items-center gap-1">
+                        <div
+                          class="w-24 h-2 bg-gray-100 rounded-full overflow-hidden"
+                        >
+                          <div
+                            class="h-full transition-all duration-500"
+                            [class]="
+                              'bg-gradient-to-l ' + getCategoryTheme(i).gradient
+                            "
+                            [style.width.%]="round(calculateAchievement(item))"
+                          ></div>
+                        </div>
+                        <span
+                          class="text-xs font-bold"
+                          [class]="getCategoryTheme(i).text"
+                          >{{ round(calculateAchievement(item)) }}%</span
+                        >
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                      <button
+                        (click)="getSchoolDetails(item)"
+                        class="p-2 transition-all rounded-lg hover:bg-gray-100 group-hover:scale-110"
+                        [class]="getCategoryTheme(i).text"
+                        title="عرض التفاصيل"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke-width="2"
+                          stroke="currentColor"
+                          class="size-5"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.43 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z"
+                          />
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                          />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="flex items-center justify-center w-full h-64">
+      <div
+        class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+      ></div>
+    </div>
+  }
+</div>
+
+<app-school-popup
+  [schoolsData]="schoolsData"
+  [isVisible]="isPopupVisible()"
+  (closeEvent)="hidePopup()"
+  [isLoading]="isLoadingSchool()"
+  [schoolIdFilter]="schoolId ? schoolId.toString() : ''"
+  [stateFilter]="state"
+  [classNoFilter]="classNo"
+/>

@@ -1,0 +1,151 @@
+@if (isLoading()) {
+<div
+  class="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-60"
+>
+  <div class="flex flex-col items-center justify-center space-y-4">
+    <!-- Spinner -->
+    <div
+      class="w-16 h-16 border-4 border-white rounded-full border-t-transparent animate-spin"
+    ></div>
+    <p class="text-lg font-semibold text-white">جارٍ التحميل...</p>
+  </div>
+</div>
+
+}
+
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+  <div class="mx-auto max-w-7xl">
+    <button
+      (click)="savePlan()"
+      class="px-6 py-2 mb-6 text-white transition-colors border rounded-md bg-secondaryAdmin hover:bg-primaryAdmin"
+    >
+      حفظ الخطة
+    </button>
+
+    <!-- Calendar Grid -->
+    <div class="overflow-hidden bg-white shadow-lg rounded-xl">
+      <!-- Month Header -->
+      <div class="p-4 text-white bg-gradient-to-r from-blue-600 to-indigo-600">
+        <h2 class="text-xl font-semibold text-center">يوليو - أغسطس 2025</h2>
+      </div>
+
+      <!-- Calendar Days -->
+      <div class="grid grid-cols-1 divide-y divide-gray-200">
+        @for (day of days; track $index) {
+        <div
+          class="flex flex-col md:flex-row min-h-[100px] hover:bg-gray-50 transition-colors duration-200"
+        >
+          <!-- Day Info Column -->
+          <div
+            class="flex-shrink-0 w-48 p-4 border-l border-gray-200 bg-gray-50"
+          >
+            <div class="text-right">
+              <div class="text-lg font-semibold text-gray-800">
+                {{ day.dayName }}
+              </div>
+              <div class="mb-1 text-sm text-gray-500">
+                {{ day.dayNumber }} {{ getMonthName(day.date) }}
+              </div>
+              <div
+                *ngIf="day.isHoliday"
+                class="inline-block px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full"
+              >
+                يوم إجازة
+              </div>
+              <div
+                *ngIf="!day.isHoliday && day.details?.length"
+                class="inline-block px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full"
+              >
+                {{ day.details ? day.details.length : 0 }} اختبار
+              </div>
+            </div>
+          </div>
+
+          <!-- Exams Column -->
+          <div
+            [id]="'day-' + day.date"
+            class="min-h-[60px] flex-1 p-4 justify-start flex items-center rounded-lg border-2 border-dashed border-transparent hover:border-blue-300 transition-colors"
+          >
+            <div class="flex flex-wrap items-center justify-start gap-4">
+              @for (exam of day.details; track $index) {
+              <div
+                class="p-3 text-white transition-all duration-200 rounded-lg shadow-sm cursor-move bg-gradient-to-r from-blue-500 to-indigo-600 hover:shadow-md group"
+              >
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <div class="mb-1 text-sm font-medium">
+                      {{ exam.examName }}
+                    </div>
+                  </div>
+                  <!-- <div
+                    class="transition-opacity opacity-60 group-hover:opacity-100"
+                  >
+                    <svg
+                      class="w-4 h-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                      ></path>
+                    </svg>
+                  </div> -->
+                </div>
+              </div>
+              }
+            </div>
+
+            <!-- Empty State -->
+            @if (!day.details || day.details.length === 0) {
+            <div class="flex items-center justify-center h-16 text-gray-400">
+              <div
+                *ngIf="day.isHoliday"
+                class="inline-block px-2 py-1 text-xs text-green-800 bg-green-100 rounded-full"
+              >
+                يوم إجازة
+              </div>
+            </div>
+            }
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    <div class="w-full my-6">
+      <button
+        (click)="savePlan()"
+        class="px-8 py-2.5 text-white transition-colors border rounded-md bg-secondaryAdmin hover:bg-primaryAdmin"
+      >
+        حفظ الخطة
+      </button>
+    </div>
+
+    <!-- Stats Footer -->
+    <div class="p-6 mt-8 bg-white rounded-lg shadow-md">
+      <div class="grid grid-cols-1 gap-4 text-center md:grid-cols-3">
+        <div class="p-4 rounded-lg bg-blue-50">
+          <div class="text-2xl font-bold text-blue-600">
+            {{ getTotalExams() }}
+          </div>
+          <div class="text-sm text-gray-600">إجمالي الاختبارات</div>
+        </div>
+        <div class="p-4 rounded-lg bg-green-50">
+          <div class="text-2xl font-bold text-green-600">
+            {{ getHolidayDays() }}
+          </div>
+          <div class="text-sm text-gray-600">أيام الإجازة</div>
+        </div>
+        <div class="p-4 rounded-lg bg-purple-50">
+          <div class="text-2xl font-bold text-purple-600">
+            {{ getActiveDays() }}
+          </div>
+          <div class="text-sm text-gray-600">أيام بها اختبارات</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

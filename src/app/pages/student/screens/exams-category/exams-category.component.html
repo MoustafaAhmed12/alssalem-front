@@ -1,0 +1,312 @@
+<div class="min-h-screen mt-20 bg-gray-50">
+  <!-- Course Header -->
+  <div
+    class="bg-gradient-to-r pt-12 pb-8 from-[#36b290] to-[#2d9277] text-white"
+  >
+    <div class="px-4 py-8 mx-auto max-w-7xl">
+      <div class="flex flex-col items-start gap-6 md:flex-row md:items-center">
+        <!-- Course Info -->
+        <div class="flex-1">
+          <div
+            class="inline-block px-3 py-1 mb-3 text-xs font-semibold bg-white rounded-full bg-opacity-20"
+          >
+            {{ "examsCategory.comprehensiveCourse" | translate }}
+          </div>
+          <h1 class="mb-2 text-3xl font-bold">
+            {{ sections().title || "الاختبارات المحاكية - قدرات" }}
+          </h1>
+          <p class="mb-4 text-sm opacity-90">
+            {{
+              sections().description ||
+                "برنامج تدريبي متكامل يجمع بين القدرات الكمية واللفظية"
+            }}
+          </p>
+
+          <!-- Stats -->
+          <div class="flex flex-wrap gap-4 text-sm">
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z" />
+                <path
+                  fill-rule="evenodd"
+                  d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span
+                >{{ getTotalExams() }}
+                {{ "examsCategory.exam" | translate }}</span
+              >
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                />
+              </svg>
+              <span>{{ "examsCategory.advancedLevel" | translate }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Course Content -->
+  <div class="px-4 py-8 mx-auto max-w-7xl">
+    <div class="flex flex-col gap-6 lg:flex-row">
+      <!-- Course Sections -->
+      <div class="flex-1 space-y-4">
+        @if (sections().id) {
+          <div
+            class="overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm"
+          >
+            <!-- Section Header -->
+            <button
+              (click)="toggleSection(sections().id)"
+              class="flex items-center justify-between w-full p-4 transition-colors bg-gray-50 hover:bg-gray-100"
+            >
+              <div class="flex items-start gap-3 text-start">
+                <div
+                  class="w-8 h-8 bg-gradient-to-br from-[#36b290] to-[#2d9277] rounded-lg flex items-center justify-center flex-shrink-0"
+                >
+                  <span class="text-sm font-bold text-white">{{
+                    sections().id
+                  }}</span>
+                </div>
+                <div>
+                  <h3 class="mb-1 text-base font-bold text-gray-800">
+                    {{ sections().title }}
+                  </h3>
+                  <div
+                    class="flex items-center gap-3 mt-2 text-xs text-gray-500"
+                  >
+                    <span
+                      >{{ getTotalExams() }}
+                      {{ "examsCategory.exams" | translate }}</span
+                    >
+                  </div>
+                </div>
+              </div>
+              <svg
+                class="w-5 h-5 text-gray-400 transition-transform"
+                [class.rotate-180]="expandedSections().includes(sections().id)"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            <!-- Section Content -->
+            @if (expandedSections().includes(sections().id)) {
+              <div class="divide-y divide-gray-100">
+                @for (exam of sections().exams; track exam.id) {
+                  <div
+                    [routerLink]="
+                      '/exams/category/' +
+                      categoryId() +
+                      '/exam-mock/' +
+                      exam.id
+                    "
+                    class="p-4 transition-colors cursor-pointer hover:bg-gray-50"
+                  >
+                    <div class="flex items-center gap-4">
+                      <!-- Status Icon -->
+                      <div class="flex-shrink-0">
+                        @if (exam.isSuccess) {
+                          <div
+                            class="flex items-center justify-center w-8 h-8 bg-green-100 rounded-full"
+                          >
+                            <svg
+                              class="w-5 h-5 text-green-600"
+                              fill="currentColor"
+                              viewBox="0 0 20 20"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        } @else {
+                          <div
+                            class="w-8 h-8 bg-[#36b290] bg-opacity-10 rounded-full flex items-center justify-center"
+                          >
+                            <svg
+                              _ngcontent-ng-c4166765778=""
+                              xmlns="http://www.w3.org/2000/svg"
+                              xmlns:xlink="http://www.w3.org/1999/xlink"
+                              version="1.1"
+                              id="Layer_1"
+                              viewBox="0 0 392.575 392.575"
+                              xml:space="preserve"
+                              class="size-6"
+                            >
+                              <path
+                                _ngcontent-ng-c4166765778=""
+                                d="M237.576,330.72h-38.529c-6.012,0-10.925-4.848-10.925-10.925V281.33  c0-2.844,1.164-5.624,3.168-7.758l75.636-75.636V32.829c0-6.012-4.848-10.925-10.925-10.925H84.558v51.782  c0,6.012-4.848,10.925-10.925,10.925H21.851v275.265c0,6.012,4.848,10.925,10.925,10.925h223.418  c6.012,0,10.925-4.848,10.925-10.925V305.96l-21.721,21.592C243.329,329.556,240.549,330.72,237.576,330.72z"
+                                style="fill: #ffffff"
+                              ></path>
+                              <path
+                                _ngcontent-ng-c4166765778=""
+                                d="M73.568,84.611H44.671l-2.715,252.315c-0.065,6.012,4.784,10.99,10.731,11.055l179.782,2.004  c6.012,0.065,10.99-4.784,11.055-10.731l0.065-10.279c-1.745,1.228-3.943,1.875-6.077,1.875h-38.529  c-6.012,0-10.925-4.848-10.925-10.925v-38.529c0-2.844,1.164-5.624,3.168-7.758l53.527-53.527l1.875-164.267  c0.065-6.012-4.784-10.99-10.731-11.055L84.364,43.237V73.75C84.558,79.698,79.58,84.611,73.568,84.611z"
+                                style="fill: #56ace0"
+                              ></path>
+                              <g _ngcontent-ng-c4166765778="">
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M211.846,83.641h-90.634c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h90.634c6.012,0,10.925,4.848,10.925,10.925C222.772,78.793,217.923,83.641,211.846,83.641z"
+                                  style="fill: #194f82"
+                                ></path>
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M211.846,145.379H76.929c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h134.982   c6.012,0,10.925,4.848,10.925,10.925C222.772,140.53,217.923,145.379,211.846,145.379z"
+                                  style="fill: #194f82"
+                                ></path>
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M211.846,207.116H76.929c-6.012,0-10.925-4.848-10.925-10.925c0-6.077,4.848-10.925,10.925-10.925   h134.982c6.012,0,10.925,4.848,10.925,10.925C222.836,202.267,217.923,207.116,211.846,207.116z"
+                                  style="fill: #194f82"
+                                ></path>
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M152.76,268.983h-75.83c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h75.83c6.012,0,10.925,4.848,10.925,10.925C163.685,264.134,158.772,268.983,152.76,268.983z"
+                                  style="fill: #194f82"
+                                ></path>
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M152.76,330.72h-75.83c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h75.83   c6.012,0,10.925,4.848,10.925,10.925S158.772,330.72,152.76,330.72z"
+                                  style="fill: #194f82"
+                                ></path>
+                                <path
+                                  _ngcontent-ng-c4166765778=""
+                                  d="M384.453,149.968l-15.451-15.451c-11.895-10.731-26.958-10.667-38.529,0L288.84,176.15V32.829   c0-18.036-14.675-32.711-32.711-32.711H82.683c-8.727,0-17.002,3.426-23.208,9.568L9.568,59.593C3.362,65.799,0,73.944,0,82.671   v277.075c0,18.036,14.675,32.711,32.711,32.711h223.418c18.036,0,32.711-14.675,32.711-32.711V284.11l95.612-95.612   C395.572,176.991,394.99,160.183,384.453,149.968z M62.642,37.354V62.76H37.236L62.642,37.354z M267.055,359.811   c0,6.012-4.848,10.925-10.925,10.925H32.711c-6.012,0-10.925-4.848-10.925-10.925v-275.2h51.782   c6.012,0,10.925-4.848,10.925-10.925V21.904h171.636c6.012,0,10.925,4.848,10.925,10.925v165.107l-75.572,75.636   c-2.004,2.004-3.168,4.784-3.168,7.758v38.529c0,6.012,4.848,10.925,10.925,10.925h38.529c2.844,0,5.624-1.164,7.758-3.168   l21.657-21.657L267.055,359.811L267.055,359.811z M233.115,308.934h-23.079v-23.079l106.408-106.473l23.079,23.079L233.115,308.934   z M369.002,173.047l-13.964,13.964l-23.079-23.079l13.964-13.964c2.78-2.263,5.301-2.004,7.758,0l15.386,15.386   C371.006,166.776,371.394,171.108,369.002,173.047z"
+                                  style="fill: #194f82"
+                                ></path>
+                              </g>
+                              <g _ngcontent-ng-c4166765778="">
+                                <polygon
+                                  _ngcontent-ng-c4166765778=""
+                                  points="62.642,37.354 37.236,62.76 62.642,62.76  "
+                                  style="fill: #ffc10d"
+                                ></polygon>
+                                <polygon
+                                  _ngcontent-ng-c4166765778=""
+                                  points="210.036,285.791 210.036,308.934 233.115,308.934 339.588,202.526 316.444,179.383  "
+                                  style="fill: #ffc10d"
+                                ></polygon>
+                              </g>
+                              <path
+                                _ngcontent-ng-c4166765778=""
+                                d="M353.616,149.968c-2.392-2.004-4.978-2.263-7.758,0l-13.964,13.964l23.079,23.079l13.964-13.964  c2.392-1.939,2.004-6.271,0-7.758L353.616,149.968z"
+                                style="fill: #ffffff"
+                              ></path>
+                            </svg>
+                          </div>
+                        }
+                      </div>
+
+                      <!-- Exam Info -->
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-1">
+                          <h4 class="text-sm font-semibold text-gray-800">
+                            {{ exam.name }}
+                          </h4>
+                        </div>
+                      </div>
+
+                      <!-- Action Button -->
+                      <div class="flex-shrink-0">
+                        <!-- @if (exam.isLocked) {
+                  <button
+                    disabled
+                    class="px-4 py-2 text-xs font-semibold text-gray-400 bg-gray-100 rounded-lg cursor-not-allowed"
+                  >
+                    مغلق
+                  </button>
+                  } @else 
+                   -->
+                        @if (exam.isSuccess === false) {
+                          <button
+                            class="px-4 py-2 bg-white border border-[#36b290] text-[#36b290] hover:bg-[#36b290] hover:text-white rounded-lg text-xs font-semibold transition-colors"
+                          >
+                            {{ "examsCategory.retry" | translate }}
+                          </button>
+                        } @else if (exam.isSuccess === null) {
+                          <button
+                            class="px-4 py-2 bg-gradient-to-r from-[#36b290] to-[#2d9277] text-white hover:shadow-md rounded-lg text-xs font-semibold transition-all"
+                          >
+                            {{ "examsCategory.startNow" | translate }}
+                          </button>
+                        } @else {
+                          <button
+                            class="px-4 py-2 bg-gradient-to-r from-[#36b290] to-[#2d9277] text-white hover:shadow-md rounded-lg text-xs font-semibold transition-all"
+                          >
+                            {{ "examsCategory.passed" | translate }}
+                          </button>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Loading State -->
+          <div class="p-8 text-center bg-white rounded-lg shadow-sm">
+            <div
+              class="inline-block w-8 h-8 border-4 border-t-transparent border-[#36b290] rounded-full animate-spin"
+            ></div>
+            <p class="mt-4 text-sm text-gray-600">
+              {{ "examsCategory.loading" | translate }}
+            </p>
+          </div>
+        }
+      </div>
+
+      <!-- Video Tutorial -->
+      <div
+        class="mb-6 overflow-hidden bg-white border border-gray-200 rounded-lg shadow-sm lg:w-96"
+      >
+        <!-- <div class="p-4 border-b border-gray-200 bg-gray-50">
+          <div class="flex items-center gap-2">
+            <svg
+              class="w-5 h-5 text-[#36b290]"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
+              />
+            </svg>
+            <h2 class="text-base font-bold text-gray-800">
+              مقدمة الدورة - شرح طريقة الاستخدام
+            </h2>
+          </div>
+        </div> -->
+        <div class="p-4">
+          <!-- <div class="overflow-hidden bg-gray-900 rounded-lg">
+            <iframe
+              class="w-full h-[380px]"
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="شرح الاستخدام"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+            >
+            </iframe>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

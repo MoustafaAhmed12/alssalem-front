@@ -1,0 +1,362 @@
+<div class="min-h-screen">
+  <div class="mx-auto max-w-7xl">
+    <!-- Header -->
+    <div class="p-6 bg-white shadow-lg rounded-t-xl">
+      <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <h1 class="mb-2 text-3xl font-bold text-gray-800">
+            الاختبارات المحاكية
+          </h1>
+          <p class="text-gray-600">إدارة وعرض جميع الاختبارات المحاكية</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span
+            class="px-4 py-2 font-semibold text-blue-700 bg-blue-100 rounded-lg"
+          >
+            إجمالي الاختبارات: {{ pagination().totalCount }}
+          </span>
+          <button
+            routerLink="/admin-exam/create"
+            class="px-6 py-2 font-semibold text-white transition-colors rounded-lg shadow-md bg-secondaryAdmin hover:bg-primaryAdmin hover:shadow-lg"
+          >
+            + إضافة اختبار جديد
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="p-6 mb-6 bg-white shadow-lg rounded-b-xl">
+      <div class="flex flex-wrap items-end w-full gap-4">
+        <!-- <div class="flex-1 min-w-[250px]">
+          <input
+            type="text"
+            [(ngModel)]="searchTerm"
+            (ngModelChange)="onSearch()"
+            placeholder="🔍 البحث عن اختبار..."
+            class="w-full px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+          />
+        </div> -->
+        <select
+          [(ngModel)]="pageSize"
+          (ngModelChange)="onPageSizeChange()"
+          class="px-4 py-3 transition-colors border-2 border-gray-200 rounded-lg focus:border-blue-500 focus:outline-none"
+        >
+          <option [value]="5">5 لكل صفحة</option>
+          <option [value]="10">10 لكل صفحة</option>
+          <option [value]="20">20 لكل صفحة</option>
+          <option [value]="50">50 لكل صفحة</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-hidden bg-white shadow-lg rounded-2xl">
+      @if (isLoading()) {
+      <div class="flex items-center justify-center py-20">
+        <div class="text-center">
+          <div
+            class="w-16 h-16 mx-auto mb-4 border-b-4 border-blue-600 rounded-full animate-spin"
+          ></div>
+          <p class="font-semibold text-gray-600">جاري تحميل البيانات...</p>
+        </div>
+      </div>
+      } @else if (exams().length === 0) {
+      <div class="flex items-center justify-center py-20">
+        <div class="text-center">
+          <svg
+            class="w-24 h-24 mx-auto mb-4 text-gray-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            ></path>
+          </svg>
+          <p class="mb-2 text-xl font-semibold text-gray-600">
+            لا توجد اختبارات
+          </p>
+          <p routerLink="/admin-exam/create" class="text-gray-500">
+            ابدأ بإضافة اختبار جديد
+          </p>
+        </div>
+      </div>
+      } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead
+            class="text-white bg-gradient-to-r from-blue-600 to-indigo-600"
+          >
+            <tr>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-right uppercase"
+              >
+                #
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-right uppercase"
+              >
+                اسم الاختبار
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-center uppercase"
+              >
+                المدة
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-center uppercase"
+              >
+                نسبة النجاح
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-center uppercase"
+              >
+                عدد الأسئلة
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-center uppercase"
+              >
+                المراجعة
+              </th>
+              <th
+                class="px-6 py-4 text-sm font-bold tracking-wider text-center uppercase"
+              >
+                الإجراءات
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            @for (exam of exams(); track exam.id; let i = $index) {
+            <tr class="transition-colors hover:bg-blue-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="text-sm font-semibold text-gray-700">
+                  {{
+                    (pagination().currentPage - 1) * pagination().pageSize +
+                      i +
+                      1
+                  }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm font-bold text-gray-900">
+                  {{ exam.name }}
+                </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span
+                  class="inline-flex items-center px-3 py-1 text-sm font-semibold text-purple-700 bg-purple-100 rounded-full"
+                >
+                  <svg
+                    class="w-4 h-4 ml-1"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    ></path>
+                  </svg>
+                  {{ exam.durationInMinutes || "مفتوح" }}
+                  @if (exam.durationInMinutes) {
+                  <span>د</span>
+                  }
+                </span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="flex items-center justify-center">
+                  <span class="mr-2 text-sm font-bold text-gray-700"
+                    >{{ exam.successPercent }}%</span
+                  >
+                </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <span
+                  class="inline-flex items-center px-3 py-1 text-sm font-semibold text-blue-700 bg-blue-100 rounded-full"
+                >
+                  {{ exam.questionsCount }} سؤال
+                </span>
+              </td>
+              <td class="px-6 py-4 text-center">
+                @if (exam.isRevisionAvailable) {
+                <span
+                  class="inline-flex items-center px-3 py-1 text-xs font-bold text-green-700 bg-green-100 rounded-full"
+                >
+                  <svg
+                    class="w-4 h-4 ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                  متاحة
+                </span>
+                } @else {
+                <span
+                  class="inline-flex items-center px-3 py-1 text-xs font-bold text-red-700 bg-red-100 rounded-full"
+                >
+                  <svg
+                    class="w-4 h-4 ml-1"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                  غير متاحة
+                </span>
+                }
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="flex items-center justify-center gap-2">
+                  <button
+                    [routerLink]="['/admin-exam/view/', exam.id]"
+                    class="p-2 text-blue-600 transition-colors rounded-lg hover:bg-blue-100"
+                    title="عرض"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    (click)="editExam(exam)"
+                    class="p-2 text-green-600 transition-colors rounded-lg hover:bg-green-100"
+                    title="تعديل"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                      ></path>
+                    </svg>
+                  </button>
+                  <button
+                    (click)="deleteExam(exam)"
+                    class="p-2 text-red-600 transition-colors rounded-lg hover:bg-red-100"
+                    title="حذف"
+                  >
+                    <svg
+                      class="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      <div class="px-6 py-4 border-t border-gray-200 bg-gray-50">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="text-sm text-gray-600">
+            عرض
+            <span class="font-semibold text-gray-900">
+              {{ (pagination().currentPage - 1) * pagination().pageSize + 1 }}
+            </span>
+            إلى
+            <span class="font-semibold text-gray-900">
+              {{
+                Math.min(
+                  pagination().currentPage * pagination().pageSize,
+                  pagination().totalCount
+                )
+              }}
+            </span>
+            من
+            <span class="font-semibold text-gray-900">{{
+              pagination().totalCount
+            }}</span>
+            نتيجة
+          </div>
+
+          <div class="flex items-center gap-2">
+            <!-- Previous Button -->
+            <button
+              (click)="goToPage(pagination().currentPage - 1)"
+              [disabled]="!pagination().hasPreviousPage"
+              class="px-4 py-2 font-semibold transition-colors border-2 border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 disabled:hover:bg-transparent"
+            >
+              السابق
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="flex items-center gap-1">
+              @for (page of visiblePages(); track page) { @if (page === -1) {
+              <span class="px-3 py-2 text-gray-500">...</span>
+              } @else {
+              <button
+                (click)="goToPage(page)"
+                [class]="
+                  page === pagination().currentPage
+                    ? 'px-4 py-2 bg-secondaryAdmin text-white rounded-lg font-bold shadow-md'
+                    : 'px-4 py-2 border-2 border-gray-300 rounded-lg font-semibold hover:bg-gray-100 transition-colors'
+                "
+              >
+                {{ page }}
+              </button>
+              } }
+            </div>
+
+            <!-- Next Button -->
+            <button
+              (click)="goToPage(pagination().currentPage + 1)"
+              [disabled]="!pagination().hasNextPage"
+              class="px-4 py-2 font-semibold transition-colors border-2 border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 disabled:hover:bg-transparent"
+            >
+              التالي
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

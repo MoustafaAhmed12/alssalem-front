@@ -1,0 +1,695 @@
+<div class="mx-auto max-w-7xl">
+  <div class="p-4 md:p-6">
+    <div
+      class="flex flex-col items-center gap-4 md:flex-row md:items-start rtl:space-x-reverse"
+    >
+      <div class="flex-1 text-center md:text-right">
+        <h1 class="mb-2 text-xl font-bold text-gray-800 md:text-2xl">
+          مشرف المدرسة
+        </h1>
+        <p class="text-sm text-gray-600 md:text-base">
+          مرحباً بك في لوحة تحكم مشرف المدرسة. يمكنك من هنا إشراف ومتابعة جميع
+          الطلاب بالمدرسة.
+        </p>
+      </div>
+      <div
+        class="flex items-center justify-center w-16 h-16 text-2xl text-white rounded-full bg-primary shrink-0"
+      >
+        {{ totalCount }}
+      </div>
+    </div>
+  </div>
+  <div class="mb-6 bg-white rounded-b-lg py-6 shadow-lg">
+    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <!-- School Select -->
+
+      <div class="col-span-full">
+        <ng-select
+          [items]="allSchools"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="id"
+          (change)="filterSchool($event)"
+          placeholder="حدد المدرسة"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          [searchable]="true"
+          placeholder="حدد الصف"
+          (change)="fliterState($event)"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <ng-option [value]="'الصف الأول الثانوي'"
+            >الصف الأول الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثاني الثانوي'"
+            >الصف الثاني الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث الثانوي'"
+            >الصف الثالث الثانوي</ng-option
+          >
+          <ng-option [value]="'الصف الثالث المتوسط'"
+            >الصف الثالث المتوسط</ng-option
+          >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [items]="classNumbers"
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="name"
+          (change)="filterClassNo($event)"
+          placeholder="حدد الفصل"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [items]="allTutorials"
+          [closeOnSelect]="false"
+          [multiple]="true"
+          bindLabel="name"
+          bindValue="id"
+          [(ngModel)]="tutorialsIds"
+          (change)="filterTutorials()"
+          placeholder="حدد الدورات"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+        </ng-select>
+      </div>
+      <div class="col-span-1">
+        <ng-select
+          [closeOnSelect]="true"
+          bindLabel="name"
+          bindValue="value"
+          [(ngModel)]="orderBy"
+          (change)="filterOrderBy($event)"
+          placeholder="الترتيب حسب"
+          class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+        >
+          <ng-option [value]="0">بدون ترتيب (الافتراضي)</ng-option>
+          <ng-option [value]="1">نسبة التقدم</ng-option>
+          <ng-option [value]="2">نسبة النجاح</ng-option>
+          <ng-option [value]="3">نسبة الإنجاز</ng-option>
+        </ng-select>
+      </div>
+      <div class="flex items-center col-span-1">
+        <label class="flex items-center cursor-pointer gap-x-2">
+          <input
+            type="checkbox"
+            class="hidden"
+            [(ngModel)]="descending"
+            (change)="filterDescending()"
+          />
+          <div
+            class="flex items-center justify-center w-6 h-6 transition-all border-2 border-gray-500 rounded-md"
+            [class]="descending ? 'bg-primary border-primary' : 'bg-white'"
+          >
+            @if (descending) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="w-4 h-4 text-white"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                />
+              </svg>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke="currentColor"
+                class="w-4 h-4 text-gray-600"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M4.5 15.75l7.5-7.5 7.5 7.5"
+                />
+              </svg>
+            }
+          </div>
+          <span class="text-sm font-medium text-gray-700">ترتيب تنازلي</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="flex flex-col gap-6 mb-6 py-6 bg-white rounded-lg shadow-lg md:flex-row md:items-center md:justify-between"
+  >
+    <div class="relative w-full md:w-5/12">
+      <input
+        type="text"
+        [(ngModel)]="keywork"
+        (input)="searchName()"
+        placeholder="ابحث عن طالب..."
+        class="w-full p-3 pl-10 border rounded-lg border-secondary focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="absolute text-gray-500 transform -translate-y-1/2 fas fa-search left-3 top-1/2 size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+        />
+      </svg>
+    </div>
+
+    <!-- الأزرار -->
+    <div class="flex flex-wrap justify-center gap-4">
+      <button
+        type="button"
+        (click)="exportTable()"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-green-600 rounded-lg hover:bg-green-700"
+      >
+        <svg
+          class="YIUegm7fh_CpJbivTu6B MnxxlQlR1H0xJuMEE8Yr fhCwost7CSNRc2WSHLFW ZEPNZzATe5nPnS0shmrF"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          class="size-6"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z"
+            clip-rule="evenodd"
+          ></path>
+        </svg>
+        تصدير البيانات
+      </button>
+
+      <button
+        type="button"
+        (click)="openEmail()"
+        class="flex items-center gap-2 px-5 py-3 text-white transition-all bg-orange-600 rounded-lg hover:bg-orange-700"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 12 3.269 3.125A59.769 59.769 0 0 1 21.485 12 59.768 59.768 0 0 1 3.27 20.875L5.999 12Zm0 0h7.5"
+          />
+        </svg>
+        إرسال إيميل
+      </button>
+    </div>
+  </div>
+  <div class="flex flex-wrap items-center justify-start w-full mb-4 gap-x-6">
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showEmail" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showEmail ? 'bg-primary' : 'bg-white'"
+      ></div>
+      <span>إيميل</span>
+    </label>
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showNum" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showNum ? 'bg-primary' : 'bg-white'"
+      ></div>
+      <span>رقم الجوال</span>
+    </label>
+    <label class="flex items-center justify-center cursor-pointer gap-x-2">
+      <input type="checkbox" class="hidden" [(ngModel)]="showSchool" />
+      <div
+        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+        [class]="showSchool ? 'bg-primary' : 'bg-white'"
+      ></div>
+      <span>المدرسة</span>
+    </label>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full border border-collapse border-gray-300">
+      <thead>
+        <tr class="text-center text-gray-800 bg-gray-300">
+          <th class="p-3 border">
+            <label class="flex items-center justify-center cursor-pointer">
+              <input
+                type="checkbox"
+                class="hidden"
+                [checked]="selectAll"
+                (change)="toggleSelectAll()"
+              />
+              <div
+                class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                [class]="selectAll ? 'bg-primary' : 'bg-white'"
+              >
+                @if (selectAll) {
+                  <svg
+                    class="w-4 h-4 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M5 13l4 4L19 7"
+                    ></path>
+                  </svg>
+                }
+              </div>
+            </label>
+          </th>
+          <th class="p-3 border">اسم الطالب</th>
+          @if (showSchool) {
+            <th class="p-3 border">اسم المدرسة</th>
+          }
+          <th class="p-3 border">الصف</th>
+          <th class="p-3 border">الفصل</th>
+          @if (showNum) {
+            <th class="p-3 border">رقم الجوال</th>
+          }
+          @if (showEmail) {
+            <th class="p-3 border">الإيميل</th>
+          }
+          <th class="p-3 border">الدورة</th>
+          <!-- <th class="p-3 border">نسبة التقدم</th> -->
+          <!-- <th class="p-3 border">نسبة النجاح</th> -->
+          <th class="p-3 border">{{ getOrderColumnName() }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (!isLoading()) {
+          @for (
+            student of allStudents;
+            track studentIndex;
+            let studentIndex = $index
+          ) {
+            @if (studentIndex > 0) {
+              <tr>
+                <td colspan="9" class="border-b-4 border-gray-400"></td>
+              </tr>
+            }
+            @for (
+              tutorial of student.tutorials;
+              track i;
+              let i = $index;
+              let even = $even
+            ) {
+              <tr
+                [class]="even ? 'bg-gray-100' : 'bg-white'"
+                [ngClass]="even ? 'odd:bg-gray-50' : 'even:bg-gray-200'"
+              >
+                @if (i === 0) {
+                  <td
+                    class="p-3 text-center border"
+                    [attr.rowspan]="student.tutorials.length"
+                  >
+                    <label
+                      class="flex items-center justify-center cursor-pointer"
+                    >
+                      <input
+                        type="checkbox"
+                        class="hidden"
+                        [checked]="selectedStudents[student.email] || false"
+                        (change)="
+                          selectedStudents[student.email] =
+                            !selectedStudents[student.email];
+                          updateSelection(student.email)
+                        "
+                      />
+                      <div
+                        class="flex items-center justify-center w-5 h-5 transition-all border-2 border-gray-500 rounded-md"
+                        [class]="
+                          selectedStudents[student.email]
+                            ? 'bg-primary'
+                            : 'bg-white'
+                        "
+                      >
+                        @if (selectedStudents[student.email]) {
+                          <svg
+                            class="w-4 h-4 text-white"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              d="M5 13l4 4L19 7"
+                            ></path>
+                          </svg>
+                        }
+                      </div>
+                    </label>
+                  </td>
+                  <td
+                    class="p-3 font-medium text-center border cursor-pointer"
+                    [attr.rowspan]="student.tutorials.length"
+                  >
+                    <a
+                      target="_blank"
+                      [routerLink]="['/supervisor/' + student.id]"
+                    >
+                      {{ student.name }}
+                    </a>
+                  </td>
+                  @if (showSchool) {
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.tutorials.length"
+                    >
+                      {{ student.schoolName }}
+                    </td>
+                  }
+                  <td
+                    class="p-3 text-center border"
+                    [attr.rowspan]="student.tutorials.length"
+                  >
+                    {{ student.classNo }}
+                  </td>
+                  <td
+                    class="p-3 text-center border"
+                    [attr.rowspan]="student.tutorials.length"
+                  >
+                    {{ student.state }}
+                  </td>
+                  @if (showNum) {
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.tutorials.length"
+                    >
+                      {{ student.phoneNumber }}
+                    </td>
+                  }
+                  @if (showEmail) {
+                    <td
+                      class="p-3 text-center border"
+                      [attr.rowspan]="student.tutorials.length"
+                    >
+                      {{ student.email }}
+                    </td>
+                  }
+                }
+
+                <!-- بيانات الدورات -->
+                <td class="p-3 text-center border">
+                  {{ tutorial.tutorialName }}
+                </td>
+                <td
+                  class="p-3 font-semibold text-center border cursor-pointer hover:bg-blue-50 transition-colors"
+                  (click)="
+                    openAchievementPopup(
+                      tutorial.advancePercentage,
+                      tutorial.successPrecentage,
+                      tutorial.score
+                    )
+                  "
+                  title="اضغط لعرض التفاصيل"
+                >
+                  <span
+                    class="inline-flex items-center gap-1 px-2 py-1 rounded-full text-sm"
+                    [class]="
+                      getOrderValue(tutorial) >= 50
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-red-100 text-red-700'
+                    "
+                  >
+                    {{ getOrderValue(tutorial) }}%
+                  </span>
+                </td>
+              </tr>
+            }
+          }
+        } @else {
+          <tr>
+            <td colspan="9" class="py-8 cell">
+              <div
+                class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primary animate-spin"
+              ></div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <!-- Pagination احترافي -->
+  <div
+    class="flex items-center justify-center mt-6 gap-1 select-none flex-wrap"
+  >
+    <!-- زر السابق -->
+    <button
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border"
+      [class]="
+        pageNumber <= 1
+          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-white'
+          : 'border-gray-300 text-gray-600 hover:bg-gray-100 hover:border-gray-400 bg-white cursor-pointer'
+      "
+      [disabled]="pageNumber <= 1"
+      (click)="changePage(pageNumber - 1)"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="w-4 h-4 rtl:rotate-180"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M15.75 19.5 8.25 12l7.5-7.5"
+        />
+      </svg>
+      السابق
+    </button>
+
+    <!-- أرقام الصفحات مع النقاط -->
+    @for (page of getVisiblePages(); track $index) {
+      @if (page === null) {
+        <!-- نقاط الحذف -->
+        <span
+          class="flex items-end justify-center w-9 h-9 text-gray-400 font-bold pb-1 text-lg tracking-widest"
+        >
+          ...
+        </span>
+      } @else {
+        <button
+          class="min-w-[2.25rem] h-9 px-2 rounded-lg text-sm font-semibold transition-all duration-200 border"
+          [class]="
+            page === pageNumber
+              ? 'bg-primary border-primary text-white shadow-md scale-105'
+              : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-100 hover:border-gray-400'
+          "
+          (click)="changePage(page)"
+        >
+          {{ page }}
+        </button>
+      }
+    }
+
+    <!-- زر التالي -->
+    <button
+      class="flex items-center gap-1 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 border"
+      [class]="
+        pageNumber >= totalPages
+          ? 'border-gray-200 text-gray-300 cursor-not-allowed bg-white'
+          : 'border-gray-300 text-gray-600 hover:bg-gray-100 hover:border-gray-400 bg-white cursor-pointer'
+      "
+      [disabled]="pageNumber >= totalPages"
+      (click)="changePage(pageNumber + 1)"
+    >
+      التالي
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="w-4 h-4 rtl:rotate-180"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m8.25 4.5 7.5 7.5-7.5 7.5"
+        />
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- Popup: نسبة الإنجاز -->
+<div
+  dir="rtl"
+  [ngClass]="{
+    'scale-100 opacity-100': isOpenAchievement,
+    'scale-0 opacity-0': !isOpenAchievement,
+  }"
+  class="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 backdrop-blur-sm transition-all duration-300"
+  (click)="closeAchievementPopup()"
+>
+  <div
+    class="bg-white rounded-2xl shadow-2xl w-72 overflow-hidden border-2 border-gray-200 transform transition-transform duration-300"
+    (click)="$event.stopPropagation()"
+  >
+    @if (achievementData) {
+      <!-- الجزء العلوي: نسبة الإنجاز -->
+      <div
+        class="relative flex flex-col items-center justify-center py-7 px-4 border-b-4"
+        [class]="
+          achievementData.result >= 50
+            ? 'border-b-green-500'
+            : 'border-b-red-500'
+        "
+      >
+        <!-- زر الإغلاق -->
+        <button
+          (click)="closeAchievementPopup()"
+          class="absolute top-3 left-3 text-gray-400 hover:text-red-600 transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2.5"
+            stroke="currentColor"
+            class="w-5 h-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+
+        <p class="text-sm font-semibold text-gray-400 mb-2">نسبة الإنجاز</p>
+        <span
+          class="text-5xl font-black"
+          [class]="
+            achievementData.result >= 50 ? 'text-green-600' : 'text-red-600'
+          "
+          >{{ achievementData.result }}%</span
+        >
+      </div>
+
+      <!-- الجزء السفلي: خليتان -->
+      <div class="grid grid-cols-2 divide-x divide-x-reverse divide-gray-200">
+        <!-- التقدم -->
+        <div class="flex flex-col items-center justify-center py-6 px-4">
+          <p class="text-xs font-semibold text-gray-400 mb-2 tracking-wide">
+            التقدم
+          </p>
+          <span class="text-3xl font-black text-blue-600"
+            >{{ achievementData.advance }}%</span
+          >
+        </div>
+        <!-- النجاح -->
+        <div class="flex flex-col items-center justify-center py-6 px-4">
+          <p class="text-xs font-semibold text-gray-400 mb-2 tracking-wide">
+            النجاح
+          </p>
+          <span class="text-3xl font-black text-purple-600"
+            >{{ achievementData.success }}%</span
+          >
+        </div>
+      </div>
+    }
+  </div>
+</div>
+
+<div
+  dir="rtl"
+  [ngClass]="{ 'scale-100': isOpenEmail }"
+  class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+>
+  <div
+    class="flex items-center justify-center mx-auto md:w-[50rem] w-[28rem] px-6"
+  >
+    <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+      <div class="flex justify-between px-8 pt-8 text-center md:text-right">
+        <h2 class="text-xl font-bold lg:text-3xl text-primary">الإيميل</h2>
+        <button (click)="hideEmail()" class="">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <div
+        class="flex space-y-4 rounded-lg flex-col items-center px-4 my-8 overflow-y-auto pt-6 max-h-[30rem] gap-y-6 md:px-10"
+      >
+        <div class="w-full">
+          <input
+            type="text"
+            [(ngModel)]="subject"
+            placeholder="عنوان الإيميل"
+            class="w-full px-8 py-3 text-lg rounded-md outline-none appearance-none ring-1 focus:ring-2 focus:outline-none"
+          />
+        </div>
+        <div class="w-full">
+          <textarea
+            name="content"
+            [(ngModel)]="content"
+            placeholder="نص الإيميل"
+            class="w-full px-8 py-3 text-lg rounded-md outline-none appearance-none ring-1 focus:ring-2 focus:outline-none"
+            id="content"
+            rows="6"
+          ></textarea>
+        </div>
+      </div>
+      <div class="grid w-full place-items-center">
+        <button
+          type="button"
+          (click)="sendEmail()"
+          class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondary hover:bg-primary w-fit focus:outline-none focus:ring-2 focus:ring-offset-2"
+        >
+          @if (isLoadingEmail) {
+            <div
+              class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+            ></div>
+          } @else {
+            إرسال الإيميل
+          }
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

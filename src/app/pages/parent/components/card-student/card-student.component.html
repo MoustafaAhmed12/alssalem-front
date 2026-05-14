@@ -1,0 +1,150 @@
+<div
+  [routerLink]="['/supervisor/', student.id]"
+  class="max-w-4xl p-6 mx-auto transition-all duration-500 bg-white border border-gray-200 shadow-lg cursor-pointer rounded-xl hover:-translate-y-3 hover:shadow-xl"
+>
+  <!-- Header Section -->
+  <div
+    class="flex flex-col items-center justify-between pb-4 mb-6 border-b border-gray-100 lg:flex-row"
+  >
+    <div class="flex items-center gap-x-4">
+      <div
+        class="flex items-center justify-center w-16 h-16 text-xl font-bold text-white rounded-full bg-gradient-to-br from-blue-500 to-purple-600"
+      >
+        {{ getInitials(student.name) }}
+      </div>
+      <div>
+        <h2 class="mb-1 text-2xl font-bold text-gray-800">
+          {{ student.name }}
+        </h2>
+        <div
+          class="flex flex-col items-start gap-4 text-sm text-gray-600 md:flex-row"
+        >
+          <span class="flex items-center">
+            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.84L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.84l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
+              />
+            </svg>
+            {{ student.state || "-" }}
+          </span>
+          <span class="flex items-center">
+            <svg class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fill-rule="evenodd"
+                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            رقم الصف: {{ student.classNo || "-" }}
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="flex items-center mt-3 text-left gap-x-2">
+      <div class="mb-1 text-sm text-gray-500">إجمالي الدورات</div>
+      <div class="text-2xl font-bold text-blue-600">
+        {{ student.tutorials.length || 0 }}
+      </div>
+    </div>
+  </div>
+
+  <!-- Tutorials Section -->
+  <div>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="flex items-center text-lg font-semibold text-gray-800">
+        <svg
+          class="w-5 h-5 ml-2 text-blue-500"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        الدورات
+      </h3>
+      <span class="text-sm text-gray-500">
+        متوسط التقدم: {{ getAverageProgress() }}%
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4">
+      @for ( tutorial of student.tutorials; track $index) {
+
+      <div
+        class="p-4 transition-all duration-200 border border-gray-200 rounded-lg bg-gray-50 hover:border-blue-300 hover:bg-blue-50"
+      >
+        <div class="flex items-start justify-between mb-3">
+          <h4 class="text-sm font-medium leading-tight text-gray-800">
+            {{ tutorial.tutorialName }}
+          </h4>
+          <span
+            class="px-2 py-1 text-xs font-medium rounded-full"
+            [ngClass]="{
+              'bg-green-100 text-green-800': tutorial.advancePercentage === 100,
+              'bg-yellow-100 text-yellow-800':
+                tutorial.advancePercentage >= 50 &&
+                tutorial.advancePercentage < 100,
+              'bg-red-100 text-red-800': tutorial.advancePercentage < 50
+            }"
+          >
+            {{ tutorial.advancePercentage | number : "1.0-0" }}%
+          </span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="w-full h-2 mb-2 bg-gray-200 rounded-full">
+          <div
+            class="h-2 transition-all duration-500 ease-out rounded-full"
+            [ngClass]="{
+              'bg-green-500': tutorial.advancePercentage === 100,
+              'bg-yellow-500':
+                tutorial.advancePercentage >= 50 &&
+                tutorial.advancePercentage < 100,
+              'bg-red-500': tutorial.advancePercentage < 50
+            }"
+            [style.width.%]="tutorial.advancePercentage"
+          ></div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-500">
+          <span>ID: {{ tutorial.id }}</span>
+          <span
+            [ngClass]="{
+              'text-green-600 font-medium': tutorial.advancePercentage === 100,
+              'text-yellow-600':
+                tutorial.advancePercentage >= 50 &&
+                tutorial.advancePercentage < 100,
+              'text-red-600': tutorial.advancePercentage < 50
+            }"
+          >
+            {{ getProgressStatus(tutorial.advancePercentage) }}
+          </span>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Summary Statistics -->
+    <div class="pt-4 mt-6 border-t border-gray-100">
+      <div class="grid grid-cols-3 gap-4 text-center">
+        <div class="p-3 rounded-lg bg-green-50">
+          <div class="text-lg font-bold text-green-600">
+            {{ getCompletedTutorials() }}
+          </div>
+          <div class="text-xs text-green-700">مكتملة</div>
+        </div>
+        <div class="p-3 rounded-lg bg-yellow-50">
+          <div class="text-lg font-bold text-yellow-600">
+            {{ getInProgressTutorials() }}
+          </div>
+          <div class="text-xs text-yellow-700">قيد التقدم</div>
+        </div>
+        <div class="p-3 rounded-lg bg-red-50">
+          <div class="text-lg font-bold text-red-600">
+            {{ getNotStartedTutorials() }}
+          </div>
+          <div class="text-xs text-red-700">لم تبدأ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

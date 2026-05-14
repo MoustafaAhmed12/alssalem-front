@@ -1,0 +1,361 @@
+<h2 class="text-2xl font-semibold leading-loose">
+  {{ examName }}
+</h2>
+<main
+  class="grid grid-cols-1 mt-2 lg:grid-cols-2 place-items-center gap-y-6 md:gap-x-16"
+>
+  <div class="relative grid col-span-1 place-items-center">
+    <canvas id="chart" class="w-[350px] h-[350px] lg:w-[400px] lg:h-[400px]">
+    </canvas>
+    <div class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+      <h2
+        [ngClass]="
+          correctionExamDetails.isSuccess ? 'text-[#36b290]' : 'text-[#963c3d]'
+        "
+        class="pt-8 text-5xl"
+      >
+        {{ roundedNumber(correctionExamDetails.precent) }}%
+      </h2>
+    </div>
+  </div>
+  <div class="w-10/12 col-span-1 lg:w-full">
+    <section class="bg-white">
+      <div class="container mx-auto">
+        <div class="flex flex-wrap -mx-4">
+          <div class="w-full px-4">
+            <div class="max-w-full overflow-x-auto">
+              <table class="w-full border-2 table-auto border-primaryAdmin">
+                <thead>
+                  <tr class="text-center bg-secondaryAdmin">
+                    <th
+                      colspan="2"
+                      class="w-1/6 min-w-[160px] py-2 px-3 text-base border-b-2 border-primaryAdmin font-bold text-black lg:py-4 lg:px-4"
+                    >
+                      إحصائيات الاختبار
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      عدد الأسئلة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ correctionExamDetails.totalCount }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الوقت المستغرق
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ takeTime | formatTime }}
+                    </td>
+                  </tr>
+                  @for (
+                    questionType of correctionExamDetails.questionTypeStatistics;
+                    track $index
+                  ) {
+                    <tr>
+                      <td
+                        class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                      >
+                        {{ questionType.name }}
+                      </td>
+                      <td
+                        class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-semibold"
+                        [ngClass]="
+                          roundedNumber(questionType.precent) >= 75
+                            ? 'text-primaryAdmin'
+                            : 'text-red-600'
+                        "
+                      >
+                        {{ roundedNumber(questionType.precent) }}%
+                      </td>
+                    </tr>
+                  }
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الإجابات الصحيحة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin text-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-semibold"
+                    >
+                      {{ correctionExamDetails.correctAnswersCount }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الأخطاء
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin text-red-600 bg-[#F3F6FF] py-5 px-2 text-center text-sm font-semibold"
+                    >
+                      {{ correctionExamDetails.wrongAnswersCount }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      لم يتم حلها
+                    </td>
+                    <td
+                      class="bg-[#F3F6FF] py-5 px-2 text-center text-secondaryAdmin text-sm font-semibold"
+                    >
+                      {{ correctionExamDetails.emptyQuestionsCount }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ====== Table Section End -->
+  </div>
+</main>
+@if (!isEmpty) {
+  <div class="flex justify-center w-full mt-6 lg:-mr-8 lg:justify-end">
+    <button
+      (click)="openPop()"
+      type="button"
+      class="px-8 py-2 text-white transition-colors border rounded-lg bg-primaryAdmin hover:animate-pop hover:bg-secondaryAdmin"
+    >
+      عرض تفصيلي للنتيجة
+    </button>
+  </div>
+}
+<!-- <section class="bg-white mt-14">
+  <h2 class="my-3 text-xl font-semibold ps-4 md:ps-0">نتائج المحاولات</h2>
+  <div class="container mx-auto">
+    <div class="flex flex-wrap">
+      <div class="w-full px-1 md:px-4">
+        <div class="overflow-x-scroll max-w-fit md:max-w-screen-xl">
+          <table class="w-full text-sm border-2 table-auto border-primaryAdmin">
+            <thead>
+              <tr class="text-center bg-secondaryAdmin">
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  عدد الأسئلة
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  الوقت المستغرق
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  النتيجة
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  نسبة النجاح
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  درجتك
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  مراجعة المحاولات
+                </td>
+              </tr>
+            </thead>
+            @for (item of correctionExamDetails.slice(0, isShow?
+            correctionExamDetails.length : 3); track $index) {
+            <tbody>
+              <tr>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.numberOfTotalQuestionsQuestions }}
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.takenTime | formatTime }}
+                </td>
+                <td
+                  [ngClass]="item.isSuccess ? 'text-green-700' : 'text-red-700'"
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{
+                    item.passingPrecent <= item.percentage ? "ناجح" : "لم ينجح"
+                  }}
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.passingPrecent }}%
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ roundedNumber(item.percentage) }}%
+                </td>
+                <td
+                  [routerLink]="[
+                    '/tutorial/' +
+                      this.tutorialId +
+                      '/exam/' +
+                      item.examId +
+                      '/result-answers/' +
+                      item.id +
+                      '/page/' +
+                      1
+                  ]"
+                  class="border-b-2 border-l-2 text-secondaryAdmin cursor-pointer hover:text-primaryAdmin transition-colors border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  مراجعة الإجابات
+                </td>
+              </tr>
+            </tbody>
+            }
+          </table>
+          @if (correctionExamDetails.length > 3) {
+          <button
+            (click)="isShow = !isShow"
+            class="px-4 py-2 mt-3 text-white bg-blue-500 rounded-md"
+          >
+            {{ isShow ? "إظهار أقل" : "إظهار المزيد" }}
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+<div
+  [ngClass]="{ 'scale-100': isOpen() }"
+  class="fixed inset-0 top-0 left-0 right-0 bg-gray-800 z-[110] grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 place-items-center"
+>
+  <div
+    class="flex items-center justify-center mx-auto lg:w-[70vw] rounded-xl md:w-[50rem] w-screen sm:px-6"
+  >
+    <div
+      class="h-full overflow-y-auto bg-white rounded-lg max-h-[80vh] shadow-sm md:border basis-full"
+    >
+      <div class="flex justify-between px-6 pt-8 text-center md:text-right">
+        <h2 class="text-xl font-bold lg:text-2xl text-primaryAdmin">
+          عرض تفصيلي للنتيجة
+        </h2>
+        <button (click)="close()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M6 18 18 6M6 6l12 12"
+            />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="flex flex-wrap items-center w-full px-4 pt-4 pb-8 mt-6 gap-x-6"
+      >
+        <div class="w-full p-4 overflow-x-auto bg-gray-50">
+          <table
+            class="min-w-full text-center bg-white border border-gray-300 rounded-lg shadow-md"
+          >
+            <!-- Table Header -->
+            <thead class="text-gray-700 bg-gray-200">
+              <tr>
+                <th class="p-4 border border-gray-300">القسم</th>
+                <th class="p-4 border border-gray-300">المهارة</th>
+                <th class="p-4 border border-gray-300">النسبة للمهارة</th>
+              </tr>
+            </thead>
+
+            <!-- Table Body -->
+            <tbody>
+              @for (row of allResultDetails; track $index) {
+                @if (row.skillsStatistics.length) {
+                  <tr
+                    class="transition duration-300 even:bg-gray-100 hover:bg-gray-200"
+                  >
+                    <td
+                      class="p-4 font-bold text-blue-700 border border-gray-300"
+                      [attr.rowspan]="row.skillsStatistics.length"
+                    >
+                      <div
+                        class="flex flex-col items-center justify-center gap-y-4"
+                      >
+                        <span>{{ row.name }}</span>
+                        <span
+                          [class]="
+                            roundedNumber(row.precent) >= 75
+                              ? 'text-primaryAdmin'
+                              : 'text-red-600'
+                          "
+                          >{{ roundedNumber(row.precent) }}%</span
+                        >
+                      </div>
+                    </td>
+                    <td class="p-4 text-gray-600 border border-gray-300">
+                      {{ row.skillsStatistics[0].name }}
+                    </td>
+                    <td
+                      class="p-4 border border-gray-300"
+                      [class]="
+                        roundedNumber(row.skillsStatistics[0].precent) >= 75
+                          ? 'text-primaryAdmin'
+                          : 'text-red-600'
+                      "
+                    >
+                      {{ roundedNumber(row.skillsStatistics[0].precent) }}%
+                    </td>
+                  </tr>
+                  <!-- Remaining Skill Rows -->
+                  @for (skill of row.skillsStatistics.slice(1); track $index) {
+                    <tr
+                      class="transition duration-300 even:bg-gray-100 hover:bg-gray-200"
+                    >
+                      <td class="p-4 text-gray-600 border border-gray-300">
+                        {{ skill.name }}
+                      </td>
+                      <td
+                        class="p-4 border border-gray-300"
+                        [class]="
+                          roundedNumber(skill.precent) >= 75
+                            ? 'text-primaryAdmin'
+                            : 'text-red-600'
+                        "
+                      >
+                        {{ roundedNumber(skill.precent) }}%
+                      </td>
+                    </tr>
+                  }
+                }
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

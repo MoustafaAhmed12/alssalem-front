@@ -1,0 +1,286 @@
+<section class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+  @if (!isLoading()) {
+    @if (videoDetails.isOpen) {
+      <!-- Video Container -->
+      <div class="container mx-auto px-4 max-w-7xl">
+        <!-- Title & Player Toggle -->
+        <div
+          class="mb-8 flex flex-col md:flex-row justify-between items-center gap-4"
+        >
+          <div class="text-center md:text-right">
+            <h1
+              class="text-3xl md:text-4xl font-bold text-[#36b290] leading-loose mb-2"
+            >
+              {{ videoDetails.chapterName }}
+            </h1>
+            <div
+              class="h-1 w-24 bg-gradient-to-r from-[#36b290] to-[#2d9478] mx-auto md:mx-0 rounded-full"
+            ></div>
+          </div>
+
+          @if (isYoutube()) {
+            <button
+              (click)="togglePlayer()"
+              class="group flex items-center gap-2 px-6 py-2 bg-white border-2 border-primaryAdmin text-primaryAdmin font-bold rounded-full hover:bg-primaryAdmin hover:text-white transition-all duration-300 shadow-md hover:shadow-lg"
+            >
+              <svg
+                class="w-5 h-5 group-hover:rotate-180 transition-transform duration-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              {{ useRawYoutube() ? "العودة للمشغل العادي" : "مشغل إضافي" }}
+            </button>
+          }
+        </div>
+
+        <!-- Video Player -->
+        <div class="bg-white rounded-2xl shadow-2xl p-4 mb-8">
+          <div
+            #videoContainer
+            class="relative w-full max-w-5xl mx-auto rounded-xl overflow-hidden aspect-video group bg-black"
+          >
+            @if (isYoutube()) {
+              <!-- Plyr Player Container -->
+              <div
+                class="w-full h-full"
+                [id]="!useRawYoutube() ? 'plyr-player' : ''"
+              >
+                @if (!useRawYoutube()) {
+                  <iframe
+                    [src]="youtubeSource() | safeUrl"
+                    allowfullscreen
+                    allowtransparency
+                    allow="autoplay"
+                    class="w-full h-full"
+                  ></iframe>
+                } @else {
+                  <mux-player
+                    class="w-full h-full"
+                    stream-type="on-demand"
+                    [src]="videoDetails.videUrl"
+                    controls
+                  ></mux-player>
+                }
+              </div>
+            } @else if (isMux()) {
+              <mux-player
+                class="w-full h-full"
+                stream-type="on-demand"
+                [src]="videoURL"
+                controls
+              ></mux-player>
+            } @else {
+              <!-- Fallback for Non-Youtube (Google Drive, etc) -->
+              <iframe
+                class="w-full h-full"
+                [src]="getDecodedUrl() | safeUrl"
+                frameborder="0"
+                allowfullscreen
+              ></iframe>
+            }
+
+            <!-- BRANDING OVERLAYS (Only for YouTube) -->
+            @if (isYoutube()) {
+              <!-- TOP OVERLAY -->
+              <div
+                class="absolute top-0 right-0 left-0 h-[75px] bg-transparent z-[15] cursor-default"
+              ></div>
+
+              <!-- BOTTOM RIGHT OVERLAY -->
+              <div
+                class="absolute bottom-12 right-0 w-[120px] h-[60px] bg-transparent z-[15] cursor-default"
+              ></div>
+            }
+
+            <!-- Custom Fullscreen Button (Visible on Hover) -->
+            <button
+              (click)="toggleFullscreen(videoContainer)"
+              class="absolute bottom-4 left-4 z-[20] p-2 bg-black/50 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-[#36b290]"
+              title="تكبير الشاشة"
+            >
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                />
+              </svg>
+            </button>
+
+            <!-- END SCREEN OVERLAY: Hides suggested videos when player ends -->
+            @if (isYoutube() && videoEnded()) {
+              <div
+                class="absolute inset-0 bg-black/95 z-20 flex flex-col items-center justify-center p-6 text-center animate-fade-in"
+              >
+                <div class="mb-4 p-4 bg-white/10 rounded-full">
+                  <svg
+                    class="w-12 h-12 text-[#36b290]"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">
+                  أحسنت! لقد أتممت الدرس
+                </h3>
+                <p class="text-gray-400 mb-6">
+                  يمكنك إعادة مشاهدة الفيديو أو الانتقال للدرس التالي
+                </p>
+                <button
+                  (click)="togglePlayer(); togglePlayer()"
+                  class="px-8 py-3 bg-[#36b290] text-white font-bold rounded-full hover:bg-[#2d9478] transition-all"
+                >
+                  إعادة المشاهدة
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- Attachments Section (if needed) -->
+        @if (videoDetails.attachmentLink) {
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3
+              class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
+            >
+              <svg
+                class="w-6 h-6 text-[#36b290]"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              المرفقات
+            </h3>
+            <a
+              [href]="videoDetails.attachmentLink"
+              target="_blank"
+              class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-[#36b290] to-[#2d9478] text-white font-semibold rounded-lg hover:shadow-lg transition-all duration-300 hover:scale-105"
+            >
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                />
+              </svg>
+              {{ videoDetails.attachmentName || "تحميل المرفق" }}
+            </a>
+          </div>
+        }
+      </div>
+    } @else {
+      <!-- Locked Content Message -->
+      <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="w-full max-w-2xl">
+          <div
+            class="bg-white rounded-2xl shadow-2xl overflow-hidden transform hover:scale-105 transition-transform duration-300"
+          >
+            <!-- Icon Header -->
+            <div
+              class="bg-gradient-to-r from-yellow-400 to-orange-500 p-8 text-center"
+            >
+              <div
+                class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4"
+              >
+                <svg
+                  class="w-10 h-10 text-yellow-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
+              <h2 class="text-3xl font-bold text-white">محتوى مقفل</h2>
+            </div>
+
+            <!-- Content -->
+            <div class="p-8 text-center">
+              <p class="text-xl text-gray-700 mb-6">
+                عفواً! لا يمكن فتح هذا الدرس
+              </p>
+              <p class="text-lg text-gray-600 mb-8">
+                يجب عليك شراء الدورة أولاً للوصول إلى هذا المحتوى
+              </p>
+
+              <button
+                (click)="navigateToTutorial()"
+                class="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#36b290] to-[#2d9478] text-white text-lg font-bold rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
+                </svg>
+                شراء الدورة الآن
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  } @else {
+    <!-- Loading Spinner -->
+    <div class="flex items-center justify-center min-h-screen">
+      <div class="text-center">
+        <div class="inline-block relative">
+          <div
+            class="w-20 h-20 border-8 border-[#36b290] border-t-transparent rounded-full animate-spin"
+          ></div>
+          <div class="absolute inset-0 flex items-center justify-center">
+            <div
+              class="w-12 h-12 border-4 border-[#2d9478] border-b-transparent rounded-full animate-spin"
+              style="animation-direction: reverse; animation-duration: 0.8s"
+            ></div>
+          </div>
+        </div>
+        <p class="mt-4 text-lg font-semibold text-[#36b290]">جاري التحميل...</p>
+      </div>
+    </div>
+  }
+</section>

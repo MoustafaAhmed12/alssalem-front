@@ -1,0 +1,71 @@
+<main class="relative">
+    <div class="flex items-center justify-start min-h-full mx-auto my-8 lg:px-8">
+        <div class="bg-white rounded-lg shadow-sm basis-full">
+            <div class="flex items-center w-full px-8 py-2 rounded-full">
+                <div class="flex-1 border-b-2 border-gray-300"></div>
+                <span class="px-8 py-3 text-3xl font-bold leading-8 text-primaryAdmin">
+                    @if (id === 0) { إضافة تصنيف } @else { تعديل تصنيف }
+                </span>
+                <div class="flex-1 border-b-2 border-gray-300"></div>
+            </div>
+            <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6 rounded-lg" autocomplete="off">
+                <div class="px-2 py-6 bg-white rounded-lg lg:px-8">
+
+                    <!-- Name Input -->
+                    <div class="bg-white rounded-lg">
+                        <div class="relative bg-inherit">
+                            <input type="text" id="name" formControlName="name" placeholder="الاسم"
+                                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                [ngClass]="{'ring-rose-600': form.get('name')?.invalid && form.get('name')?.touched}" />
+                            <label for="name"
+                                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm">
+                                الاسم
+                            </label>
+                        </div>
+                        @if (form.get('name')?.invalid && form.get('name')?.touched) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                        }
+                    </div>
+
+                    <!-- Parent Category Select -->
+                    <div class="mt-6 bg-white rounded-lg">
+                        <div class="relative bg-inherit">
+                            <select id="parentCategoryId" formControlName="parentCategoryId"
+                                class="w-full px-4 py-4 my-2 text-lg text-gray-900 bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                                [ngClass]="{'ring-rose-600': form.get('parentCategoryId')?.invalid && form.get('parentCategoryId')?.touched}">
+                                <option [ngValue]="null" disabled>اختر التصنيف الأب</option>
+                                @for (cat of parentCategories; track cat.id) {
+                                <option [value]="cat.id">{{ cat.name }}</option>
+                                }
+                            </select>
+                            <label for="parentCategoryId"
+                                class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm">
+                                التصنيف الأب
+                            </label>
+                        </div>
+                        @if (form.get('parentCategoryId')?.invalid && form.get('parentCategoryId')?.touched) {
+                        <p class="text-sm text-red-500">هذا الحقل مطلوب</p>
+                        }
+                    </div>
+
+                    <!-- IsVisibleToFront Checkbox -->
+                    <div class="mt-6 flex items-center">
+                        <input id="isVisibleToFront" type="checkbox" formControlName="isVisibleToFront"
+                            class="w-6 h-6 text-sky-600 border-gray-300 rounded focus:ring-sky-500" />
+                        <label for="isVisibleToFront" class="mr-2 text-lg text-gray-900">
+                            يظهر في الواجهة الأمامية
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="flex items-center justify-center w-full mt-3">
+                    <button type="submit"
+                        class="flex items-center justify-center w-full p-4 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg md:w-1/2 lg:w-1/3 bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-1 focus:ring-offset-2">
+                        حفظ
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

@@ -1,0 +1,118 @@
+input[type="radio"] + label span {
+  transition: background 0.2s, transform 0.2s;
+}
+input[type="radio"] + label span:hover,
+input[type="radio"] + label:hover span {
+  transform: scale(1.2);
+}
+input[type="radio"]:checked + label span {
+  background-color: #2ebb62; //bg-blue
+  box-shadow: 0px 0px 0px 2px white inset;
+}
+input[type="radio"]:checked + label {
+  color: #2ebb62;
+}
+.active {
+  background-color: #eab766;
+  color: #fff;
+  border: 1px solid;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 80px;
+  height: 80px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}
+
+/* Plyr Custom Styling - Match Site Colors */
+:host ::ng-deep {
+  /* Primary color (progress bar, buttons, etc) */
+  .plyr--full-ui input[type="range"] {
+    color: #36b290;
+  }
+
+  .plyr__control--overlaid {
+    background: #36b290;
+  }
+
+  .plyr__control--overlaid:hover {
+    background: #2d9478;
+  }
+
+  .plyr__control--overlaid:focus {
+    background: #2d9478;
+  }
+
+  .plyr__control.plyr__tab-focus {
+    box-shadow: 0 0 0 5px rgba(54, 178, 144, 0.5);
+  }
+
+  .plyr__control:hover {
+    background: #36b290;
+  }
+
+  .plyr__progress input[type="range"],
+  .plyr__progress__buffer {
+    color: #36b290;
+  }
+
+  /* Volume thumb */
+  .plyr--full-ui input[type="range"]::-webkit-slider-thumb {
+    background: #36b290;
+  }
+  .plyr--full-ui input[type="range"]::-moz-range-thumb {
+    background: #36b290;
+  }
+
+  /* Loading spinner */
+  .plyr__progress__buffer {
+    color: rgba(54, 178, 144, 0.25);
+  }
+
+  .plyr__video-embed {
+    pointer-events: auto;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+
+  /* Hide YouTube branding */
+  .ytp-youtube-button,
+  .ytp-watermark,
+  .ytp-chrome-top,
+  .ytp-show-cards-title,
+  .ytp-pause-overlay,
+  .ytp-title {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  .plyr--youtube.plyr--stopped .plyr__poster::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.6) 60%,
+      transparent 100%
+    );
+    z-index: 1;
+  }
+}
+

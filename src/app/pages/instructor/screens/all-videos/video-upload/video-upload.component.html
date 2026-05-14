@@ -1,0 +1,125 @@
+<main class="relative">
+  <div
+    class="flex items-center justify-start min-h-full px-4 mx-auto my-8 sm:px-6 lg:px-8"
+  >
+    <div class="bg-white rounded-lg shadow-sm basis-full">
+      <app-title-screen [title]="'أضف فيديو'" />
+      <form
+        [formGroup]="uploadForm"
+        (ngSubmit)="onSubmit()"
+        class="mt-4 space-y-2 rounded-lg"
+        autocomplete="off"
+      >
+        <div class="px-8 py-2 bg-white rounded-lg">
+          <div class="relative bg-inherit">
+            <input
+              type="text"
+              id="fileName"
+              name="fileName"
+              formControlName="fileName"
+              placeholder="أسم الفيديو "
+              [ngClass]="
+                uploadForm.controls['fileName'].errors && submitted
+                  ? 'ring-rose-600 '
+                  : 'border-gray-300 focus:ring-sky-600'
+              "
+              class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            /><label
+              for="fileName"
+              class="absolute right-0 px-1 mx-1 text-lg text-gray-500 transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+              >أسم الفيديو</label
+            >
+          </div>
+        </div>
+        <div class="px-8 py-2 bg-white rounded-lg">
+          <div
+            class="relative flex flex-col items-center justify-center w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer lg:flex-row gap-y-2 gap-x-12"
+            (drop)="onFileDrop($event)"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+          >
+            @if (videoFile && !videoUrl) {
+            <p class="text-xl text-textNav">{{ videoFile.name }}</p>
+            }
+            <input
+              type="file"
+              class="absolute inset-0 flex items-center justify-center w-full h-full opacity-0 cursor-pointer"
+              (change)="onFileSelected($event)"
+              name="videoFile"
+              id="videoFile"
+            />
+            <div class="flex items-center justify-around w-full">
+              <div class="text-center">
+                <img
+                  class="w-12 h-12 mx-auto"
+                  src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                  alt=""
+                />
+                <h3
+                  class="mt-2 text-sm font-medium text-gray-900 cursor-pointer"
+                >
+                  <label for="file-upload" class="relative cursor-pointer">
+                    <span>Drag and drop</span>
+                    <span class="text-indigo-600"> or browse </span>
+                    <span>to upload</span>
+                    <input
+                      id="file-upload"
+                      name="file-upload"
+                      type="file"
+                      class="sr-only"
+                    />
+                  </label>
+                </h3>
+                <p class="mt-1 text-lg text-blue-600">أختر الفيديو</p>
+              </div>
+            </div>
+            @if (videoUrl) {
+            <div class="min-w-[30rem]">
+              <mux-player
+                stream-type="on-demand"
+                src="{{ videoUrl }}"
+                metadata-video-id="video-id-123"
+                metadata-video-title="Test Video"
+                primary-color="#fff"
+                secondary-color="#ff3a4e"
+                controls
+                class="z-40"
+              ></mux-player>
+            </div>
+            }
+          </div>
+        </div>
+        <div class="flex items-center justify-center w-full mt-3">
+          <button
+            type="submit"
+            class="flex items-center justify-center py-4 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg px-14 w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-1 focus:ring-offset-2"
+          >
+            @if (isLoading) { ...Loading
+            <svg
+              width="26"
+              height="26"
+              fill="currentColor"
+              class="mr-2 animate-spin text-sky-900"
+              viewBox="0 0 1792 1792"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M526 1394q0 53-37.5 90.5t-90.5 37.5q-52 0-90-38t-38-90q0-53 37.5-90.5t90.5-37.5 90.5 37.5 37.5 90.5zm498 206q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-704-704q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm1202 498q0 52-38 90t-90 38q-53 0-90.5-37.5t-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-964-996q0 66-47 113t-113 47-113-47-47-113 47-113 113-47 113 47 47 113zm1170 498q0 53-37.5 90.5t-90.5 37.5-90.5-37.5-37.5-90.5 37.5-90.5 90.5-37.5 90.5 37.5 37.5 90.5zm-640-704q0 80-56 136t-136 56-136-56-56-136 56-136 136-56 136 56 56 136zm530 206q0 93-66 158.5t-158 65.5q-93 0-158.5-65.5t-65.5-158.5q0-92 65.5-158t158.5-66q92 0 158 66t66 158z"
+              ></path>
+            </svg>
+            } @else {حفظ }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- @if(isLoading) {
+  <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  } -->
+</main>

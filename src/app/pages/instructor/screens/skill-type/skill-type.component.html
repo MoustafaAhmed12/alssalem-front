@@ -1,0 +1,208 @@
+<div class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isDelete }"
+  ></div>
+  <div class="pt-4 mb-12">
+    <app-title-screen [title]="'جميع المهارات'" />
+    <form class="container mx-auto my-6">
+      <input
+        dir="rtl"
+        id="globalSearch"
+        (input)="onChange($event)"
+        class="w-full px-8 text-xl border rounded shadow-sm h-14 focus:border-2 focus:border-sky-600 focus:outline-none focus:shadow-outline"
+        type="search"
+        placeholder="إبحث ..."
+      />
+    </form>
+    <div class="flex items-center justify-end w-full my-8" dir="rtl">
+      <div class="flex justify-end basis-4/12">
+        <button
+          type="button"
+          (click)="showModal()"
+          class="flex items-center px-4 py-2 text-sm text-white transition-colors border rounded-lg gap-x-2 md:text-lg md:px-6 md:py-2 bg-secondaryAdmin hover:bg-opacity-95"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 4.5v15m7.5-7.5h-15"
+            />
+          </svg>
+          إضافة
+        </button>
+      </div>
+    </div>
+    <ngx-table
+      [data]="data"
+      [configuration]="configuration"
+      #table
+      [columns]="columns"
+      [noResultsTemplate]="noResultsTemplate"
+    >
+    </ngx-table>
+    <ng-template #noResultsTemplate>
+      <td [attr.colspan]="columns.length" class="no-results">
+        لا تُوجد بيانات بعد.
+      </td>
+    </ng-template>
+  </div>
+  <!-- edit -->
+  <ng-template #actionTpl let-row>
+    <div class="flex items-center justify-center gap-x-12">
+      <svg
+        (click)="edit(row.id, questionTypeSelect)"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-green-600 cursor-pointer hover:text-green-700"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+        />
+      </svg>
+      <svg
+        (click)="openPopup(row.id)"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="1.5"
+        stroke="currentColor"
+        class="w-6 h-6 text-red-600 cursor-pointer hover:text-red-700"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+        />
+      </svg>
+    </div>
+  </ng-template>
+  <!-- model -->
+  <div
+    [ngClass]="{ 'scale-100': modal }"
+    class="fixed inset-0 top-0 left-0 right-0 z-[110] md:z-50 grid items-center justify-center w-full h-full transition-transform duration-500 scale-0 bg-gray-50 bg-opacity-60 place-items-center"
+  >
+    <div
+      class="flex items-center justify-center mx-auto md:w-[35rem] w-80 sm:px-6"
+    >
+      <div class="bg-white rounded-lg shadow-sm md:border basis-full">
+        <div
+          class="flex justify-between px-2 pt-8 text-center md:text-right lg:px-8"
+        >
+          <h2 class="text-xl font-bold lg:text-3xl text-primaryAdmin">
+            {{ skillId === 0 ? "إضافة" : "تعديل" }}
+          </h2>
+          <button type="button" (click)="hideModal()" class="">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 transition-all duration-500 hover:rotate-180 hover:scale-125 hover:text-red-700"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+        <form class="space-y-4 rounded-lg" autocomplete="off">
+          <div class="py-4 bg-white rounded-lg md:px-4 lg:px-8">
+            <div class="mt-3 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  name="skillName"
+                  [(ngModel)]="skillName"
+                  id="skillName"
+                  placeholder="اسم المهارة"
+                  class="w-full px-4 py-2.5 my-3 text-lg text-gray-900 bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+            <ng-select
+              #questionTypeSelect
+              [(ngModel)]="id"
+              name="id"
+              [items]="allQuestionTypes"
+              [closeOnSelect]="true"
+              [hideSelected]="true"
+              bindLabel="name"
+              bindValue="id"
+              [searchable]="true"
+              (change)="selectQuestionType($event)"
+              placeholder="أختر نوع السؤال"
+              class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+            >
+            </ng-select>
+          </div>
+          <div class="grid w-full place-items-center">
+            <button
+              type="submit"
+              (click)="onSubmit()"
+              class="flex justify-center px-8 py-3 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg bg-secondaryAdmin hover:bg-primaryAdmin w-fit focus:outline-none focus:ring-2 focus:ring-offset-2"
+            >
+              @if (isLoading()) {
+              <div
+                class="w-8 h-8 border-8 border-purple-600 border-dashed rounded-full animate-spin border-t-transparent"
+              ></div>
+              } @else { حفظ }
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+@if (isOpen() && skilId() !== 0) {
+<div
+  class="fixed inset-0 z-[150] flex items-center justify-center bg-black bg-opacity-50"
+  (click)="close()"
+>
+  <div
+    class="relative flex flex-col items-center justify-center w-full max-w-lg md:max-w-2xl px-8 py-10 border-2 shadow-lg border-[#002C3D] bg-[#F7F8F3] rounded-2xl"
+    (click)="$event.stopPropagation()"
+  >
+    <span
+      (click)="close()"
+      class="absolute text-lg font-semibold transition-colors cursor-pointer top-4 right-5 hover:text-red-500"
+      >X</span
+    >
+    <h3 class="mt-3 text-lg font-semibold leading-6 text-center text-[#002C3D]">
+      <span>{{ errorMsg() ? errorMsg() : "هل تريد حذف هذه المهارة" }}</span>
+    </h3>
+    <div
+      class="flex items-center justify-center w-full mt-10 text-lg font-semibold lg:w-2/3 gap-x-6 text-[#F7F8F3]"
+    >
+      @if (!errorMsg()) {
+      <button (click)="remove()" class="px-6 py-1 rounded-md bg-[#002C3D]">
+        نعم
+      </button>
+      }
+      <button
+        (click)="close()"
+        type="button"
+        class="px-6 py-1 rounded-md bg-[#F8444F]"
+      >
+        {{ errorMsg() ? "إغلاق" : "لا" }}
+      </button>
+    </div>
+  </div>
+</div>
+}

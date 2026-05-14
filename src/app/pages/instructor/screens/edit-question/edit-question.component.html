@@ -1,0 +1,402 @@
+<main class="relative">
+  <div
+    class="absolute"
+    [ngClass]="{ '!bg-opacity-60 bg-white z-30 w-full h-full': isLoading }"
+  ></div>
+  <div class="flex items-center justify-center min-h-full mx-auto my-8">
+    <div class="basis-full">
+      <div class="flex items-center">
+        <h2 class="text-4xl font-bold text-primaryAdmin">تعديل سؤال</h2>
+      </div>
+      <form
+        [formGroup]="questionForm"
+        (ngSubmit)="onSubmit()"
+        autocomplete="off"
+      >
+        <div class="w-full mt-4">
+          <div
+            class="flex flex-wrap items-center justify-between w-full px-6 py-3 mt-4 border rounded-lg gap-y-4"
+          >
+            @for (i of exams; track i) {
+            <div class="flex items-center gap-x-2">
+              <span>اسم الاختبار:</span>
+              <span class="font-bold text-secondaryAdmin">{{ i.name }}</span>
+            </div>
+            }
+          </div>
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <ng-select
+                [items]="allQuestionTypes"
+                [multiple]="false"
+                [closeOnSelect]="true"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                [searchable]="true"
+                formControlName="questionTypeId"
+                placeholder="أختر نوع السؤال"
+                (change)="changeQuestionType($event)"
+                class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              >
+              </ng-select>
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <ng-select
+                [items]="allSkills"
+                [multiple]="false"
+                [closeOnSelect]="true"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                [searchable]="true"
+                formControlName="skillId"
+                placeholder="أختر اسم المهارة"
+                (change)="onSkillChange()"
+                class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              >
+              </ng-select>
+            </div>
+          </div>
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <ng-select
+                [multiple]="false"
+                [closeOnSelect]="true"
+                [hideSelected]="true"
+                bindLabel="name"
+                bindValue="id"
+                [searchable]="true"
+                formControlName="difficulty"
+                placeholder="أختر مستوي الصعوبة"
+                (change)="onDifficultyChange()"
+                class="w-full p-2 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+              >
+                <ng-option [value]="1">سهل</ng-option>
+                <ng-option [value]="2">متوسط</ng-option>
+                <ng-option [value]="3">صعب</ng-option>
+              </ng-select>
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="passingPrecent"
+                  name="answerUrl"
+                  formControlName="answerUrl"
+                  placeholder="ادخل لينك الفيديو"
+                  class="w-full px-4 py-3 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 bg-white rounded-lg">
+            <div class="relative bg-inherit">
+              <textarea
+                type="text"
+                name="text"
+                formControlName="text"
+                id="text"
+                rows="3"
+                placeholder="أدخل  "
+                class="w-full px-4 py-4 my-2 text-lg text-gray-900 placeholder-transparent bg-transparent rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                (input)="onTextChange()"
+                (blur)="hideSuggestions()"
+                autocomplete="off"
+              ></textarea>
+              <label
+                for="text"
+                class="absolute right-0 px-1 mx-1 text-lg transition-all cursor-text -top-3 bg-inherit peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-500 peer-placeholder-shown:top-6 peer-focus:-top-1 peer-focus:text-sky-600 peer-focus:text-sm"
+                >اضاقة نص للسؤال</label
+              >
+
+              <!-- Suggestions List -->
+              @if (showSuggestions) {
+              <div
+                class="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto"
+              >
+                @for (suggestion of suggestions; track suggestion.id) {
+                <div
+                  (click)="selectSuggestion(suggestion)"
+                  class="px-4 py-3 cursor-pointer flex justify-between hover:bg-blue-50 hover:text-primaryAdmin transition-colors border-b border-gray-100 last:border-0"
+                >
+                  <p class="text-sm font-medium">{{ suggestion.text }}</p>
+                  <span class="text-xs text-gray-500 font-bold"
+                    >({{ suggestion.id }})</span
+                  >
+                </div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          <!-- New Row for Slug and Keywords -->
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <!-- Slug -->
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  name="slug"
+                  formControlName="slug"
+                  dir="ltr"
+                  placeholder="الرابط (Slug)"
+                  class="w-full px-4 py-3 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none font-mono"
+                />
+                <label
+                  class="absolute right-0 px-1 mx-1 text-sm bg-white -top-1 text-gray-500"
+                >
+                  الرابط (Slug) - تلقائي
+                </label>
+              </div>
+            </div>
+            <!-- Keywords -->
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  name="keyWord"
+                  formControlName="keyWord"
+                  placeholder="الكلمات المفتاحية"
+                  class="w-full px-4 py-3 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+                <label
+                  class="absolute right-0 px-1 mx-1 text-sm bg-white -top-1 text-gray-500"
+                >
+                  الكلمات المفتاحية - تلقائي
+                </label>
+              </div>
+            </div>
+          </div>
+          <div class="py-4 bg-white rounded-lg">
+            @if (questionForm.get('image1')?.value) {
+
+            <button
+              (click)="deleteImg(1)"
+              class="mb-4 text-lg transition-all border rounded-full hover:text-red-600 size-8 hover:scale-105"
+            >
+              X
+            </button>
+            }
+            <div
+              class="relative flex items-center justify-center w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+              (paste)="onPaste($event)"
+              (drop)="onFileDrop($event)"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+            >
+              <input
+                type="text"
+                class="absolute inset-0 z-50 flex items-center justify-center w-full h-full opacity-0 cursor-pointer"
+                name="image1"
+                id="questionImage"
+              />
+              @if (!questionForm.get('image1')?.value ) {
+              <div class="text-center">
+                <img
+                  class="w-12 h-12 mx-auto"
+                  src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                  alt=""
+                />
+                <h3
+                  class="mt-2 text-sm font-medium text-gray-900 cursor-pointer"
+                >
+                  <label for="file-upload" class="relative cursor-pointer">
+                    <span>Drag and drop</span>
+                    <span class="text-indigo-600"> or browse </span>
+                    <span>to upload</span>
+                    <span class="text-indigo-600"> or paste </span>
+                    <input
+                      id="file-upload"
+                      name="file-upload"
+                      type="file"
+                      class="sr-only"
+                    />
+                  </label>
+                </h3>
+                <p class="mt-1 text-lg text-blue-600">أختر صورة السؤال</p>
+              </div>
+              }@else {
+              <img
+                [src]="questionForm.get('image1')?.value"
+                class="flex items-center justify-center object-fill w-full max-h-96"
+                id="preview"
+              />
+              }
+            </div>
+          </div>
+          <div class="py-4 bg-white rounded-lg">
+            @if (questionForm.get('image2')?.value) {
+            <button
+              (click)="deleteImg(2)"
+              class="mb-4 text-lg transition-all border rounded-full hover:text-red-600 size-8 hover:scale-105"
+            >
+              X
+            </button>
+            }
+            <div
+              class="relative flex items-center justify-center w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+              (paste)="onPaste2($event)"
+              (drop)="onFileDrop2($event)"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+            >
+              <input
+                type="text"
+                class="absolute inset-0 z-50 flex items-center justify-center w-full h-full opacity-0 cursor-pointer"
+                name="image2"
+                id="questionImage"
+              />
+              @if (!questionForm.get('image2')?.value ) {
+              <div class="text-center">
+                <img
+                  class="w-12 h-12 mx-auto"
+                  src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                  alt=""
+                />
+                <h3
+                  class="mt-2 text-sm font-medium text-gray-900 cursor-pointer"
+                >
+                  <label for="file-upload" class="relative cursor-pointer">
+                    <span>Drag and drop</span>
+                    <span class="text-indigo-600"> or browse </span>
+                    <span>to upload</span>
+                    <span class="text-indigo-600"> or paste </span>
+                    <input
+                      id="file-upload2"
+                      name="file-upload2"
+                      type="file"
+                      class="sr-only"
+                    />
+                  </label>
+                </h3>
+                <p class="mt-1 text-lg text-blue-600">
+                  أختر صورة القطعة ان وجد
+                </p>
+              </div>
+              }@else {
+              <img
+                [src]="questionForm.get('image2')?.value"
+                class="flex items-center justify-center object-fill w-full max-h-96"
+                id="preview"
+              />
+              }
+            </div>
+          </div>
+
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="answer1"
+                  name="answer1"
+                  formControlName="answer1"
+                  placeholder="ادخل الاجابة ( أ )"
+                  class="w-full p-4 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="answer2"
+                  name="answer2"
+                  formControlName="answer2"
+                  placeholder="ادخل الاجابة ( ب )"
+                  class="w-full p-4 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="grid w-full grid-cols-1 md:grid-cols-2 gap-x-4">
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="answer3"
+                  name="answer3"
+                  formControlName="answer3"
+                  placeholder="ادخل الاجابة ( جـ )"
+                  class="w-full p-4 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+            <div class="col-span-1 py-4 bg-white rounded-lg">
+              <div class="relative bg-inherit">
+                <input
+                  type="text"
+                  id="answer4"
+                  name="answer4"
+                  formControlName="answer4"
+                  placeholder="ادخل الاجابة ( د )"
+                  class="w-full p-4 my-2 text-lg text-gray-900 rounded-lg peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
+                />
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex items-center justify-start my-8 text-xl ms-4 gap-x-6"
+          >
+            <!-- <label [for]="'check' + questionIndex">
+                ABCD
+                <input
+                  type="checkbox"
+                  [name]="'check' + questionIndex"
+                  [id]="'check' + questionIndex"
+                  (change)="checkABCD($event)"
+                  class="inline-block w-6 h-6 ml-2 border-2 border-black rounded-full cursor-pointer flex-no-shrink"
+                />
+              </label> -->
+            <div class="text-primaryAdmin">
+              <h3>أختر الإجابة الصحيحة</h3>
+            </div>
+          </div>
+          <div
+            class="flex items-center w-full p-2 my-6 bg-white border rounded-lg justify-evenly"
+          >
+            @for (n of [1, 2, 3, 4]; track n; let i = $index) {
+            <label
+              for="correctChoice"
+              class="flex gap-2 text-xl cursor-pointer"
+            >
+              {{ n }}
+              <input
+                type="radio"
+                name="correctChoice"
+                id="correctChoice"
+                formControlName="correctChoice"
+                [checked]="n === questionForm.get('correctChoice')?.value"
+                (change)="onAnswerChange(i + 1)"
+                class="inline-block w-8 h-8 ml-2 border border-black rounded-full cursor-pointer flex-no-shrink"
+              />
+            </label>
+            }
+          </div>
+        </div>
+        <div class="flex items-center justify-center w-full mt-3">
+          <button
+            type="submit"
+            class="flex items-center justify-center px-12 py-4 mb-8 text-xl font-medium text-white transition-colors border-2 border-transparent rounded-lg w-fit bg-secondaryAdmin hover:bg-primaryAdmin focus:outline-none focus:ring-2 focus:ring-offset-2"
+          >
+            @if (isLoading) {
+            <div
+              class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+            ></div>
+            } @else { حفظ }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  @if(isLoading) {
+  <div class="fixed z-50 top-[40%] left-[40rem] bg-opacity-60">
+    <div class="flex items-center">
+      <div
+        class="w-16 h-16 border-8 border-blue-600 border-dashed rounded-full animate-spin"
+      ></div>
+    </div>
+  </div>
+  }
+</main>

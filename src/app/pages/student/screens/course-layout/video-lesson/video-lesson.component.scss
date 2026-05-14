@@ -1,0 +1,168 @@
+/* Plyr Custom Styling - Match Site Colors */
+:host ::ng-deep {
+  /* Primary color (progress bar, buttons, etc) */
+  .plyr--full-ui input[type="range"] {
+    color: #36b290;
+  }
+
+  .plyr__control--overlaid {
+    background: #36b290;
+  }
+
+  .plyr__control--overlaid:hover {
+    background: #2d9478;
+  }
+
+  .plyr__control--overlaid:focus {
+    background: #2d9478;
+  }
+
+  .plyr__control.plyr__tab-focus {
+    box-shadow: 0 0 0 5px rgba(54, 178, 144, 0.5);
+  }
+
+  .plyr__control:hover {
+    background: #36b290;
+  }
+
+  .plyr__menu__container
+    .plyr__control[role="menuitemradio"][aria-checked="true"]::before {
+    background: #36b290;
+  }
+
+  /* Progress bar */
+  .plyr--video .plyr__control.plyr__tab-focus,
+  .plyr--video .plyr__control:hover,
+  .plyr--video .plyr__control[aria-expanded="true"] {
+    background: #36b290;
+  }
+
+  .plyr__progress input[type="range"],
+  .plyr__progress__buffer {
+    color: #36b290;
+  }
+
+  /* Volume */
+  .plyr--full-ui input[type="range"]::-webkit-slider-thumb {
+    background: #36b290;
+  }
+
+  .plyr--full-ui input[type="range"]::-moz-range-thumb {
+    background: #36b290;
+  }
+
+  .plyr--full-ui input[type="range"]::-ms-thumb {
+    background: #36b290;
+  }
+
+  .plyr--full-ui input[type="range"]:active::-webkit-slider-thumb {
+    background: #2d9478;
+  }
+
+  .plyr--full-ui input[type="range"]:active::-moz-range-thumb {
+    background: #2d9478;
+  }
+
+  .plyr--full-ui input[type="range"]:active::-ms-thumb {
+    background: #2d9478;
+  }
+
+  /* Loading spinner */
+  .plyr__progress__buffer {
+    color: rgba(54, 178, 144, 0.25);
+  }
+
+  /* Hide YouTube branding with Zoom/Crop Hack */
+  .plyr__video-embed iframe {
+    pointer-events: none;
+    /* Zoom/Crop hack removed */
+    /* transform: scale(1.25); */
+    /* transform-origin: center center; */
+  }
+
+  .plyr__video-embed {
+    pointer-events: auto;
+    overflow: hidden; /* Ensure cropped parts are hidden */
+    border-radius: 12px; /* Maintain rounded corners */
+  }
+
+  /* Hide YouTube logo in controls and thumbnail - Extra Safety */
+  .ytp-youtube-button,
+  .ytp-watermark,
+  .ytp-chrome-top,
+  .ytp-show-cards-title,
+  .ytp-pause-overlay,
+  .ytp-title,
+  .ytp-title-channel,
+  .ytp-title-text,
+  .ytp-chrome-top-buttons,
+  .ytp-gradient-top,
+  .ytp-large-play-button {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* Hide branding on poster/thumbnail before play */
+  .plyr__poster {
+    background-size: cover;
+    background-position: center;
+  }
+
+  /* Force hide top bar on poster */
+  .plyr--youtube.plyr--stopped .plyr__poster::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100px; /* Increased height */
+    background: #000; /* Solid black instead of gradient to be sure, or keep gradient if preferred */
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.6) 60%,
+      transparent 100%
+    );
+    z-index: 1;
+  }
+
+  /* Also cover bottom right watermark on poster */
+  .plyr--youtube.plyr--stopped .plyr__poster::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 120px;
+    height: 60px;
+    background: linear-gradient(
+      to top left,
+      rgba(0, 0, 0, 0.8) 0%,
+      transparent 100%
+    );
+    z-index: 1;
+  }
+
+  /* Ensure play button is above overlay */
+  .plyr__control--overlaid {
+    z-index: 10;
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 92%;
+  height: 60px;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+}

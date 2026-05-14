@@ -1,0 +1,249 @@
+<div class="flex flex-col">
+  <div
+    class="flex items-center self-center justify-center overflow-hidden bg-gray-200 w-[360px] sm:w-[450px] md:w-[370px] min-h-48 h-52"
+  >
+    <img
+      [src]="theMainDetails.img"
+      alt="course1"
+      class="object-cover w-full h-full"
+      onerror="this.style.display = 'none'"
+    />
+  </div>
+  @if (!theMainDetails.isOpen) {
+    <div class="flex flex-col mt-4 gap-y-2 ms-2">
+      <div class="flex items-center text-black gap-x-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6 text-[#56ace0]"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m15.75 10.5 4.72-4.72a.75.75 0 0 1 1.28.53v11.38a.75.75 0 0 1-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25h-9A2.25 2.25 0 0 0 2.25 7.5v9a2.25 2.25 0 0 0 2.25 2.25Z"
+          />
+        </svg>
+        <span class="text-xl">
+          {{ theMainDetails.chaptersCount }}
+          <span class="ms-1">درس</span>
+        </span>
+      </div>
+      <div class="flex items-center text-black gap-x-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          version="1.1"
+          id="Layer_1"
+          class="size-6"
+          viewBox="0 0 392.575 392.575"
+          xml:space="preserve"
+        >
+          <path
+            style="fill: #ffffff"
+            d="M237.576,330.72h-38.529c-6.012,0-10.925-4.848-10.925-10.925V281.33  c0-2.844,1.164-5.624,3.168-7.758l75.636-75.636V32.829c0-6.012-4.848-10.925-10.925-10.925H84.558v51.782  c0,6.012-4.848,10.925-10.925,10.925H21.851v275.265c0,6.012,4.848,10.925,10.925,10.925h223.418  c6.012,0,10.925-4.848,10.925-10.925V305.96l-21.721,21.592C243.329,329.556,240.549,330.72,237.576,330.72z"
+          />
+          <path
+            style="fill: #56ace0"
+            d="M73.568,84.611H44.671l-2.715,252.315c-0.065,6.012,4.784,10.99,10.731,11.055l179.782,2.004  c6.012,0.065,10.99-4.784,11.055-10.731l0.065-10.279c-1.745,1.228-3.943,1.875-6.077,1.875h-38.529  c-6.012,0-10.925-4.848-10.925-10.925v-38.529c0-2.844,1.164-5.624,3.168-7.758l53.527-53.527l1.875-164.267  c0.065-6.012-4.784-10.99-10.731-11.055L84.364,43.237V73.75C84.558,79.698,79.58,84.611,73.568,84.611z"
+          />
+          <g>
+            <path
+              style="fill: #194f82"
+              d="M211.846,83.641h-90.634c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h90.634c6.012,0,10.925,4.848,10.925,10.925C222.772,78.793,217.923,83.641,211.846,83.641z"
+            />
+            <path
+              style="fill: #194f82"
+              d="M211.846,145.379H76.929c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h134.982   c6.012,0,10.925,4.848,10.925,10.925C222.772,140.53,217.923,145.379,211.846,145.379z"
+            />
+            <path
+              style="fill: #194f82"
+              d="M211.846,207.116H76.929c-6.012,0-10.925-4.848-10.925-10.925c0-6.077,4.848-10.925,10.925-10.925   h134.982c6.012,0,10.925,4.848,10.925,10.925C222.836,202.267,217.923,207.116,211.846,207.116z"
+            />
+            <path
+              style="fill: #194f82"
+              d="M152.76,268.983h-75.83c-6.012,0-10.925-4.848-10.925-10.925c0-6.012,4.848-10.925,10.925-10.925   h75.83c6.012,0,10.925,4.848,10.925,10.925C163.685,264.134,158.772,268.983,152.76,268.983z"
+            />
+            <path
+              style="fill: #194f82"
+              d="M152.76,330.72h-75.83c-6.012,0-10.925-4.848-10.925-10.925s4.848-10.925,10.925-10.925h75.83   c6.012,0,10.925,4.848,10.925,10.925S158.772,330.72,152.76,330.72z"
+            />
+            <path
+              style="fill: #194f82"
+              d="M384.453,149.968l-15.451-15.451c-11.895-10.731-26.958-10.667-38.529,0L288.84,176.15V32.829   c0-18.036-14.675-32.711-32.711-32.711H82.683c-8.727,0-17.002,3.426-23.208,9.568L9.568,59.593C3.362,65.799,0,73.944,0,82.671   v277.075c0,18.036,14.675,32.711,32.711,32.711h223.418c18.036,0,32.711-14.675,32.711-32.711V284.11l95.612-95.612   C395.572,176.991,394.99,160.183,384.453,149.968z M62.642,37.354V62.76H37.236L62.642,37.354z M267.055,359.811   c0,6.012-4.848,10.925-10.925,10.925H32.711c-6.012,0-10.925-4.848-10.925-10.925v-275.2h51.782   c6.012,0,10.925-4.848,10.925-10.925V21.904h171.636c6.012,0,10.925,4.848,10.925,10.925v165.107l-75.572,75.636   c-2.004,2.004-3.168,4.784-3.168,7.758v38.529c0,6.012,4.848,10.925,10.925,10.925h38.529c2.844,0,5.624-1.164,7.758-3.168   l21.657-21.657L267.055,359.811L267.055,359.811z M233.115,308.934h-23.079v-23.079l106.408-106.473l23.079,23.079L233.115,308.934   z M369.002,173.047l-13.964,13.964l-23.079-23.079l13.964-13.964c2.78-2.263,5.301-2.004,7.758,0l15.386,15.386   C371.006,166.776,371.394,171.108,369.002,173.047z"
+            />
+          </g>
+          <g>
+            <polygon
+              style="fill: #ffc10d"
+              points="62.642,37.354 37.236,62.76 62.642,62.76  "
+            />
+            <polygon
+              style="fill: #ffc10d"
+              points="210.036,285.791 210.036,308.934 233.115,308.934 339.588,202.526 316.444,179.383  "
+            />
+          </g>
+          <path
+            style="fill: #ffffff"
+            d="M353.616,149.968c-2.392-2.004-4.978-2.263-7.758,0l-13.964,13.964l23.079,23.079l13.964-13.964  c2.392-1.939,2.004-6.271,0-7.758L353.616,149.968z"
+          />
+        </svg>
+        <span class="text-xl"
+          >{{ theMainDetails.examsCount }}
+          <span class="ms-1">اختبار</span>
+        </span>
+      </div>
+      <div class="flex items-center text-black gap-x-3">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-8 text-sky-800"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M3.75 3v11.25A2.25 2.25 0 0 0 6 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0 1 18 16.5h-2.25m-7.5 0h7.5m-7.5 0-1 3m8.5-3 1 3m0 0 .5 1.5m-.5-1.5h-9.5m0 0-.5 1.5m.75-9 3-3 2.148 2.148A12.061 12.061 0 0 1 16.5 7.605"
+          />
+        </svg>
+        <span class="text-lg"> قياس مستوى التقدم والإنجاز عبر الدورة </span>
+      </div>
+      <div class="flex items-center text-black gap-x-3">
+        <span class="text-lg">تقيم الدورة :</span>
+        <div class="flex items-center space-x-1">
+          @for (star of [1, 2, 3, 4, 5]; track i; let i = $index) {
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="w-6 h-6 cursor-pointer"
+              [ngClass]="{
+                'fill-secondaryAdmin text-secondaryAdmin': i < 5,
+                'fill-gray-300 text-gray-300': i >= 5,
+              }"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"
+              />
+            </svg>
+          }
+        </div>
+      </div>
+      @if (theMainDetails.price === 0) {
+        <div class="flex items-center text-black gap-x-3">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="size-6"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+            />
+          </svg>
+          <span class="text-lg"> دورة مجانية </span>
+        </div>
+      }
+    </div>
+    <div
+      class="flex flex-col items-center justify-center px-2 pt-4 pb-6 gap-y-4 basis-full"
+    >
+      @if (theMainDetails.price > 0) {
+        <div class="flex text-lg gap-x-3">
+          <p class="text-lg line-through text-textNav">
+            {{ theMainDetails.priceBeforeDiscount | currency: " " }} ر.س
+          </p>
+          <p class="text-2xl text-orange-400">
+            {{ theMainDetails.price | currency: " " }} ر.س
+          </p>
+        </div>
+      }
+      <button
+        (click)="toCheckout()"
+        class="px-8 py-2 text-lg text-white transition-colors bg-orange-400 border rounded-full w-fit hover:bg-opacity-80"
+      >
+        @if (isLoading) {
+          <div
+            class="w-8 h-8 border-8 border-purple-800 border-dashed rounded-full animate-spin border-t-transparent"
+          ></div>
+        } @else {
+          @if (theMainDetails.price === 0) {
+            اشترك الأن
+          } @else {
+            شراء الأن
+          }
+        }
+      </button>
+    </div>
+  } @else {
+    <div
+      class="flex flex-col items-center justify-center p-2 my-4 xl:px-6 gap-y-2 ms-2"
+    >
+      <div class="flex items-center text-black gap-x-3">
+        <span>تاريخ شراء الدورة:</span>
+        <span class="text-lg text-secondaryAdmin">
+          {{ theMainDetails.subscribe.startDate | date: "yyyy-MM-dd" }}
+        </span>
+      </div>
+      <div class="flex items-center text-black gap-x-3">
+        <span>تاريخ انتهاء الدورة:</span>
+        <span class="text-lg text-secondaryAdmin">
+          {{ theMainDetails.subscribe.endDate | date: "yyyy-MM-dd" }}
+        </span>
+      </div>
+      <div class="relative w-full p-4 mx-auto">
+        <div class="flex items-center justify-between mb-2">
+          <div>
+            <span
+              class="inline-block px-2 py-1 text-xs font-semibold text-teal-600 uppercase bg-teal-200 rounded-full"
+            >
+              نسبة التقدُم
+            </span>
+          </div>
+          <div class="text-right">
+            <span class="inline-block text-xs font-semibold text-teal-600">
+              {{
+                theMainDetails.subscribe.studentProgressPrecent
+                  | number: ".0-1"
+              }}%
+            </span>
+          </div>
+        </div>
+        <div class="flex h-2 bg-gray-200 rounded-full">
+          <div
+            style="width: 70%"
+            [style.width.%]="theMainDetails.subscribe.studentProgressPrecent"
+            class="bg-teal-500 rounded-full"
+          ></div>
+        </div>
+      </div>
+    </div>
+    @if (theMainDetails.subscribe.lastExamId) {
+      <div class="flex items-center justify-center w-full">
+        <button
+          [routerLink]="[
+            '/tutorial/' +
+              theMainDetails.id +
+              '/exam/' +
+              theMainDetails.subscribe.lastExamId,
+          ]"
+          class="px-8 py-2 mb-3 text-lg text-white transition-colors border rounded-md bg-secondaryAdmin w-fit hover:bg-primaryAdmin"
+        >
+          متابعة
+        </button>
+      </div>
+    }
+  }
+</div>

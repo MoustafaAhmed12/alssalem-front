@@ -1,0 +1,261 @@
+<div class="min-h-screen p-6" dir="rtl">
+  <!-- Header -->
+  <div class="mb-8">
+    <h1 class="text-xl font-bold text-gray-900 mb-2">لوحة التحكم الإحصائية</h1>
+    <p class="text-gray-600">
+      إحصائيات شاملة للطلاب والمدارس والدورات التدريبية
+    </p>
+  </div>
+
+  @if (!isLoading()) {
+  <!-- Statistics Cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Total Students Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border-r-4 border-blue-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">إجمالي الطلاب</p>
+          <p class="text-3xl font-bold text-gray-900">
+            {{ data.totalStudents }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-blue-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Allowed Students Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border-r-4 border-green-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">الطلاب المسموح بهم</p>
+          <p class="text-3xl font-bold text-gray-900">
+            {{ data.totalAllowedStudents }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-green-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Allowed Students Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 border-r-4 border-yellow-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">الطلاب المشتركين</p>
+          <p class="text-3xl font-bold text-gray-900">
+            {{ data.allowedStudents }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-yellow-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 border-r-4 border-red-500">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm font-medium text-gray-600">العدد المتبقي</p>
+          <p class="text-3xl font-bold text-gray-900">
+            {{ data.totalAllowedStudents - data.allowedStudents }}
+          </p>
+        </div>
+        <div
+          class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center"
+        >
+          <svg
+            class="w-6 h-6 text-red-600"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+            ></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tables Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Schools Table -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">تفاصيل المدارس</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-right">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">#</th>
+              <th class="px-6 py-3">اسم المدرسة</th>
+              <th class="px-6 py-3">عدد الطلاب</th>
+              <th class="px-6 py-3">النسبة المئوية</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (school of data.schools; track school.id) {
+            <tr class="bg-white border-b hover:bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ school.id }}
+              </td>
+              <td class="px-6 py-4">{{ school.name }}</td>
+              <td class="px-6 py-4">
+                <span
+                  class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                >
+                  {{ school.count }}
+                </span>
+              </td>
+              <td class="px-6 py-4">
+                <div class="flex items-center">
+                  <div class="w-full bg-gray-200 rounded-full h-2.5 ml-2">
+                    <div
+                      class="bg-blue-600 h-2.5 rounded-full"
+                      [style.width.%]="getSchoolPercentage(school.count)"
+                    ></div>
+                  </div>
+                  <span class="text-sm text-gray-600"
+                    >{{ getSchoolPercentage(school.count) }}%</span
+                  >
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tutorials Table -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">الدورات المتاحة</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm text-right">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th class="px-6 py-3">#</th>
+              <th class="px-6 py-3">اسم الدورة</th>
+              <th class="px-6 py-3">الحالة</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tutorial of data.tutorials; track tutorial.id) {
+            <tr class="bg-white border-b hover:bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900">
+                {{ tutorial.id }}
+              </td>
+              <td class="px-6 py-4">{{ tutorial.name }}</td>
+              <td class="px-6 py-4">
+                <span
+                  class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                >
+                  متاحة
+                </span>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Charts Row -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Schools Distribution Chart -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">
+        توزيع الطلاب حسب المدارس
+      </h3>
+      <div class="relative h-64">
+        <canvas #schoolsChart></canvas>
+      </div>
+    </div>
+
+    <!-- Students Overview Chart -->
+    <div class="bg-white rounded-xl shadow-lg p-6">
+      <h3 class="text-xl font-bold text-gray-900 mb-4">نظرة عامة على الطلاب</h3>
+      <div class="relative h-64">
+        <canvas #studentsChart></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Section -->
+  <!-- <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+    <h3 class="text-xl font-bold text-gray-900 mb-4">ملخص الإحصائيات</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="text-center p-4 bg-blue-50 rounded-lg">
+        <p class="text-sm text-gray-600">نسبة القبول</p>
+        <p class="text-2xl font-bold text-blue-600">
+          {{ getAcceptanceRate() }}%
+        </p>
+      </div>
+      <div class="text-center p-4 bg-green-50 rounded-lg">
+        <p class="text-sm text-gray-600">متوسط الطلاب لكل مدرسة</p>
+        <p class="text-2xl font-bold text-green-600">
+          {{ getAverageStudentsPerSchool() }}
+        </p>
+      </div>
+      <div class="text-center p-4 bg-purple-50 rounded-lg">
+        <p class="text-sm text-gray-600">إجمالي الدورات</p>
+        <p class="text-2xl font-bold text-purple-600">
+          {{ data.tutorials.length }}
+        </p>
+      </div>
+    </div>
+  </div> -->
+  }@else {
+  <div class="flex items-center justify-center w-full h-64">
+    <div
+      class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+    ></div>
+  </div>
+  }
+</div>

@@ -1,0 +1,339 @@
+<div
+  *ngIf="isVisible"
+  class="fixed inset-0 z-[50000] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+  [@fadeInOut]
+  (click)="onBackdropClick($event)"
+>
+  <!-- Popup Container -->
+  <div
+    class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden relative"
+    [@slideInOut]
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Header -->
+    <div
+      class="relative p-6 text-white bg-gradient-to-r from-blue-600 to-purple-600"
+    >
+      <button
+        (click)="closePopup()"
+        class="absolute p-2 text-white transition-all duration-200 rounded-full top-4 right-4 hover:bg-white hover:bg-opacity-20"
+        aria-label="إغلاق"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
+      <div class="text-center">
+        <h2 class="mb-2 text-2xl font-bold md:text-3xl">إحصائيات المدارس</h2>
+        <div class="flex flex-wrap justify-center gap-2 mb-2" *ngIf="stateFilter || classNoFilter">
+          <span *ngIf="stateFilter" class="px-3 py-1 text-xs font-semibold bg-white/20 rounded-full">
+            {{ stateFilter }}
+          </span>
+          <span *ngIf="classNoFilter" class="px-3 py-1 text-xs font-semibold bg-white/20 rounded-full">
+            الفصل: {{ classNoFilter }}
+          </span>
+        </div>
+        <p class="text-sm text-blue-100 md:text-base">تقرير الأداء الأكاديمي</p>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+      @if (!isLoading) {
+        <!-- Statistics Summary -->
+        <div
+          class="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2"
+          [class.md:grid-cols-4]="showSummaryDetails"
+          [class.md:grid-cols-2]="!showSummaryDetails"
+        >
+          <div
+            class="p-4 border border-green-200 bg-gradient-to-r from-green-50 to-green-100 rounded-xl shadow-sm"
+          >
+            <div class="text-center">
+              <div class="text-2xl font-bold text-green-600">
+                {{ filteredSchools.length }}
+              </div>
+              <div class="text-sm font-medium text-green-700">
+                إجمالي المدارس المنطبقة
+              </div>
+            </div>
+          </div>
+
+          <div
+            (click)="toggleSummaryDetails()"
+            class="p-4 border border-emerald-200 bg-gradient-to-r from-emerald-50 to-emerald-100 rounded-xl shadow-sm cursor-pointer hover:shadow-md transition-all group"
+          >
+            <div class="text-center">
+              <div class="flex items-center justify-center gap-2">
+                <div class="text-2xl font-bold text-emerald-600">
+                  {{ getAverageAchievement() }}%
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-5 h-5 text-emerald-500 transition-transform group-hover:scale-110"
+                  [class.rotate-180]="showSummaryDetails"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </div>
+              <div class="text-sm font-medium text-emerald-700">
+                متوسط الإنجاز
+              </div>
+            </div>
+          </div>
+
+          @if (showSummaryDetails) {
+            <div
+              class="p-4 border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl shadow-sm animate-fadeIn"
+            >
+              <div class="text-center">
+                <div class="text-2xl font-bold text-blue-600">
+                  {{ getAverageAdvanced() }}%
+                </div>
+                <div class="text-sm font-medium text-blue-700">
+                  متوسط التقدم
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="p-4 border border-purple-200 bg-gradient-to-r from-purple-50 to-purple-100 rounded-xl shadow-sm animate-fadeIn"
+            >
+              <div class="text-center">
+                <div class="text-2xl font-bold text-purple-600">
+                  {{ getAverageSuccess() }}%
+                </div>
+                <div class="text-sm font-medium text-purple-700">
+                  متوسط النجاح
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Schools List Controls -->
+        <div class="flex flex-col gap-4 mb-6 sm:flex-row sm:items-center">
+          <h3 class="flex-1 text-lg font-bold text-gray-800">تفاصيل المدارس</h3>
+          
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- School ID Search -->
+            <!-- Removed: School ID Search input -->
+
+            <button
+              (click)="exportData()"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-all rounded-lg bg-[#2D9455] hover:bg-[#257a46] shadow-sm hover:shadow-md"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span>تصدير Excel</span>
+            </button>
+
+            <button
+              (click)="toggleSort()"
+              class="flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 transition-all rounded-lg bg-blue-50 hover:bg-blue-100"
+            >
+              <span>ترتيب حسب الإنجاز</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="w-4 h-4 transition-transform duration-300"
+                [class.rotate-180]="sortDirection === 'asc'"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div
+            *ngFor="let school of sortedSchoolsData; let i = index"
+            class="transition-all duration-300 transform border border-gray-100 bg-white shadow-sm rounded-xl overflow-hidden hover:shadow-md"
+            [style.animation-delay]="i * 0.05 + 's'"
+          >
+            <!-- School Content Wrapper -->
+            <div class="p-5">
+              <!-- School Header -->
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h4 class="text-base font-bold text-gray-800 truncate">
+                    {{ school.schoolName }}
+                  </h4>
+                  <span class="text-xs text-gray-500 font-medium">رقم المدرسة: {{ school.schoolId }}</span>
+                </div>
+
+                <!-- Performance Badge -->
+                <span
+                  class="px-2 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider"
+                  [ngClass]="getPerformanceBadgeClass(school.advancedPercent)"
+                >
+                  {{ getPerformanceLabel(school.advancedPercent) }}
+                </span>
+              </div>
+
+              <!-- Major Achievement Progress -->
+              <div
+                (click)="toggleSchoolDetails(school.schoolId)"
+                class="p-4 border border-emerald-50 bg-emerald-50/30 rounded-lg cursor-pointer transition-all hover:bg-emerald-50/50 group"
+              >
+                <div class="flex items-center justify-between mb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-emerald-700"
+                      >نسبة الإنجاز</span
+                    >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="w-4 h-4 text-emerald-500 transition-transform group-hover:scale-110"
+                      [class.rotate-180]="expandedSchools.has(school.schoolId)"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </div>
+                  <span class="text-base font-black text-emerald-600"
+                    >{{ calculateAchievement(school) }}%</span
+                  >
+                </div>
+                <div
+                  class="w-full h-3 overflow-hidden bg-gray-200 rounded-full"
+                >
+                  <div
+                    class="h-full transition-all duration-1000 ease-out rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
+                    [style.width]="calculateAchievement(school) + '%'"
+                  ></div>
+                </div>
+                <p
+                  class="mt-2 text-[10px] text-center text-emerald-600/70 font-medium"
+                >
+                  انقر لرؤية التفاصيل (التقدم والنجاح)
+                </p>
+              </div>
+
+              <!-- Collapsible Details -->
+              <div
+                *ngIf="expandedSchools.has(school.schoolId)"
+                class="mt-4 pt-4 border-t border-gray-100 space-y-4 animate-fadeIn"
+              >
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <!-- Advanced Progress -->
+                  <div class="p-3 bg-blue-50/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs font-bold text-blue-700"
+                        >نسبة التقدم</span
+                      >
+                      <span class="text-xs font-black text-blue-600"
+                        >{{ school.advancedPercent }}%</span
+                      >
+                    </div>
+                    <div
+                      class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-blue-500 rounded-full"
+                        [style.width]="school.advancedPercent + '%'"
+                      ></div>
+                    </div>
+                  </div>
+
+                  <!-- Success Progress -->
+                  <div class="p-3 bg-purple-50/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-1">
+                      <span class="text-xs font-bold text-purple-700"
+                        >نسبة النجاح</span
+                      >
+                      <span class="text-xs font-black text-purple-600"
+                        >{{ school.successPercent }}%</span
+                      >
+                    </div>
+                    <div
+                      class="w-full h-1.5 bg-gray-200 rounded-full overflow-hidden"
+                    >
+                      <div
+                        class="h-full bg-purple-500 rounded-full"
+                        [style.width]="school.successPercent + '%'"
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Comparison -->
+                <div
+                  class="flex items-center justify-center gap-4 text-[10px] font-bold"
+                >
+                  <div class="flex items-center gap-1 text-blue-600">
+                    <span class="opacity-60">الفجوة:</span>
+                    <span
+                      >{{
+                        school.advancedPercent - school.successPercent
+                      }}%</span
+                    >
+                  </div>
+                  <div class="w-px h-3 bg-gray-200"></div>
+                  <div class="flex items-center gap-1 text-purple-600">
+                    <span class="opacity-60">مجموع الأداء:</span>
+                    <span
+                      >{{
+                        school.advancedPercent + school.successPercent
+                      }}%</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @else {
+        <div class="flex items-center justify-center w-full h-64">
+          <div
+            class="w-16 h-16 duration-1000 border-8 border-dashed rounded-full border-primaryAdmin animate-spin"
+          ></div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

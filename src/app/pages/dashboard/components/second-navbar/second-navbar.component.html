@@ -1,0 +1,144 @@
+<nav
+  class="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between h-16 px-4 border-b gap-x-4 lg:px-6"
+  [class]="isLogoWhite() ? 'bg-secondary' : 'bg-white shadow-sm'"
+>
+  <div class="flex items-center gap-4">
+    <!-- Hamburger Menu Button (visible on mobile/tablet) -->
+    <button
+      (click)="show_menu()"
+      class="p-2 text-gray-600 rounded-lg xl:hidden hover:bg-gray-100 transition-colors"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke-width="2"
+        stroke="currentColor"
+        class="size-6"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+        />
+      </svg>
+    </button>
+
+    <!-- Logo Section (Shifted logic) -->
+    <div class="xl:ms-72 transition-all duration-500 flex items-center">
+      @if (appConfigService.isMainDomain()) {
+        <a routerLink="/" class="flex items-center">
+          <img src="assets/imgs/logo2.webp" class="size-10 md:size-12" alt="logo image" />
+        </a>
+      } @else {
+        <a routerLink="/" class="flex items-center">
+          <img
+            [src]="'assets/' + appConfigService.config()?.['logo']"
+            [class]="isLogoWhite() ? 'h-10 md:h-12 w-auto' : 'h-10 md:h-12 w-auto'"
+            alt="logo image"
+          />
+        </a>
+      }
+    </div>
+
+    <!-- Main Navigation Links (Visible on Tablet/Desktop) -->
+    @if (roleName() === 'طالب') {
+      <div class="hidden md:block">
+        <ul
+          class="flex items-center text-sm font-medium gap-x-1"
+          [class]="isLogoWhite() ? 'text-white' : 'text-gray-700'"
+        >
+          <li
+            routerLink="/"
+            routerLinkActive="activeLink"
+            class="px-3 py-2 rounded-lg cursor-pointer hover:bg-primary/10 hover:text-primary transition-all"
+          >
+            الرئيسية
+          </li>
+          <li
+            routerLink="/level-test"
+            routerLinkActive="activeLink"
+            class="px-3 py-2 rounded-lg cursor-pointer hover:bg-primary/10 hover:text-primary transition-all"
+          >
+            حدد مستواك
+          </li>
+          <li
+            routerLink="/cateogry/qodrat"
+            routerLinkActive="activeLink"
+            class="px-3 py-2 rounded-lg cursor-pointer hover:bg-primary/10 hover:text-primary transition-all"
+          >
+            قدرات
+          </li>
+          <li
+            routerLink="/cateogry/tahsili"
+            routerLinkActive="activeLink"
+            class="px-3 py-2 rounded-lg cursor-pointer hover:bg-primary/10 hover:text-primary transition-all"
+          >
+            تحصيلي
+          </li>
+        </ul>
+      </div>
+    }
+  </div>
+
+  <!-- Profile Section -->
+  <div class="flex items-center gap-2">
+    <div
+      (mouseenter)="menu_Profile()"
+      (mouseleave)="menu_Profile_close()"
+      class="relative flex items-center p-2 cursor-pointer group"
+      [class]="isLogoWhite() ? 'text-white' : 'text-primary'"
+    >
+      <div class="p-1.5 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-white transition-all">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="size-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+          />
+        </svg>
+      </div>
+      
+      <svg
+        [ngClass]="menu_show_Profile ? 'rotate-180 transition-transform' : ''"
+        class="size-4 ms-1 opacity-60 transition-transform"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
+        <path d="m6 9 6 6 6-6" />
+      </svg>
+
+      <div
+        [ngClass]="{
+          'scale-100 opacity-100 translate-y-0': menu_show_Profile,
+          'scale-95 opacity-0 -translate-y-2 pointer-events-none': !menu_show_Profile
+        }"
+        class="absolute left-0 top-full pt-2 w-48 transition-all duration-300 origin-top-left"
+      >
+        <ul
+          class="bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700 py-2"
+        >
+          <li
+            (click)="auth.logout()"
+            class="px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+            </svg>
+            تسجيل خروج 
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

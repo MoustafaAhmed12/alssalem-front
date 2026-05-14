@@ -1,0 +1,11 @@
+@media screen and (min-width: 990px) {
+  .ngx-table__horizontal-scroll {
+    display: block;
+    table-layout: auto !important;
+    // table-layout: auto;
+  }
+}
+
+.cell {
+  text-align: -webkit-center;
+}

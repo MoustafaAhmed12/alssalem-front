@@ -1,0 +1,336 @@
+<main
+  class="grid grid-cols-1 mt-2 lg:grid-cols-2 place-items-center gap-y-6 md:gap-x-16"
+>
+  <div class="relative grid col-span-1 place-items-center">
+    <canvas id="chart" class="w-[350px] h-[350px] lg:w-[400px] lg:h-[400px]">
+    </canvas>
+    @if (correctionExamDetails) {
+    <div class="absolute -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
+      @if ( correctionExamDetails?.length > 1) {
+      <h2
+        [ngClass]="
+          correctionExamDetails[correctionExamDetails?.length - 1].isSuccess
+            ? 'text-[#36b290]'
+            : 'text-[#963c3d]'
+        "
+        class="pt-8 text-6xl"
+      >
+        {{
+          correctionExamDetails[correctionExamDetails?.length - 1].percentage
+            | number : ".0-1"
+        }}%
+      </h2>
+      }@else {
+      <h2
+        [ngClass]="
+          correctionExamDetails[0].isSuccess
+            ? 'text-[#36b290]'
+            : 'text-[#963c3d]'
+        "
+        class="pt-8 text-6xl"
+      >
+        {{ correctionExamDetails[0].percentage | number : ".0-1" }}%
+      </h2>
+      }
+    </div>
+    }
+  </div>
+  @if (correctionExamDetails) {
+  <div class="w-10/12 col-span-1 lg:w-full">
+    <section class="bg-white">
+      <div class="container mx-auto">
+        <div class="flex flex-wrap -mx-4">
+          <div class="w-full px-4">
+            <div class="max-w-full overflow-x-auto">
+              @if ( correctionExamDetails?.length === 1 ) {
+              <table class="w-full border-2 table-auto border-primaryAdmin">
+                <thead>
+                  <tr class="text-center bg-secondaryAdmin">
+                    <th
+                      colspan="2"
+                      class="w-1/6 min-w-[160px] py-2 px-3 text-base border-b-2 border-primaryAdmin font-bold text-black lg:py-4 lg:px-4"
+                    >
+                      إحصائيات الاختبار
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      عدد الأسئلة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ totalQuestions }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الوقت المستغرق
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ correctionExamDetails[0].takenTime | formatTime }}
+                    </td>
+                  </tr>
+                  @for (questionType of correctionExamDetails[0].statisticals;
+                  track $index) {
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      {{ questionType.questionTypeName }}
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ questionType.precent | number : ".0-1" }}%
+                    </td>
+                  </tr>
+                  }
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الإجابات الصحيحة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ correctionExamDetails[0].numberOfCorrectQuestions }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الأخطاء
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ correctionExamDetails[0].numberOfWrongQuestions }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      لم يتم حلها
+                    </td>
+                    <td
+                      class="bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ correctionExamDetails[0].numberOfEmptyQuestions }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              }@else {
+              <table class="w-full table-auto">
+                <thead>
+                  <tr class="text-center bg-secondaryAdmin">
+                    <th
+                      colspan="2"
+                      class="w-1/6 min-w-[160px] py-2 px-3 text-lg font-bold text-black lg:py-4 lg:px-4"
+                    >
+                      إحصائيات الاختبار
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الوقت المستغرق
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{
+                        correctionExamDetails[correctionExamDetails.length - 1]
+                          .takenTime | formatTime
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      عدد الأسئلة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ totalQuestions }}
+                    </td>
+                  </tr>
+                  @for (questionType of
+                  correctionExamDetails[correctionExamDetails.length -
+                  1].statisticals; track $index) {
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      {{ questionType.questionTypeName }}
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{ questionType.precent | number : ".0-1" }}%
+                    </td>
+                  </tr>
+                  }
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الإجابات الصحيحة
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{
+                        correctionExamDetails[correctionExamDetails.length - 1]
+                          .numberOfCorrectQuestions
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      الأخطاء
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{
+                        correctionExamDetails[correctionExamDetails.length - 1]
+                          .numberOfWrongQuestions
+                      }}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-bold"
+                    >
+                      لم يتم حلها
+                    </td>
+                    <td
+                      class="border-b-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                    >
+                      {{
+                        correctionExamDetails[correctionExamDetails.length - 1]
+                          .numberOfEmptyQuestions
+                      }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- ====== Table Section End -->
+  </div>
+  }
+</main>
+@if (correctionExamDetails) {
+<section class="bg-white mt-14">
+  <h2 class="my-3 text-xl font-semibold ps-4 md:ps-0">نتائج المحاولات</h2>
+  <div class="container mx-auto">
+    <div class="flex flex-wrap">
+      <div class="w-full px-1 md:px-4">
+        <div class="overflow-x-scroll max-w-fit md:max-w-full">
+          <table class="w-full text-sm border-2 table-auto border-primaryAdmin">
+            <thead>
+              <tr class="text-center bg-secondaryAdmin">
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  عدد الأسئلة
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  الوقت المستغرق
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  النتيجة
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  نسبة النجاح
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  درجتك
+                </td>
+                <td
+                  class="px-2 py-5 text-sm font-bold text-center border-b-2 border-l-2 border-primaryAdmin"
+                >
+                  مراجعة المحاولات
+                </td>
+              </tr>
+            </thead>
+            @for (item of correctionExamDetails; track $index) {
+            <tbody>
+              <tr>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ totalQuestions }}
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.takenTime | formatTime }}
+                </td>
+                <td
+                  [ngClass]="item.isSuccess ? 'text-green-700' : 'text-red-700'"
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.isSuccess ? "ناجح" : "لم ينجح" }}
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.passingPrecent | number : ".0-1" }}%
+                </td>
+                <td
+                  class="border-b-2 border-l-2 border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  {{ item.percentage | number : ".0-1" }}%
+                </td>
+                <td
+                  [routerLink]="[
+                    '/test-yourself/' + '/exam/' + item.examId + '/page/' + 1
+                  ]"
+                  class="border-b-2 border-l-2 text-secondaryAdmin cursor-pointer hover:text-primaryAdmin transition-colors border-primaryAdmin bg-[#F3F6FF] py-5 px-2 text-center text-sm font-medium"
+                >
+                  مراجعة الإجابات
+                </td>
+              </tr>
+            </tbody>
+            }
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+}

@@ -1,0 +1,104 @@
+<div class="w-full pt-4">
+  <div class="w-full text-center md:px-6 gap-y-8">
+    <ng-content select=".name"></ng-content>
+    <div class="mt-6 overflow-x-auto rounded-lg">
+      <table class="w-full text-center bg-white rounded-lg table-auto">
+        <thead class="font-semibold bg-secondaryAdmin text-logoColor1">
+          <tr>
+            <th class="p-4">الوقت المستغرق</th>
+            <th class="p-4">عدد الأسئلة</th>
+            <th class="p-4">الإجابات الصحيحة</th>
+            <th class="p-4">الأخطاء</th>
+            <th class="p-4">النتيجة</th>
+            <th class="p-4">نسبة النجاح</th>
+            <th class="p-4">درجتك</th>
+            <th class="p-4">مراجعة المحاولات</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (!isLoading()) { @for (row of allExamResults; track i; let i =
+          $index; let first = $first) {
+          <tr
+            class="font-semibold border-b-8 border-gray-200"
+            [class.border-t-8]="first"
+          >
+            <td class="p-4">{{ row.takenTime | formatTime }}</td>
+            <td class="p-4">
+              {{ row.numberOfTotalQuestionsQuestions }}
+            </td>
+            <td class="p-4">
+              {{ row.numberOfCorrectQuestions }}
+            </td>
+            <td class="p-4">
+              {{ row.numberOfWrongQuestions }}
+            </td>
+            <td
+              class="p-4 whitespace-nowrap"
+              [ngClass]="
+                row.percentage >= row.passingPrecent
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              "
+            >
+              @if (row.percentage >= row.passingPrecent) { ناجح }@else { لم ينجح
+              }
+            </td>
+            <td class="p-4">{{ row.passingPrecent }}%</td>
+            <td
+              class="p-4"
+              [ngClass]="
+                row.percentage >= row.passingPrecent
+                  ? 'text-green-700'
+                  : 'text-red-700'
+              "
+            >
+              {{ roundedNumber(row.percentage) }}%
+            </td>
+            <td
+              [routerLink]="[
+                '/tutorial/' +
+                  this.tutorialId() +
+                  '/exam/' +
+                  examId() +
+                  '/result-answers/' +
+                  row.id +
+                  '/page/' +
+                  1
+              ]"
+              class="p-4 transition-colors cursor-pointer hover:text-secondaryAdmin text-primaryAdmin"
+            >
+              مراجعة الإجابات
+            </td>
+          </tr>
+          } }@else { @for ( i of [1, 2, 3, 4 ,5]; track i) {
+          <tr class="border-b-8 animate-pulse border-mainColor4">
+            <td class="hidden py-4 ps-6 md:table-cell pe-3">
+              <div class="w-48 h-4 rounded bg-mainColor3"></div>
+            </td>
+            <td class="hidden py-4 ps-6 md:table-cell pe-3">
+              <div class="h-4 rounded bg-mainColor3 w-36"></div>
+            </td>
+            <td class="hidden py-4 text-center md:table-cell ps-16 pe-3">
+              <div class="w-24 h-4 rounded bg-mainColor3"></div>
+            </td>
+            <td class="py-4 text-center ps-20 pe-3">
+              <div class="w-8 h-8 rounded bg-mainColor3"></div>
+            </td>
+          </tr>
+          } }
+        </tbody>
+      </table>
+    </div>
+    <div class="flex flex-col items-center justify-center w-full">
+      @if (!isLoading() && examResults.hasNextPage) {
+      <button
+        (click)="getMoreData()"
+        class="px-8 py-2 my-6 text-gray-900 transition-colors border rounded-full hover:bg-secondaryAdmin hover:text-white border-secondaryAdmin"
+      >
+        إظهار المزيد
+      </button>
+      }
+      <ng-content select=".start"></ng-content>
+    </div>
+  </div>
+</div>
