@@ -93,7 +93,7 @@
           <!-- Name -->
           <div class="col-span-2">
             <label class="block text-sm font-bold text-gray-700 mb-2"
-              >اسم الخطة</label
+              >اسم الخطة <span class="text-red-500 text-lg">*</span></label
             >
             <input
               type="text"
@@ -106,12 +106,14 @@
           <!-- Schools -->
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2"
-              >المدارس</label
+              >المدارس <span class="text-red-500 text-lg">*</span></label
             >
             <ng-select
               [items]="allSchools()"
               bindLabel="name"
               bindValue="id"
+              [closeOnSelect]="false"
+              [hideSelected]="true"
               [multiple]="true"
               [(ngModel)]="formData.schoolsIds"
               placeholder="اختر المدارس"
@@ -123,7 +125,7 @@
           <!-- Grade (State) -->
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2"
-              >الصف الدراسي</label
+              >الصف الدراسي <span class="text-red-500 text-lg">*</span></label
             >
             <ng-select
               [items]="grades"
@@ -144,6 +146,8 @@
             <ng-select
               [items]="classNumbers"
               [multiple]="true"
+              [closeOnSelect]="false"
+              [hideSelected]="true"
               [(ngModel)]="formData.classNumbers"
               placeholder="اختر الفصول"
               class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
@@ -160,6 +164,8 @@
               bindLabel="name"
               bindValue="id"
               [multiple]="true"
+              [closeOnSelect]="false"
+              [hideSelected]="true"
               [(ngModel)]="formData.studentsIds"
               placeholder="ابحث عن الطلاب"
               class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
@@ -184,6 +190,7 @@
               bindLabel="name"
               [multiple]="true"
               [closeOnSelect]="false"
+              [hideSelected]="true"
               [clearable]="false"
               (change)="onTutorialsChange($event)"
               placeholder="اختر الدورات لاستيراد الاختبارات منها"
@@ -191,58 +198,6 @@
             >
             </ng-select>
           </div>
-
-          <!-- Exams Per Tutorial -->
-          @for (tutorial of selectedTutorialsData(); track tutorial.id) {
-            <div
-              class="col-span-2 bg-gray-50 p-6 rounded-2xl border border-gray-100"
-            >
-              <div class="flex items-center justify-between mb-4">
-                <h4
-                  class="text-lg font-bold text-primary flex items-center gap-2"
-                >
-                  <div class="size-2 bg-primary rounded-full"></div>
-                  اختبارات: {{ tutorial.name }}
-                </h4>
-
-                <button
-                  (click)="toggleSelectAll(tutorial.id)"
-                  class="text-xs font-bold px-4 py-1.5 rounded-lg transition-all"
-                  [ngClass]="
-                    tutorial.selectedExamsIds.length ===
-                    tutorial.allExams.length
-                      ? 'bg-primary text-white'
-                      : 'bg-white text-primary border border-primary/20 hover:bg-primary/5'
-                  "
-                >
-                  {{
-                    tutorial.selectedExamsIds.length ===
-                    tutorial.allExams.length
-                      ? "إلغاء تحديد الكل"
-                      : "تحديد الكل"
-                  }}
-                </button>
-              </div>
-
-              <ng-select
-                [items]="tutorial.allExams"
-                bindLabel="name"
-                [closeOnSelect]="false"
-                [clearable]="false"
-                bindValue="id"
-                [multiple]="true"
-                [(ngModel)]="tutorial.selectedExamsIds"
-                placeholder="اختر الاختبارات من هذه الدورة"
-                class="w-full p-2 text-gray-900 placeholder-transparent bg-transparent rounded-lg disabled:bg-gray-400 peer ring-1 ring-gray-500 focus:ring-sky-600 focus:outline-none"
-              >
-              </ng-select>
-
-              <div class="mt-2 text-xs text-gray-400 font-medium">
-                تم اختيار {{ tutorial.selectedExamsIds.length }} من
-                {{ tutorial.allExams.length }} اختبار
-              </div>
-            </div>
-          }
 
           <!-- Start Date -->
           <div>
@@ -256,16 +211,14 @@
             />
           </div>
 
-          <!-- Exams Per Day -->
+          <!-- Roadmap End Date -->
           <div>
             <label class="block text-sm font-bold text-gray-700 mb-2"
-              >عدد الاختبارات في اليوم</label
+              >تاريخ نهاية الخطة</label
             >
             <input
-              type="number"
-              min="1"
-              max="10"
-              [(ngModel)]="examsPerDay"
+              type="date"
+              [(ngModel)]="endDate"
               class="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-primary outline-none transition-all"
             />
           </div>
@@ -298,6 +251,37 @@
     <!-- Step 3: Preview -->
     @if (currentStep() === 3) {
       <div class="p-3 md:p-6 animate-fadeIn">
+        <!-- Drag & Drop Tip -->
+        <div
+          class="bg-sky-50 border border-sky-100 p-4 rounded-2xl mb-8 flex items-center gap-4 animate-fadeIn"
+        >
+          <div
+            class="size-10 bg-primary text-white rounded-xl flex items-center justify-center shadow-lg shadow-sky-100"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke="currentColor"
+              class="w-6 h-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5"
+              />
+            </svg>
+          </div>
+          <div>
+            <h4 class="font-bold text-primary">تلميح ذكي</h4>
+            <p class="text-sky-700 text-sm">
+              يمكنك إعادة تنظيم الجدول يدوياً عن طريق <b>سحب الاختبار</b> من يوم
+              وإسقاطه في يوم آخر.
+            </p>
+          </div>
+        </div>
+
         <div class="mb-6 flex items-center justify-between">
           <h3 class="text-2xl font-bold text-gray-800">مخطط الجدول الزمني</h3>
           <span
@@ -307,16 +291,15 @@
           </span>
         </div>
 
-        <!-- Calendar-style view -->
         <div
           class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
         >
           @for (day of generatedDays(); track day.date; let i = $index) {
             <div
-              class="relative p-4 rounded-2xl border transition-all hover:shadow-md"
+              class="preview-day-card relative p-4 rounded-2xl border transition-all hover:shadow-md min-h-[180px] flex flex-col"
               [ngClass]="
-                day.examsIds.length === 0
-                  ? 'bg-gray-50 border-gray-100 opacity-60'
+                day.isHoliday
+                  ? 'bg-gray-50 border-gray-100 opacity-70'
                   : 'bg-white border-sky-100 shadow-sm'
               "
             >
@@ -324,36 +307,165 @@
                 <span class="font-bold text-gray-400 text-xs"
                   >يوم {{ i + 1 }}</span
                 >
-                <span
-                  class="text-[10px] bg-gray-200 px-2 py-0.5 rounded text-gray-600 font-bold uppercase"
-                  >{{ getWeekDayName(day.date) }}</span
-                >
+                <div class="flex items-center gap-1">
+                  <button
+                    (click)="toggleDayHoliday(day)"
+                    class="text-[9px] px-2 py-0.5 rounded font-bold transition-all border"
+                    [ngClass]="
+                      day.isHoliday
+                        ? 'bg-red-50 border-red-200 text-red-600'
+                        : 'bg-white border-gray-200 text-gray-400 hover:bg-gray-50'
+                    "
+                  >
+                    {{ day.isHoliday ? "إلغاء الإجازة" : "إجازة" }}
+                  </button>
+                  <span
+                    class="text-[10px] bg-gray-200 px-2 py-0.5 rounded text-gray-600 font-bold uppercase"
+                    >{{ getWeekDayName(day.date) }}</span
+                  >
+                </div>
               </div>
 
               <div class="text-lg font-black text-gray-800 mb-3">
                 {{ formatDate(day.date) }}
               </div>
 
-              <div class="space-y-2">
+              <!-- Drag-drop zone: only wraps exam items -->
+              <div
+                class="space-y-2 flex-grow"
+                cdkDropList
+                [cdkDropListData]="day.examsIds"
+                (cdkDropListDropped)="drop($event)"
+              >
                 @if (day.examsIds.length > 0) {
                   @for (examId of day.examsIds; track examId) {
                     <div
-                      class="text-xs p-2 bg-sky-50 text-primary border border-sky-100 rounded-lg truncate font-bold flex items-center gap-2"
+                      cdkDrag
+                      class="group text-xs p-2 rounded-lg font-bold flex items-center gap-2 cursor-move active:scale-95 transition-all border"
+                      [ngClass]="[
+                        getExamColorClasses(examId).bg,
+                        getExamColorClasses(examId).text,
+                        getExamColorClasses(examId).border,
+                      ]"
                     >
-                      <div class="size-1.5 bg-primary rounded-full"></div>
-                      {{ getExamName(examId) }}
+                      <!-- Drag Preview (Custom Look while dragging) -->
+                      <div
+                        *cdkDragPreview
+                        class="text-xs p-3 bg-white border-2 rounded-xl font-bold flex items-center gap-2 shadow-2xl w-64"
+                        [ngClass]="[
+                          getExamColorClasses(examId).text,
+                          getExamColorClasses(examId).border,
+                        ]"
+                        style="z-index: 99999 !important"
+                      >
+                        <div
+                          class="size-2 rounded-full"
+                          [ngClass]="getExamColorClasses(examId).dot"
+                        ></div>
+                        {{ getExamName(examId) }}
+                      </div>
+
+                      <div
+                        class="size-1.5 rounded-full shrink-0"
+                        [ngClass]="getExamColorClasses(examId).dot"
+                      ></div>
+                      <span class="flex-1 text-inherit">{{
+                        getExamName(examId)
+                      }}</span>
+
+                      <button
+                        (click)="removeExamFromDay(day, examId)"
+                        class="opacity-0 group-hover:opacity-100 p-1 hover:bg-black/5 rounded transition-all"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="size-3"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="3"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
                     </div>
                   }
-                } @else {
+                } @else if (day.isHoliday) {
                   <div
                     class="text-xs p-2 bg-red-50 text-red-400 border border-red-50 rounded-lg font-medium text-center italic"
                   >
                     إجازة
                   </div>
+                } @else {
+                  <div
+                    class="text-xs p-2 bg-gray-50 text-gray-400 border border-gray-50 rounded-lg font-medium text-center italic"
+                  >
+                    يوم فارغ
+                  </div>
                 }
               </div>
+
+              <!-- Exam Selectors: OUTSIDE cdkDropList so mouse events work -->
+              @if (!day.isHoliday) {
+                <div
+                  class="mt-4 pt-3 border-t border-dashed border-gray-100 space-y-3"
+                >
+                  @for (
+                    tutorial of tutorialsWithAvailableExams();
+                    track tutorial.id;
+                    let idx = $index
+                  ) {
+                    <div class="animate-fadeIn">
+                      <label
+                        class="flex justify-between items-center text-[10px] font-bold mb-1 opacity-80"
+                        [ngClass]="getTutorialColorClasses(idx).text"
+                      >
+                        <span>{{ tutorial.name }}</span>
+                        <span class="opacity-60"
+                          >({{
+                            tutorial.availableExams.length
+                          }}
+                          متاح)</span
+                        >
+                      </label>
+                      <ng-select
+                        #examSelect
+                        [items]="tutorial.availableExams"
+                        bindLabel="name"
+                        bindValue="id"
+                        placeholder="اختر اختبار..."
+                        (change)="onExamSelected(day, $event, examSelect)"
+                        [clearable]="false"
+                        [searchable]="true"
+                        appendTo="body"
+                        class="custom-compact-select"
+                      >
+                      </ng-select>
+                    </div>
+                  }
+                </div>
+              }
             </div>
           }
+          
+          <!-- Add Day Button -->
+          <div
+            class="p-4 rounded-2xl border-2 border-dashed border-gray-200 flex items-center justify-center min-h-[180px] cursor-pointer hover:border-primary hover:bg-sky-50 transition-all text-gray-400 hover:text-primary group"
+            (click)="addDayToEnd()"
+          >
+            <div class="flex flex-col items-center gap-2">
+              <div class="p-3 bg-gray-50 rounded-full group-hover:bg-white transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+              </div>
+              <span class="font-bold text-sm">إضافة يوم إضافي</span>
+            </div>
+          </div>
         </div>
       </div>
     }

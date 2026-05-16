@@ -35,3 +35,106 @@
     transform: translateY(0);
   }
 }
+
+/* Drag and Drop Styles */
+.cdk-drag-preview {
+  cursor: grabbing !important;
+  z-index: 99999 !important;
+  opacity: 1 !important;
+  background-color: white !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 2px solid #0ea5e9 !important;
+  border-radius: 0.75rem !important;
+  pointer-events: none;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+  background: #f0f9ff;
+  border: 2px dashed #0ea5e9 !important;
+  border-radius: 0.75rem;
+}
+
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-dragging .cdk-drag {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+.cdk-drop-list-receiving {
+  background-color: #f0f9ff !important;
+  border-color: #0ea5e9 !important;
+  transform: scale(1.02);
+  transition: all 0.2s ease;
+}
+
+.custom-compact-select {
+  ::ng-deep {
+    .ng-select-container {
+      background-color: #f9fafb !important;
+      border: 1px solid #e5e7eb !important;
+      border-radius: 0.75rem !important;
+      min-height: 2.2rem !important;
+      font-size: 0.75rem !important;
+      
+      .ng-placeholder {
+        color: #9ca3af !important;
+        font-weight: 600 !important;
+      }
+
+      .ng-arrow-wrapper {
+        width: 20px !important;
+      }
+      
+      .ng-value-container {
+        padding: 0 8px !important;
+      }
+    }
+    
+    .ng-dropdown-panel {
+      z-index: 9999 !important;
+      position: absolute !important;
+      font-size: 0.75rem !important;
+      border-radius: 0.75rem !important;
+      overflow: hidden;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+      border: 1px solid #f3f4f6 !important;
+      background: white !important;
+
+      .ng-optgroup {
+        font-weight: 800 !important;
+        background-color: #f8fafc !important;
+        padding: 6px 10px !important;
+        color: #0ea5e9 !important;
+        border-bottom: 1px solid #f1f5f9;
+      }
+      
+      .ng-option {
+        padding: 8px 12px !important;
+        border-bottom: 1px solid #f8fafc;
+        
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+// Ensure the day card allows the dropdown to show
+.preview-day-card {
+  overflow: visible !important;
+  z-index: 1;
+  transition: z-index 0s; // Instant z-index change
+  
+  &:hover {
+    z-index: 50;
+  }
+
+  // Very important: Lift the card when any ng-select inside it is opened
+  &:has(.ng-select-opened) {
+    z-index: 100 !important;
+  }
+}

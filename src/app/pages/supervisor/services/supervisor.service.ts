@@ -305,4 +305,10 @@ export class SupervisorService {
       data,
     );
   }
+
+  deleteRoadMap(id: number): Observable<ResponseHeader> {
+    return this.http.delete<ResponseHeader>(
+      `${environment.BASE_URL}/api/SuperVisor/SuperVisorRoadMpas/${id}`,
+    );
+  }
 }
